@@ -28,6 +28,7 @@
       --text-primary:#f5e6d3;
       --text-secondary:#c5b5a3;
       --text-dim:#8a7a6a;
+      --text-bonus:#4fc3f7;
       --border-radius:8px;
       --border-color: #444;
       --shadow-sm:0 2px 4px rgba(0,0,0,0.3);
@@ -453,6 +454,105 @@
       transform: scale(0.95);
     }
 
+    .custom-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .custom-modal[aria-hidden="false"] {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-content {
+      background: var(--bg-secondary);
+      border: 3px solid var(--accent-gold);
+      border-radius: var(--border-radius);
+      padding: 24px;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: var(--shadow-lg);
+      transform: scale(0.9);
+      transition: transform 0.3s;
+    }
+
+    .custom-modal[aria-hidden="false"] .modal-content {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      font-size: 20px;
+      font-weight: bold;
+      color: var(--accent-gold);
+      margin-bottom: 16px;
+      text-align: center;
+      font-family: var(--font-display);
+    }
+
+    .modal-body {
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      text-align: center;
+      color: var(--text-primary);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .modal-btn {
+      padding: 10px 24px;
+      border: none;
+      border-radius: var(--border-radius);
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .modal-btn-confirm {
+      background: linear-gradient(135deg, #8b0000 0%, #dc143c 100%);
+      color: white;
+      border: 2px solid #ff6347;
+    }
+
+    .modal-btn-confirm:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(220, 20, 60, 0.5);
+    }
+
+    .modal-btn-cancel {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border: 2px solid var(--border-color);
+    }
+
+    .modal-btn-cancel:hover {
+      background: var(--bg-secondary);
+      border-color: var(--accent-gold);
+    }
+
+    .modal-btn:active {
+      transform: scale(0.95);
+    }
+
     .inventory-container {
       display: flex;
       flex-direction: column;
@@ -537,6 +637,69 @@
     .inv-resource-value {
       color: #ffd700;
       font-weight: bold;
+    }
+
+    .inv-active-effects {
+      background:linear-gradient(135deg,rgba(58,47,42,0.6) 0%,rgba(42,31,26,0.6) 100%); 
+      border:2px solid var(--accent-gold);
+      border-radius:var(--border-radius); 
+      padding: 12px;
+      width: 200px;
+    }
+
+    .active-effects-icons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      min-height: 60px;
+      align-items: center;
+    }
+
+    .effect-icon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 64px;
+      padding: 8px;
+      background: rgba(212, 175, 55, 0.1);
+      border: 2px solid var(--accent-gold);
+      border-radius: 8px;
+      transition: background 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+
+    @keyframes bounce-once {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .effect-icon.bouncing {
+      animation: bounce-once 0.3s ease;
+    }
+
+    .effect-icon:hover {
+      box-shadow: 0 4px 8px rgba(212, 175, 55, 0.4);
+      background: rgba(212, 175, 55, 0.2);
+    }
+
+    .effect-icon-image {
+      font-size: 32px;
+      margin-bottom: 4px;
+    }
+
+    .effect-icon-timer {
+      font-size: 10px;
+      color: var(--text-secondary);
+      font-weight: bold;
+    }
+
+    .no-effects-message {
+      color: #999;
+      text-align: center;
+      font-size: 12px;
+      font-style: italic;
     }
 
     .stat-line {
@@ -707,10 +870,51 @@
       pointer-events: auto;
     }
 
+    .tooltip-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+      gap: 16px;
+    }
+
+    .tooltip-header-left {
+      flex: 1;
+    }
+
     .tooltip-header {
       font-weight: bold;
       font-size: 16px;
-      margin-bottom: 8px;
+    }
+
+    .tooltip-level {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .tooltip-base-stat {
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      min-width: 60px;
+    }
+
+    .base-stat-name {
+      font-size: 12px;
+      font-weight: bold;
+      color: var(--accent-gold);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .base-stat-value {
+      font-size: 28px;
+      font-weight: bold;
+      color: var(--text-primary);
+      line-height: 1;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
     }
 
     .tooltip-content {
@@ -1411,7 +1615,7 @@
               <div class="stat-line"><span class="stat-label">SPD</span><span class="stat-value" id="stat-spd">0</span></div>
               <div class="stat-line"><span class="stat-label">DMG%</span><span class="stat-value" id="stat-dmg">0%</span></div>
               <div class="stat-line"><span class="stat-label">Crit Rate</span><span class="stat-value" id="stat-crit-rate">0%</span></div>
-              <div class="stat-line"><span class="stat-label">Crit Dmg</span><span class="stat-value" id="stat-crit-dmg">0%</span></div>
+              <div class="stat-line"><span class="stat-label">Crit DMG</span><span class="stat-value" id="stat-crit-dmg">0%</span></div>
             </div>
             <div id="inv-resources" class="inv-resources">
               <div class="inv-resource-line">
@@ -1421,6 +1625,12 @@
               <div class="inv-resource-line">
                 <span class="inv-resource-label">💎 Gems</span>
                 <span class="inv-resource-value" id="inv-gems">0</span>
+              </div>
+            </div>
+            
+            <div id="inv-active-effects" class="inv-active-effects">
+              <div id="active-effects-icons" class="active-effects-icons">
+                <!-- Effects will be rendered here as icons -->
               </div>
             </div>
           </div>
@@ -1449,8 +1659,6 @@
             </div>
           </div>
         </div>
-
-        <div id="inventory-tooltip" class="tooltip" role="tooltip" aria-hidden="true"></div>
       </div>
 
       <div id="shop-overlay" class="overlay" aria-hidden="true" role="dialog" aria-label="Shop">
@@ -1482,20 +1690,41 @@
 
       <div id="stats-overlay" class="overlay" aria-hidden="true" role="dialog" aria-label="Stats">
         <div class="overlay-header">
-          <h2 class="overlay-title">Stats & Effects</h2>
+          <h2 class="overlay-title">Stats</h2>
           <button class="btn-close" onclick="closeOverlay('stats-overlay')">✕ Close</button>
         </div>
         <div class="stats-container">
           <div class="stats-section">
-            <h3>Active Effects</h3>
-            <div class="effect-list" id="active-effects-list">
-              <p style="color: #999; text-align: center;">No active effects</p>
+            <h3>Combat Stats</h3>
+            <div id="detailed-stats" style="background: var(--bg-tertiary); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+              <div class="stat-line"><span class="stat-label">ATK</span><span class="stat-value" id="stat-atk-detail">0</span></div>
+              <div class="stat-line"><span class="stat-label">HP</span><span class="stat-value" id="stat-hp-detail">0</span></div>
+              <div class="stat-line"><span class="stat-label">SPD</span><span class="stat-value" id="stat-spd-detail">0</span></div>
+              <div class="stat-line"><span class="stat-label">DMG%</span><span class="stat-value" id="stat-dmg-detail">0%</span></div>
+              <div class="stat-line"><span class="stat-label">Crit Rate</span><span class="stat-value" id="stat-crit-rate-detail">0%</span></div>
+              <div class="stat-line"><span class="stat-label">Crit Dmg</span><span class="stat-value" id="stat-crit-dmg-detail">0%</span></div>
             </div>
-          </div>
-
-          <div class="stats-section">
-            <h3>Player Stats</h3>
-            <div id="detailed-stats"></div>
+            
+            <h3>Player Statistics</h3>
+            <div style="background: var(--bg-tertiary); padding: 16px; border-radius: 8px;">
+              <div class="stat-line"><span class="stat-label">Total Kills</span><span class="stat-value" id="stat-total-kills">0</span></div>
+              <div class="stat-line"><span class="stat-label">Bosses Defeated</span><span class="stat-value" id="stat-bosses">0</span></div>
+              <div class="stat-line"><span class="stat-label">Worlds Completed</span><span class="stat-value" id="stat-worlds">0</span></div>
+              <div class="stat-line"><span class="stat-label">Deaths</span><span class="stat-value" id="stat-deaths">0</span></div>
+              <div class="stat-line"><span class="stat-label">Critical Hits</span><span class="stat-value" id="stat-crits">0</span></div>
+              <div class="stat-line"><span class="stat-label">Damage Dealt</span><span class="stat-value" id="stat-dmg-dealt">0</span></div>
+              <div class="stat-line"><span class="stat-label">Damage Taken</span><span class="stat-value" id="stat-dmg-taken">0</span></div>
+              <div class="stat-line"><span class="stat-label">Coins Earned</span><span class="stat-value" id="stat-coins-earned">0</span></div>
+              <div class="stat-line"><span class="stat-label">Gems Earned</span><span class="stat-value" id="stat-gems-earned">0</span></div>
+              <div class="stat-line"><span class="stat-label">EXP Gained</span><span class="stat-value" id="stat-exp-gained">0</span></div>
+              <div class="stat-line"><span class="stat-label">Items Found</span><span class="stat-value" id="stat-items-found">0</span></div>
+              <div class="stat-line"><span class="stat-label">Items Purchased</span><span class="stat-value" id="stat-items-bought">0</span></div>
+              <div class="stat-line"><span class="stat-label">Play Time</span><span class="stat-value" id="stat-playtime">0h 0m</span></div>
+            </div>
+            
+            <button id="btn-reset-progress" style="width: 100%; margin-top: 16px; padding: 10px; background: linear-gradient(135deg, #8b0000 0%, #dc143c 100%); border: 2px solid #ff6347; border-radius: 8px; color: white; font-family: var(--font-display); font-weight: 600; font-size: 13px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.3); transition: all 0.2s; text-transform: uppercase;">
+              Reset All Progress
+            </button>
           </div>
         </div>
       </div>
@@ -1513,6 +1742,25 @@
         </div>
       </div>
     </section>
+
+    <!-- Global tooltip for inventory and shop -->
+    <div id="inventory-tooltip" class="tooltip" role="tooltip" aria-hidden="true"></div>
+
+    <!-- Custom confirmation modal -->
+    <div id="reset-modal" class="custom-modal" aria-hidden="true">
+      <div class="modal-content">
+        <div class="modal-header">Reset All Progress</div>
+        <div class="modal-body">
+          This will delete ALL your progress and reset the game to the beginning. This action CANNOT be undone!
+          <br><br>
+          Are you absolutely sure you want to reset?
+        </div>
+        <div class="modal-actions">
+          <button class="modal-btn modal-btn-cancel" id="modal-cancel">Cancel</button>
+          <button class="modal-btn modal-btn-confirm" id="modal-confirm">Reset Progress</button>
+        </div>
+      </div>
+    </div>
 
     <div id="bottom-nav">
       <button class="nav-btn" onclick="openOverlay('inventory-overlay')">
@@ -1569,8 +1817,8 @@ const CONFIG = {
   STAR_GEM_COSTS: { "10":0, "25":1, "50":3, "75":5, "100":10 },
   BASE_SHOP_PRICE: { common:500, uncommon:2000, rare:10000, epic:50000, legendary:200000, mythic:1000000 },
   ENEMY_BASE_COIN: { small:25, normal:50, big:150, elite:650, boss:7250 },
-  ENEMY_HP_SCALE: 1.75,
-  ENEMY_ATK_SCALE: 1.25,
+  ENEMY_HP_SCALE: 1.25,
+  ENEMY_ATK_SCALE: 1.69,
   ENEMY_RESIST_BONUS_PER_WORLD: 0.5,
   BASE_EQUIP_DROP_CHANCE_PCT: { normal:0.5, small:0.25, big:2, elite:10 },
   LUCK_EFFECT_MULTIPLIER: 1.0,
@@ -1657,7 +1905,23 @@ function createPlayer() {
     baseStats: { ATK:100, HP:100, SPD:10, DMG_PCT:100, CRIT_RATE_PCT:5, CRIT_DMG_PCT:100 },
     currentStats: {},
     activeEffects: [],
-    luck: 0
+    luck: 0,
+    statistics: {
+      totalKills: 0,
+      totalDamageDealt: 0,
+      totalDamageTaken: 0,
+      totalCoinsEarned: 0,
+      totalGemsEarned: 0,
+      totalExpGained: 0,
+      bossesDefeated: 0,
+      deaths: 0,
+      criticalHits: 0,
+      itemsFound: 0,
+      itemsPurchased: 0,
+      worldsCompleted: 0,
+      totalPlayTime: 0,
+      sessionStartTime: Date.now()
+    }
   };
 }
 
@@ -1673,9 +1937,9 @@ function createWorldProgress() {
   return {
     enemiesKilledThisWorld: 0,
     elitesKilledThisWorld: 0,
-    requiredEnemies: 200,
-    requiredElites: 5,
-    requiredLevel: 10,
+    requiredEnemies: 25,
+    requiredElites: 1,
+    requiredLevel: 3,
     equipmentRequirement: { minRarity: 'rare', required: false }
   };
 }
@@ -1731,7 +1995,14 @@ function computeDerivedStats() {
   const finalCritRate = Math.max(0, Math.min(100, base.CRIT_RATE_PCT + sumCritRate));
   const finalCritDmg = Math.max(0, base.CRIT_DMG_PCT + sumCritDmg);
 
+  // Calculate bonuses from items (difference from base stats)
+  const atkBonus = finalATK - base.ATK;
+  const hpBonus = finalHP - base.HP;
+  const spdBonus = finalSPD - base.SPD;
+  const dmgBonus = finalDMGPct - base.DMG_PCT;
+
   p.currentStats = { finalATK, finalHP, finalSPD, finalDMGPct, finalCritRate, finalCritDmg };
+  p.statBonuses = { atkBonus, hpBonus, spdBonus, dmgBonus };
   p.luck = luck;
 
   p.maxHp = finalHP;
@@ -1756,9 +2027,18 @@ function computeDamage(enemy) {
   const isCrit = GameState.rng.rand() < p.currentStats.finalCritRate / 100;
   if (isCrit) {
     baseDamage *= (1 + p.currentStats.finalCritDmg / 100);
+    // Track critical hits
+    if (p.statistics) {
+      p.statistics.criticalHits++;
+    }
   }
 
   const appliedDamage = Math.max(1, Math.floor(baseDamage * Math.max(0.05, 1 - enemy.resistancePct / 100)));
+  
+  // Track total damage dealt
+  if (p.statistics) {
+    p.statistics.totalDamageDealt += appliedDamage;
+  }
 
   return { damage: appliedDamage, crit: isCrit };
 }
@@ -1780,6 +2060,11 @@ function dealDamageToPlayer(amount) {
   if (GameState.isDead || GameState.isInvincible) return;
   
   GameState.player.hp = Math.max(0, GameState.player.hp - amount);
+  
+  // Track damage taken
+  if (GameState.player.statistics) {
+    GameState.player.statistics.totalDamageTaken += amount;
+  }
   if (GameState.player.hp <= 0) {
     handlePlayerDeath();
   }
@@ -1789,6 +2074,11 @@ function handlePlayerDeath() {
   GameState.isDead = true;
   GameState.canAttack = false;
   GameState.player.hp = 0;
+  
+  // Track death
+  if (GameState.player.statistics) {
+    GameState.player.statistics.deaths++;
+  }
   
   // Check if in boss challenge
   if (GameState.inBossChallenge) {
@@ -2119,9 +2409,9 @@ function rollRarity() {
 }
 
 // ========== Enemy Creation ==========
-const ENEMY_BASE_HP = { small: 500, normal: 1250, big: 2500, elite: 13500, boss: 200000 };
-const ENEMY_BASE_ATK = { small: 2, normal: 5, big: 12, elite: 60, boss: 800 };
-const ENEMY_BASE_RESIST = { small: 2, normal: 2, big: 5, elite: 15, boss: 30 };
+const ENEMY_BASE_HP = { small: 300, normal: 750, big: 1250, elite: 3000, boss: 10000 };
+const ENEMY_BASE_ATK = { small: 2, normal: 5, big: 12, elite: 20, boss: 50 };
+const ENEMY_BASE_RESIST = { small: 0, normal: 2, big: 5, elite: 15, boss: 30 };
 const ENEMY_ATTACK_INTERVAL = { small: 2.5, normal: 2.0, big: 1.6, elite: 1.2, boss: 1.0 };
 const ENEMY_BASE_EXP = { small: 5, normal: 10, big: 25, elite: 100, boss: 1000 };
 const ENEMY_ICONS = { small: '🐀', normal: '🧟', big: '👹', elite: '👿', boss: '🐉' };
@@ -2208,7 +2498,18 @@ function updateEnemies(dt) {
 function onEnemyDeath(enemy) {
   const p = GameState.player;
   
+  // Track statistics
+  if (p.statistics) {
+    p.statistics.totalKills++;
+    if (enemy.type === 'boss') {
+      p.statistics.bossesDefeated++;
+    }
+  }
+  
   p.exp += enemy.expValue;
+  if (p.statistics) {
+    p.statistics.totalExpGained += enemy.expValue;
+  }
   
   let coins = Math.floor(
     enemy.dropProfile.coinBase * 
@@ -2221,16 +2522,25 @@ function onEnemyDeath(enemy) {
   if (coinsBoost) coins *= coinsBoost.params.multiplier;
   
   p.coins += Math.floor(coins);
+  if (p.statistics) {
+    p.statistics.totalCoinsEarned += Math.floor(coins);
+  }
   showFloatingChange(coins, 'coins');
   
   if (enemy.type === 'elite' && GameState.rng.rand() < enemy.dropProfile.gemChancePct / 100) {
     const gemAmount = 1 + Math.floor(p.world / 5);
     p.gems += gemAmount;
+    if (p.statistics) {
+      p.statistics.totalGemsEarned += gemAmount;
+    }
     showFloatingChange(gemAmount, 'gems');
   }
   if (enemy.type === 'boss') {
     const gemAmount = 1 + Math.floor(p.world / 5);
     p.gems += gemAmount;
+    if (p.statistics) {
+      p.statistics.totalGemsEarned += gemAmount;
+    }
     showFloatingChange(gemAmount, 'gems');
   }
   
@@ -2243,6 +2553,9 @@ function onEnemyDeath(enemy) {
     const slot = slots[GameState.rng.randInt(0, slots.length - 1)];
     const item = generateEquipment(slot, rarity, p.world);
     addToInventory(item);
+    if (p.statistics) {
+      p.statistics.itemsFound++;
+    }
   }
   
   GameState.worldProgress.enemiesKilledThisWorld++;
@@ -2419,6 +2732,18 @@ function sellItem(itemId) {
     }
   }
   
+  // Also check if item is equipped and remove it from equipment slot
+  if (item.type === 'equipment') {
+    for (const slot in GameState.player.equipment) {
+      if (GameState.player.equipment[slot]?.id === itemId) {
+        GameState.player.equipment[slot] = null;
+        computeDerivedStats();
+        renderPlayerStats();
+        break;
+      }
+    }
+  }
+  
   renderInventory();
   hideTooltip();
   showNotification(`💰 Sold for ${item.sellPrice} coins`, 'success');
@@ -2460,24 +2785,28 @@ function upgradeItem(itemId) {
 
   if (CONFIG.STAR_THRESHOLDS.includes(item.level)) {
     item.stars++;
-    showNotification(`⭐ ${item.name} reached ${item.stars} star(s)!`, 'legendary');
+    showNotification(`⭐ ${item.name} reached ${item.stars} stars!`, 'legendary');
   }
 
   // Unlock affixes when their required level is reached
   item.affixes.forEach(aff => {
     if (aff.locked && typeof aff.unlockLevel === 'number' && item.level >= aff.unlockLevel) {
       aff.locked = false;
-      showNotification(`🔓 ${item.name} unlocked ${aff.name}! (active at level ${aff.unlockLevel})`, 'info');
+      showNotification(`🔓 New attribute unlocked for ${item.name}: ${aff.name}!`, 'info');
     }
   });
 
-  const boost = Math.floor(item.baseAttribute.value * 0.1);
-  item.baseAttribute.value += Math.max(1, boost);
+  // Upgrade stat increase - balanced formula
+  // Give a small base increase + a tiny percentage (2-3%) to scale moderately
+  const rarityMultiplier = { common: 1, uncommon: 1.2, rare: 1.5, epic: 2, legendary: 2.5, mythic: 3 };
+  const baseIncrease = Math.ceil(2 * (rarityMultiplier[item.rarity] || 1));
+  const percentBoost = Math.floor(item.baseAttribute.value * 0.025); // 2.5% instead of 10%
+  const totalIncrease = Math.max(1, baseIncrease + percentBoost);
+  item.baseAttribute.value += totalIncrease;
 
   computeDerivedStats();
   renderInventory();
   renderPlayerStats();
-  showNotification(`⬆️ Upgraded to level ${item.level}`, 'success');
 
   // Keep the tooltip open if it was showing this item
   if (tooltipWasOpen && tooltipItemId === item.id) {
@@ -2490,8 +2819,14 @@ function upgradeItem(itemId) {
           // Item is equipped - find the equipment slot
           slotEl = document.getElementById(`equip-${item.slot === 'ring' ? 'ring-slot' : item.slot}`);
         } else {
-          // Item is in inventory - find the inventory slot
-          const itemIndex = GameState.player.inventory.findIndex(i => i && i.id === item.id);
+          // Item is in inventory - find the inventory slot (need to search properly in sparse array)
+          let itemIndex = -1;
+          for (let i = 0; i < CONFIG.MAX_INVENTORY_SLOTS; i++) {
+            if (GameState.player.inventory[i] && GameState.player.inventory[i].id === item.id) {
+              itemIndex = i;
+              break;
+            }
+          }
           if (itemIndex !== -1) {
             slotEl = document.querySelector(`.inv-slot[data-index="${itemIndex}"]`);
           }
@@ -2602,7 +2937,18 @@ function refreshShop() {
   shop.lastRefreshTs = Date.now();
 }
 
-function buyShopItem(item) {
+function buyShopItem(itemId) {
+  // Find the item in shop offers
+  const shop = GameState.shop;
+  let item = shop.offers.equipment.find(i => i.id === itemId);
+  if (!item) {
+    item = shop.offers.consumables.find(i => i.id === itemId);
+  }
+  if (!item) {
+    showNotification('⚠️ Item not found!', 'warning');
+    return;
+  }
+  
   const p = GameState.player;
   const cost = item.type === 'consumable' ? item.price : item.buyPrice;
   const currency = item.type === 'consumable' ? 'gems' : 'coins';
@@ -2647,11 +2993,18 @@ function buyShopItem(item) {
     }
   }
   
+  // Track purchase
+  if (p.statistics) {
+    p.statistics.itemsPurchased++;
+  }
+  
   // Mark item as sold out
   item.soldOut = true;
   
   showNotification(`🛒 Purchased: ${item.name}`, 'success');
+  hideTooltip();
   renderShop();
+  renderInventory();
 }
 
 // Continue in part 3...
@@ -2754,6 +3107,9 @@ function renderInventory() {
   const invGemsEl = document.getElementById('inv-gems');
   if (invCoinsEl) invCoinsEl.textContent = Math.floor(p.coins).toLocaleString();
   if (invGemsEl) invGemsEl.textContent = Math.floor(p.gems).toLocaleString();
+  
+  // Update active effects display in inventory
+  updateActiveEffects();
 }
 
 // Drag and drop handlers for inventory
@@ -2937,13 +3293,78 @@ document.addEventListener('drop', (e) => {
 
 function renderPlayerStats() {
   const stats = GameState.player.currentStats;
+  const bonuses = GameState.player.statBonuses || { atkBonus: 0, hpBonus: 0, spdBonus: 0, dmgBonus: 0 };
+  const playerStats = GameState.player.statistics;
   
-  document.getElementById('stat-atk').textContent = Math.floor(stats.finalATK);
-  document.getElementById('stat-hp').textContent = Math.floor(stats.finalHP);
-  document.getElementById('stat-spd').textContent = Math.floor(stats.finalSPD);
-  document.getElementById('stat-dmg').textContent = `${Math.floor(stats.finalDMGPct)}%`;
+  // Helper function to format stat with bonus
+  const formatStatWithBonus = (value, bonus) => {
+    if (bonus > 0) {
+      return `${Math.floor(value)} <span style="color: var(--text-bonus);">(+${Math.floor(bonus)})</span>`;
+    }
+    return Math.floor(value).toString();
+  };
+  
+  // Update inventory stats (combat only)
+  document.getElementById('stat-atk').innerHTML = formatStatWithBonus(stats.finalATK, bonuses.atkBonus);
+  document.getElementById('stat-hp').innerHTML = formatStatWithBonus(stats.finalHP, bonuses.hpBonus);
+  document.getElementById('stat-spd').innerHTML = formatStatWithBonus(stats.finalSPD, bonuses.spdBonus);
+  document.getElementById('stat-dmg').innerHTML = formatStatWithBonus(stats.finalDMGPct, bonuses.dmgBonus) + '%';
   document.getElementById('stat-crit-rate').textContent = `${Math.floor(stats.finalCritRate)}%`;
   document.getElementById('stat-crit-dmg').textContent = `${Math.floor(stats.finalCritDmg)}%`;
+  
+  // Update stats overlay - combat stats
+  const atkDetail = document.getElementById('stat-atk-detail');
+  const hpDetail = document.getElementById('stat-hp-detail');
+  const spdDetail = document.getElementById('stat-spd-detail');
+  const dmgDetail = document.getElementById('stat-dmg-detail');
+  const critRateDetail = document.getElementById('stat-crit-rate-detail');
+  const critDmgDetail = document.getElementById('stat-crit-dmg-detail');
+  
+  if (atkDetail) atkDetail.innerHTML = formatStatWithBonus(stats.finalATK, bonuses.atkBonus);
+  if (hpDetail) hpDetail.innerHTML = formatStatWithBonus(stats.finalHP, bonuses.hpBonus);
+  if (spdDetail) spdDetail.innerHTML = formatStatWithBonus(stats.finalSPD, bonuses.spdBonus);
+  if (dmgDetail) dmgDetail.innerHTML = formatStatWithBonus(stats.finalDMGPct, bonuses.dmgBonus) + '%';
+  if (critRateDetail) critRateDetail.textContent = `${Math.floor(stats.finalCritRate)}%`;
+  if (critDmgDetail) critDmgDetail.textContent = `${Math.floor(stats.finalCritDmg)}%`;
+  
+  // Update player statistics
+  if (playerStats) {
+    const totalKillsEl = document.getElementById('stat-total-kills');
+    const bossesEl = document.getElementById('stat-bosses');
+    const worldsEl = document.getElementById('stat-worlds');
+    const deathsEl = document.getElementById('stat-deaths');
+    const critsEl = document.getElementById('stat-crits');
+    const dmgDealtEl = document.getElementById('stat-dmg-dealt');
+    const dmgTakenEl = document.getElementById('stat-dmg-taken');
+    const coinsEarnedEl = document.getElementById('stat-coins-earned');
+    const gemsEarnedEl = document.getElementById('stat-gems-earned');
+    const expGainedEl = document.getElementById('stat-exp-gained');
+    const itemsFoundEl = document.getElementById('stat-items-found');
+    const itemsBoughtEl = document.getElementById('stat-items-bought');
+    const playtimeEl = document.getElementById('stat-playtime');
+    
+    if (totalKillsEl) totalKillsEl.textContent = playerStats.totalKills.toLocaleString();
+    if (bossesEl) bossesEl.textContent = playerStats.bossesDefeated.toLocaleString();
+    if (worldsEl) worldsEl.textContent = playerStats.worldsCompleted.toLocaleString();
+    if (deathsEl) deathsEl.textContent = playerStats.deaths.toLocaleString();
+    if (critsEl) critsEl.textContent = playerStats.criticalHits.toLocaleString();
+    if (dmgDealtEl) dmgDealtEl.textContent = Math.floor(playerStats.totalDamageDealt).toLocaleString();
+    if (dmgTakenEl) dmgTakenEl.textContent = Math.floor(playerStats.totalDamageTaken).toLocaleString();
+    if (coinsEarnedEl) coinsEarnedEl.textContent = Math.floor(playerStats.totalCoinsEarned).toLocaleString();
+    if (gemsEarnedEl) gemsEarnedEl.textContent = Math.floor(playerStats.totalGemsEarned).toLocaleString();
+    if (expGainedEl) expGainedEl.textContent = Math.floor(playerStats.totalExpGained).toLocaleString();
+    if (itemsFoundEl) itemsFoundEl.textContent = playerStats.itemsFound.toLocaleString();
+    if (itemsBoughtEl) itemsBoughtEl.textContent = playerStats.itemsPurchased.toLocaleString();
+    
+    // Calculate and display play time
+    if (playtimeEl) {
+      const currentSession = (Date.now() - playerStats.sessionStartTime) / 1000;
+      const totalSeconds = Math.floor(playerStats.totalPlayTime + currentSession);
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      playtimeEl.textContent = `${hours}h ${minutes}m`;
+    }
+  }
 }
 
 function renderShop() {
@@ -2968,7 +3389,7 @@ function renderShop() {
       <div class="shop-item-price">💰 ${item.buyPrice.toLocaleString()}</div>
     `;
     if (!isSoldOut) {
-      div.onclick = () => buyShopItem(item);
+      div.onclick = () => showShopItemTooltip(item, div);
     }
     equipGrid.appendChild(div);
   });
@@ -2985,7 +3406,7 @@ function renderShop() {
       <div class="shop-item-price">💎 ${item.price}</div>
     `;
     if (!isSoldOut) {
-      div.onclick = () => buyShopItem(item);
+      div.onclick = () => showShopItemTooltip(item, div);
     }
     consGrid.appendChild(div);
   });
@@ -3084,15 +3505,23 @@ function showDrop(position, icon) {
 // ========== Tooltip helpers & System ==========
 function buildItemTooltipHtml(item, isEquipped) {
   let html = `
-    <div class="tooltip-header text-${item.rarity || 'common'}">${item.name}</div>
+    <div class="tooltip-header-row">
+      <div class="tooltip-header-left">
+        <div class="tooltip-header text-${item.rarity || 'common'}">${item.name}</div>
+        ${item.type === 'equipment' ? `<div class="tooltip-level">Level: ${item.level} ${item.stars > 0 ? `(${item.stars}⭐)` : ''}</div>` : ''}
+      </div>
+      ${item.type === 'equipment' ? `
+        <div class="tooltip-base-stat">
+          <div class="base-stat-name">${item.baseAttribute.name}</div>
+          <div class="base-stat-value">${item.baseAttribute.value}</div>
+        </div>
+      ` : ''}
+    </div>
     <div class="tooltip-content">
   `;
 
   if (item.type === 'equipment') {
-    html += `
-      <div>Level: ${item.level} ${item.stars > 0 ? `(${item.stars}⭐)` : ''}</div>
-      <div class="tooltip-attr">${item.baseAttribute.name}: ${item.baseAttribute.value}${item.baseAttribute.name.includes('%') ? '%' : ''}</div>
-    `;
+    html += ``;
 
     item.affixes.forEach(affix => {
       const suffix = (affix.name.includes('%') || affix.name.includes('Crit')) ? '%' : '';
@@ -3128,6 +3557,197 @@ function buildItemTooltipHtml(item, isEquipped) {
   return html;
 }
 
+function buildShopItemTooltipHtml(item) {
+  let html = `
+    <div class="tooltip-header-row">
+      <div class="tooltip-header-left">
+        <div class="tooltip-header text-${item.rarity || 'common'}">${item.name}</div>
+        ${item.type === 'equipment' ? `<div class="tooltip-level">Level: ${item.level} ${item.stars > 0 ? `(${item.stars}⭐)` : ''}</div>` : ''}
+      </div>
+      ${item.type === 'equipment' ? `
+        <div class="tooltip-base-stat">
+          <div class="base-stat-name">${item.baseAttribute.name}</div>
+          <div class="base-stat-value">${item.baseAttribute.value}</div>
+        </div>
+      ` : ''}
+    </div>
+    <div class="tooltip-content">
+  `;
+
+  if (item.type === 'equipment') {
+    item.affixes.forEach(affix => {
+      const suffix = (affix.name.includes('%') || affix.name.includes('Crit')) ? '%' : '';
+      if (affix.locked) {
+        html += `<div class="tooltip-attr locked">${affix.name}: ${affix.value}${suffix} (Upgrade to level ${affix.unlockLevel})</div>`;
+      } else {
+        html += `<div class="tooltip-attr">${affix.name}: ${affix.value}${suffix}</div>`;
+      }
+    });
+
+    html += `
+      </div>
+      <div class="tooltip-actions">
+        <button class="tooltip-btn primary buy-shop-btn" data-item-id="${item.id}">Buy (💰${item.buyPrice.toLocaleString()})</button>
+      </div>
+    `;
+  } else if (item.type === 'consumable') {
+    html += `
+      <div style="margin-bottom: 8px;">Duration: ${item.duration}s</div>
+      <div style="margin-bottom: 8px;">Effect: ${item.effectId.replace(/_/g, ' ').replace(/\d+/g, m => 'x' + (parseInt(m)/100))}</div>
+      </div>
+      <div class="tooltip-actions">
+        <button class="tooltip-btn primary buy-shop-btn" data-item-id="${item.id}">Buy (💎${item.price})</button>
+      </div>
+    `;
+  } else {
+    html += `</div>`;
+  }
+
+  return html;
+}
+
+function showShopItemTooltip(item, targetEl) {
+  const tooltip = document.getElementById('inventory-tooltip');
+  
+  // Set content first
+  tooltip.innerHTML = buildShopItemTooltipHtml(item);
+  
+  // Temporarily position offscreen to measure without showing
+  const originalLeft = tooltip.style.left;
+  const originalTop = tooltip.style.top;
+  tooltip.style.left = '-9999px';
+  tooltip.style.top = '-9999px';
+  tooltip.setAttribute('aria-hidden', 'false');
+  
+  // Force a reflow to get dimensions
+  tooltip.offsetHeight;
+  
+  const tooltipRect = tooltip.getBoundingClientRect();
+  const rect = targetEl.getBoundingClientRect();
+
+  // Calculate position
+  const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+  const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+  
+  let left = rect.right + 8;
+  let top = rect.top;
+  
+  if (left + tooltipRect.width > vw - 8) {
+    left = rect.left - tooltipRect.width - 8;
+  }
+  if (top + tooltipRect.height > vh - 8) {
+    top = vh - tooltipRect.height - 8;
+  }
+  if (top < 8) top = 8;
+
+  // Apply final position
+  tooltip.style.left = `${left}px`;
+  tooltip.style.top = `${top}px`;
+}
+
+function hideTooltip() {
+  const tooltip = document.getElementById('inventory-tooltip');
+  tooltip.setAttribute('aria-hidden', 'true');
+  
+  // Clear any active effect tooltip timer
+  if (GameState.effectTooltipTimer) {
+    clearInterval(GameState.effectTooltipTimer);
+    GameState.effectTooltipTimer = null;
+  }
+}
+
+function showEffectTooltip(effect, targetEl) {
+  const tooltip = document.getElementById('inventory-tooltip');
+  
+  // Clear any existing effect tooltip timer
+  if (GameState.effectTooltipTimer) {
+    clearInterval(GameState.effectTooltipTimer);
+    GameState.effectTooltipTimer = null;
+  }
+  
+  // Map effect IDs to readable info
+  const effectData = {
+    'exp_boost_200': { name: 'EXP Boost x3', description: 'Experience gain multiplied by 3', icon: '📚' },
+    'dmg_boost_200': { name: 'Damage Boost x3', description: 'Damage output multiplied by 3', icon: '⚡' },
+    'coins_boost_200': { name: 'Coins Boost x3', description: 'Coin drops multiplied by 3', icon: '💰' }
+  };
+  
+  const data = effectData[effect.id] || { name: effect.id, description: 'Active effect', icon: '✨' };
+  
+  // Function to update the timer display
+  const updateTimer = () => {
+    const now = Date.now();
+    const elapsed = (now - effect.startedAtTs) / 1000;
+    const remaining = Math.max(0, effect.durationSec - elapsed);
+    const minutes = Math.floor(remaining / 60);
+    const seconds = Math.floor(remaining % 60);
+    
+    const timerEl = tooltip.querySelector('.effect-tooltip-timer');
+    if (timerEl) {
+      timerEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    }
+    
+    // Close tooltip if effect expired
+    if (remaining <= 0) {
+      hideTooltip();
+    }
+  };
+  
+  // Initial render
+  const now = Date.now();
+  const elapsed = (now - effect.startedAtTs) / 1000;
+  const remaining = Math.max(0, effect.durationSec - elapsed);
+  const minutes = Math.floor(remaining / 60);
+  const seconds = Math.floor(remaining % 60);
+  
+  tooltip.innerHTML = `
+    <div class="tooltip-header-row">
+      <div class="tooltip-header-left">
+        <div class="tooltip-header text-legendary">${data.name}</div>
+      </div>
+      <div class="tooltip-base-stat">
+        <div class="base-stat-name">TIME</div>
+        <div class="base-stat-value effect-tooltip-timer" style="font-size: 20px;">${minutes}:${seconds.toString().padStart(2, '0')}</div>
+      </div>
+    </div>
+    <div class="tooltip-content">
+      <div style="text-align: center; font-size: 48px; margin: 8px 0;">${data.icon}</div>
+      <div style="margin-top: 8px;">${data.description}</div>
+    </div>
+  `;
+  
+  // Start updating the timer every second
+  GameState.effectTooltipTimer = setInterval(updateTimer, 1000);
+  
+  // Temporarily position offscreen to measure
+  tooltip.style.left = '-9999px';
+  tooltip.style.top = '-9999px';
+  tooltip.setAttribute('aria-hidden', 'false');
+  
+  // Force reflow
+  tooltip.offsetHeight;
+  
+  const tooltipRect = tooltip.getBoundingClientRect();
+  const rect = targetEl.getBoundingClientRect();
+  
+  const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+  const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+  
+  let left = rect.right + 8;
+  let top = rect.top;
+  
+  if (left + tooltipRect.width > vw - 8) {
+    left = rect.left - tooltipRect.width - 8;
+  }
+  if (top + tooltipRect.height > vh - 8) {
+    top = vh - tooltipRect.height - 8;
+  }
+  if (top < 8) top = 8;
+  
+  tooltip.style.left = `${left}px`;
+  tooltip.style.top = `${top}px`;
+}
+
 function showItemTooltip(item, targetEl, isEquipped) {
   const tooltip = document.getElementById('inventory-tooltip');
   const rect = targetEl.getBoundingClientRect();
@@ -3156,11 +3776,6 @@ function showItemTooltip(item, targetEl, isEquipped) {
   tooltip.style.left = `${left}px`;
   tooltip.style.top = `${top}px`;
   tooltip.setAttribute('aria-hidden', 'false');
-}
-
-function hideTooltip() {
-  const tooltip = document.getElementById('inventory-tooltip');
-  tooltip.setAttribute('aria-hidden', 'true');
 }
 
 // ========== World Progress & Boss ==========
@@ -3215,6 +3830,12 @@ function challengeBoss() {
 
 function onBossDefeated() {
   GameState.player.world++;
+  
+  // Track world completion
+  if (GameState.player.statistics) {
+    GameState.player.statistics.worldsCompleted++;
+  }
+  
   GameState.worldProgress.enemiesKilledThisWorld = 0;
   GameState.worldProgress.elitesKilledThisWorld = 0;
   GameState.suspendWaves = false;
@@ -3232,27 +3853,77 @@ function updateActiveEffects() {
     return elapsed < effect.durationSec;
   });
   
-  const list = document.getElementById('active-effects-list');
+  // Render in inventory
+  const iconsContainer = document.getElementById('active-effects-icons');
+  if (!iconsContainer) return;
+  
   if (GameState.player.activeEffects.length === 0) {
-    list.innerHTML = '<p style="color: #999; text-align: center;">No active effects</p>';
+    iconsContainer.innerHTML = '<div class="no-effects-message">No active effects</div>';
   } else {
-    list.innerHTML = GameState.player.activeEffects.map(effect => {
+    // Map effect IDs to icons and names
+    const effectData = {
+      'exp_boost_200': { icon: '📚', name: 'EXP Boost x3', description: 'Experience gain multiplied by 3' },
+      'dmg_boost_200': { icon: '⚡', name: 'Damage Boost x3', description: 'Damage output multiplied by 3' },
+      'coins_boost_200': { icon: '💰', name: 'Coins Boost x3', description: 'Coin drops multiplied by 3' }
+    };
+    
+    iconsContainer.innerHTML = GameState.player.activeEffects.map((effect, index) => {
       const elapsed = (now - effect.startedAtTs) / 1000;
       const remaining = Math.max(0, effect.durationSec - elapsed);
       const minutes = Math.floor(remaining / 60);
       const seconds = Math.floor(remaining % 60);
+      const data = effectData[effect.id] || { icon: '✨', name: effect.id, description: 'Active effect' };
+      
       return `
-        <div class="effect-item">
-          <span class="effect-name">${effect.id}</span>
-          <span class="effect-timer">${minutes}:${seconds.toString().padStart(2, '0')}</span>
+        <div class="effect-icon" data-effect-index="${index}" title="${data.name}">
+          <div class="effect-icon-image">${data.icon}</div>
+          <div class="effect-icon-timer">${minutes}:${seconds.toString().padStart(2, '0')}</div>
         </div>
       `;
     }).join('');
+    
+    // Add click handlers for tooltips and hover handlers for bounce animation
+    iconsContainer.querySelectorAll('.effect-icon').forEach(iconEl => {
+      // Bounce animation on hover (once per hover)
+      iconEl.addEventListener('mouseenter', (e) => {
+        const el = e.currentTarget;
+        // Only add bounce if not already bouncing
+        if (!el.classList.contains('bouncing')) {
+          el.classList.add('bouncing');
+          // Remove the class after animation completes
+          setTimeout(() => {
+            el.classList.remove('bouncing');
+          }, 300);
+        }
+      });
+      
+      // Tooltip on click
+      iconEl.addEventListener('click', (e) => {
+        const effectIndex = parseInt(e.currentTarget.getAttribute('data-effect-index'));
+        const effect = GameState.player.activeEffects[effectIndex];
+        if (effect) {
+          showEffectTooltip(effect, e.currentTarget);
+        }
+      });
+    });
   }
+  
+  // Update coins and gems display in inventory
+  const invCoinsEl = document.getElementById('inv-coins');
+  const invGemsEl = document.getElementById('inv-gems');
+  if (invCoinsEl) invCoinsEl.textContent = Math.floor(GameState.player.coins).toLocaleString();
+  if (invGemsEl) invGemsEl.textContent = Math.floor(GameState.player.gems).toLocaleString();
 }
 
 // ========== Save/Load ==========
 function saveGame() {
+  // Update total play time before saving
+  if (GameState.player.statistics) {
+    const currentSession = (Date.now() - GameState.player.statistics.sessionStartTime) / 1000;
+    GameState.player.statistics.totalPlayTime += currentSession;
+    GameState.player.statistics.sessionStartTime = Date.now(); // Reset session timer
+  }
+  
   const saveData = {
     saveVersion: 1,
     timestamp: Date.now(),
@@ -3278,6 +3949,29 @@ function loadGame() {
     // Ensure inventory is properly initialized as sparse array
     if (!GameState.player.inventory) {
       GameState.player.inventory = [];
+    }
+    
+    // Initialize statistics if missing (for backward compatibility)
+    if (!GameState.player.statistics) {
+      GameState.player.statistics = {
+        totalKills: 0,
+        totalDamageDealt: 0,
+        totalDamageTaken: 0,
+        totalCoinsEarned: 0,
+        totalGemsEarned: 0,
+        totalExpGained: 0,
+        bossesDefeated: 0,
+        deaths: 0,
+        criticalHits: 0,
+        itemsFound: 0,
+        itemsPurchased: 0,
+        worldsCompleted: 0,
+        totalPlayTime: 0,
+        sessionStartTime: Date.now()
+      };
+    } else {
+      // Reset session start time for loaded game
+      GameState.player.statistics.sessionStartTime = Date.now();
     }
     
     computeDerivedStats();
@@ -3456,6 +4150,7 @@ function gameTick() {
 function uiTick() {
   renderUI();
   renderEnemies();
+  renderPlayerStats();
   
   const shop = GameState.shop;
   const timeUntilRefresh = CONFIG.SHOP_AUTO_REFRESH_SEC - Math.floor((Date.now() - shop.lastRefreshTs) / 1000);
@@ -3567,6 +4262,11 @@ document.addEventListener('keydown', (e) => {
     document.querySelectorAll('.overlay').forEach(overlay => {
       overlay.setAttribute('aria-hidden', 'true');
     });
+    // Close custom modal
+    const modal = document.getElementById('reset-modal');
+    if (modal) {
+      modal.setAttribute('aria-hidden', 'true');
+    }
   }
 });
 
@@ -3580,9 +4280,43 @@ document.getElementById('btn-manual-refresh').addEventListener('click', () => {
   }
 });
 
+document.getElementById('btn-reset-progress').addEventListener('click', () => {
+  const modal = document.getElementById('reset-modal');
+  modal.setAttribute('aria-hidden', 'false');
+});
+
+document.getElementById('modal-cancel').addEventListener('click', () => {
+  const modal = document.getElementById('reset-modal');
+  modal.setAttribute('aria-hidden', 'true');
+});
+
+document.getElementById('modal-confirm').addEventListener('click', () => {
+  localStorage.removeItem(CONFIG.SAVE_KEY);
+  location.reload();
+});
+
+// Close modal when clicking outside
+document.getElementById('reset-modal').addEventListener('click', (e) => {
+  if (e.target.id === 'reset-modal') {
+    e.target.setAttribute('aria-hidden', 'true');
+  }
+});
+
 document.addEventListener('click', (e) => {
+  // Handle buy shop button clicks
+  if (e.target.classList.contains('buy-shop-btn')) {
+    const itemId = e.target.getAttribute('data-item-id');
+    if (itemId) {
+      buyShopItem(itemId);
+    }
+    return;
+  }
+  
+  // Close tooltip when clicking outside
   if (!e.target.closest('.inv-slot') && 
       !e.target.closest('.equip-slot') && 
+      !e.target.closest('.shop-item') &&
+      !e.target.closest('.effect-icon') &&
       !e.target.closest('.tooltip')) {
     hideTooltip();
   }
