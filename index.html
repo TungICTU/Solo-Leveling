@@ -1557,7 +1557,15 @@
       color: var(--accent-gold-bright);
     }
 
-  </style>
+  
+    @keyframes fire-pulse {
+      0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.05); }
+    }
+    #set-bonuses-display {
+      display: none !important;
+    }
+</style>
 </head>
 <body>
   <div id="game-root">
@@ -1633,6 +1641,9 @@
                 <!-- Effects will be rendered here as icons -->
               </div>
             </div>
+            
+            <!-- Set Bonuses Display -->
+            <div id="set-bonuses-display" style="margin-top: 12px;"></div>
           </div>
 
           <div class="inv-right-col">
@@ -1827,6 +1838,207 @@ const CONFIG = {
   DEV_MODE: false
 };
 
+// ========== EQUIPMENT SETS ==========
+const EQUIPMENT_SETS = {
+  skywarden: {
+    name: 'Skywarden',
+    element: 'wind',
+    icon: '🌪️',
+    weaponName: 'Aquila Longbow',
+    weaponDesc: 'Deal 20% wind damage to an enemy, randomly pushes 2 nearby enemies back and deal 10% wind damage to them. After enemy dies to wind damage, creates an AOE wind explosion on the dead enemy area that deals 50% wind damage to surrounding enemies.',
+    items: {
+      helmet: { slot: 'helmet', name: 'Skywarden Helmet', icon: '🪖' },
+      chestplate: { slot: 'chestplate', name: 'Skywarden Chestplate', icon: '🦺' },
+      leggings: { slot: 'leggings', name: 'Skywarden Leggings', icon: '👖' },
+      boots: { slot: 'boots', name: 'Skywarden Boots', icon: '🥾' },
+      ring: { slot: 'ring', name: 'Skywarden Ring', icon: '💍' },
+      weapon: { slot: 'weapon', name: 'Aquila Longbow', icon: '🏹', isWeapon: true, multiplier: 0.20 }
+    },
+    bonuses: {
+      2: { desc: '+12% ATK', ATK_pct: 12 },
+      3: { desc: 'Wind Storm: If enemy killed with wind damage, create 3 AOE wind explosions nearby that enemy that deals 50% wind damage to surrounding enemies.' },
+      4: { desc: '+12% Wind DMG', WindDMG_pct: 12 },
+      6: { desc: 'Aquila Tornado: For every 10 enemy killed with wind damage, create a tornado at a random enemy, pull every enemy nearby to the tornado, dealing 20% wind damage each second for 5 seconds.' }
+    },
+    slots: ['helmet', 'chestplate', 'leggings', 'boots', 'ring', 'weapon']
+  },
+  stormbreaker: {
+    name: 'Stormbreaker',
+    element: 'lightning',
+    icon: '⚡',
+    weaponName: 'Storm Pike',
+    weaponDesc: 'Deal 20% lightning damage to an enemy, theres a 50% chance to hit a nearby enemy, dealing 15% lightning damage to that enemy, then theres a 25% chance to hit another nearby enemy, dealing 10% lightning damage to that enemy.',
+    items: {
+      helmet: { slot: 'helmet', name: 'Stormbreaker Helmet', icon: '🪖' },
+      chestplate: { slot: 'chestplate', name: 'Stormbreaker Chestplate', icon: '🦺' },
+      leggings: { slot: 'leggings', name: 'Stormbreaker Leggings', icon: '👖' },
+      boots: { slot: 'boots', name: 'Stormbreaker Boots', icon: '🥾' },
+      ring: { slot: 'ring', name: 'Stormbreaker Ring', icon: '💍' },
+      weapon: { slot: 'weapon', name: 'Storm Pike', icon: '🔱', isWeapon: true, multiplier: 0.20 }
+    },
+    bonuses: {
+      2: { desc: '+12% ATK', ATK_pct: 12 },
+      3: { desc: 'Lightning Surge: Lightning is guaranteed to hit at least 2 nearby enemies after hitting an enemy, 50% chance to hit the 4th and 25% chance to hit the 5th, lightning now deals consistent 20% lightning damage.' },
+      4: { desc: '+12% Lightning DMG', LightningDMG_pct: 12 },
+      6: { desc: 'Multishot: Hitting one enemy will hit the enemy and 3 enemies around it, lightning now deals consistent 50% lightning damage.' }
+    },
+    slots: ['helmet', 'chestplate', 'leggings', 'boots', 'ring', 'weapon']
+  },
+  bastion: {
+    name: 'Bastion',
+    element: 'physical',
+    icon: '🛡️',
+    weaponName: 'Titan Warhammer',
+    weaponDesc: 'Deal 20% physical damage equal to 30% player HP, and 10% physical damage equal to 20% player HP in surrounding area.',
+    items: {
+      helmet: { slot: 'helmet', name: 'Bastion Helmet', icon: '🪖' },
+      chestplate: { slot: 'chestplate', name: 'Bastion Chestplate', icon: '🦺' },
+      leggings: { slot: 'leggings', name: 'Bastion Leggings', icon: '👖' },
+      boots: { slot: 'boots', name: 'Bastion Boots', icon: '🥾' },
+      ring: { slot: 'ring', name: 'Bastion Ring', icon: '💍' },
+      weapon: { slot: 'weapon', name: 'Titan Warhammer', icon: '🔨', isWeapon: true, multiplier: 0.20 }
+    },
+    bonuses: {
+      2: { desc: '+12% HP', HP_pct: 12 },
+      3: { desc: 'Shock Roar: Creates a shock area around the player every 5 seconds, dealing damage equal to 20% of players HP.' },
+      4: { desc: 'Reduce damage taken by 12%', DMG_reduction_pct: 12 },
+      6: { desc: 'Metal Fierce: +20% DMG when player <50% HP' }
+    },
+    slots: ['helmet', 'chestplate', 'leggings', 'boots', 'ring', 'weapon']
+  },
+  nightwing: {
+    name: 'Nightwing',
+    element: 'physical',
+    icon: '🦇',
+    weaponName: "Raven's Volley",
+    weaponDesc: 'Deal 20% physical damage equal to 20% of players ATK, after hit an enemy, bounce 2 coins randomly 3 times, dealing 7.7% physical damage of players total coins.',
+    items: {
+      helmet: { slot: 'helmet', name: 'Nightwing Helmet', icon: '🪖' },
+      chestplate: { slot: 'chestplate', name: 'Nightwing Chestplate', icon: '🦺' },
+      leggings: { slot: 'leggings', name: 'Nightwing Leggings', icon: '👖' },
+      boots: { slot: 'boots', name: 'Nightwing Boots', icon: '🥾' },
+      ring: { slot: 'ring', name: 'Nightwing Ring', icon: '💍' },
+      weapon: { slot: 'weapon', name: "Raven's Volley", icon: '🏹', isWeapon: true, multiplier: 0.20 }
+    },
+    bonuses: {
+      2: { desc: '+12% ATK', ATK_pct: 12 },
+      3: { desc: 'Stealth: Increase coin gain by 50%, for every 2000 coins player have, add 1 ATK point, max 5000 ATK.' },
+      4: { desc: '+6% SPD', SPD_pct: 6 },
+      6: { desc: 'Wealth: For every 10000 coin collected, gain 1 stack of Wealth, max 9 stacks. Each stack of Wealth +20% DMG for 30 seconds.' }
+    },
+    slots: ['helmet', 'chestplate', 'leggings', 'boots', 'ring', 'weapon']
+  },
+  shade: {
+    name: 'Shade',
+    element: 'physical',
+    icon: '💀',
+    weaponName: 'Wraith Scythe',
+    weaponDesc: 'Deal 10% physical damage to an enemy, lose 2% max HP, and deals 20% physical damage + 200% of HP lost to an enemy. If an enemy dies, restores 15% max HP.',
+    items: {
+      helmet: { slot: 'helmet', name: 'Shade Helmet', icon: '🪖' },
+      chestplate: { slot: 'chestplate', name: 'Shade Chestplate', icon: '🦺' },
+      leggings: { slot: 'leggings', name: 'Shade Leggings', icon: '👖' },
+      boots: { slot: 'boots', name: 'Shade Boots', icon: '🥾' },
+      ring: { slot: 'ring', name: 'Shade Ring', icon: '💍' },
+      weapon: { slot: 'weapon', name: 'Wraith Scythe', icon: '⚔️', isWeapon: true, multiplier: 0.10 }
+    },
+    bonuses: {
+      2: { desc: '+12% HP', HP_pct: 12 },
+      3: { desc: 'Lifesteal: Restores 10% more max HP after killing an enemy, increase damage dealt by HP lost by 200%.' },
+      4: { desc: 'Reduce damage taken by 12%', DMG_reduction_pct: 12 },
+      6: { desc: 'Overflow: For every 200 HP lost or healed, gain 1 stack of Bloodthirst (max 99 stacks). Each stack +2% DMG for 30 seconds.' }
+    },
+    slots: ['helmet', 'chestplate', 'leggings', 'boots', 'ring', 'weapon']
+  },
+  aegis: {
+    name: 'Aegis',
+    element: 'aether',
+    icon: '✨',
+    weaponName: 'Aether Scepter',
+    weaponDesc: 'Deal 20% aether damage to an enemy, launches a ball that continuously hover around the enemy, dealing 10% aether damage each hit. If the enemy is dead, the ball launches to a random enemy, dealing 10% aether damage each hit. The ball lasts for 15 seconds.',
+    items: {
+      helmet: { slot: 'helmet', name: 'Aegis Helmet', icon: '🪖' },
+      chestplate: { slot: 'chestplate', name: 'Aegis Chestplate', icon: '🦺' },
+      leggings: { slot: 'leggings', name: 'Aegis Leggings', icon: '👖' },
+      boots: { slot: 'boots', name: 'Aegis Boots', icon: '🥾' },
+      ring: { slot: 'ring', name: 'Aegis Ring', icon: '💍' },
+      weapon: { slot: 'weapon', name: 'Aether Scepter', icon: '🪄', isWeapon: true, multiplier: 0.20 }
+    },
+    bonuses: {
+      2: { desc: '+12% Aether DMG', AetherDMG_pct: 12 },
+      3: { desc: 'Myth: For every enemy hit, there is a 20% chance to spawn another ball, launches to a random enemy, that continuously hover around the enemy, dealing 10% aether damage each hit. The ball lasts for 5 seconds or after the enemy is dead.' },
+      4: { desc: '+1 ball' },
+      6: { desc: 'Star Shooter: After the enemy is dead, spawn 3 balls spinning around the dead enemy for 3 seconds, each circle deals 10% aether damage, then launch that 3 balls to 3 random enemies, dealing 25% aether damage upon hit.' }
+    },
+    slots: ['helmet', 'chestplate', 'leggings', 'boots', 'ring', 'weapon']
+  },
+  glacier: {
+    name: 'Glacier',
+    element: 'cryo',
+    icon: '❄️',
+    weaponName: 'Cryo Rod',
+    weaponDesc: 'If the enemy is hit, freeze the enemy for 3 seconds and deal 20% cryo damage to an enemy. After the enemy is dead, create a cryo AOE that any enemy moved or within the area will be freezed for 3 seconds, dealing 10% cryo damage.',
+    items: {
+      helmet: { slot: 'helmet', name: 'Glacier Helmet', icon: '🪖' },
+      chestplate: { slot: 'chestplate', name: 'Glacier Chestplate', icon: '🦺' },
+      leggings: { slot: 'leggings', name: 'Glacier Leggings', icon: '👖' },
+      boots: { slot: 'boots', name: 'Glacier Boots', icon: '🥾' },
+      ring: { slot: 'ring', name: 'Glacier Ring', icon: '💍' },
+      weapon: { slot: 'weapon', name: 'Cryo Rod', icon: '🪄', isWeapon: true, multiplier: 0.20 }
+    },
+    bonuses: {
+      2: { desc: '+12% ATK', ATK_pct: 12 },
+      3: { desc: 'Frozen Spikes: After the enemy is unfrozen, create an explosion and deal 50% cryo damage to that enemy.' },
+      4: { desc: 'Freezed enemies take +20% damage' },
+      6: { desc: 'Ice Storm: If an enemy dies to cryo damage, randomly freeze 3 enemies and deal 25% cryo damage to them.' }
+    },
+    slots: ['helmet', 'chestplate', 'leggings', 'boots', 'ring', 'weapon']
+  },
+  emberkin: {
+    name: 'Emberkin',
+    element: 'fire',
+    icon: '🔥',
+    weaponName: 'Inferno Blade',
+    weaponDesc: 'Deals 20% fire damage, create a fire AOE for 10 seconds, enemy within the fire AOE will take fire damage over time equal to 10% fire damage every second for 5 seconds.',
+    items: {
+      helmet: { slot: 'helmet', name: 'Emberkin Helmet', icon: '🪖' },
+      chestplate: { slot: 'chestplate', name: 'Emberkin Chestplate', icon: '🦺' },
+      leggings: { slot: 'leggings', name: 'Emberkin Leggings', icon: '👖' },
+      boots: { slot: 'boots', name: 'Emberkin Boots', icon: '🥾' },
+      ring: { slot: 'ring', name: 'Emberkin Ring', icon: '💍' },
+      weapon: { slot: 'weapon', name: 'Inferno Blade', icon: '⚔️', isWeapon: true, multiplier: 0.20 }
+    },
+    bonuses: {
+      2: { desc: '+12% ATK', ATK_pct: 12 },
+      3: { desc: 'Burn: Burning DoT scales by +8% of player ATK per second.' },
+      4: { desc: '+12% Fire DMG', FireDMG_pct: 12 },
+      6: { desc: 'Ignite: After killing 10 enemies with fire damage, randomly creates 3 red pink-ish fire AOEs that enemy within the fire AOE will take fire damage over time equal to 25% fire damage for 15 seconds.' }
+    },
+    slots: ['helmet', 'chestplate', 'leggings', 'boots', 'ring', 'weapon']
+  },
+  zephyr: {
+    name: 'Zephyr',
+    element: 'aether',
+    icon: '🌟',
+    weaponName: 'Gale Daggers',
+    weaponDesc: 'Deals 20% aether damage to an enemy, then split into 4 stars shooting randomly, each star deals 10% aether damage to enemy collide with the star.',
+    items: {
+      helmet: { slot: 'helmet', name: 'Zephyr Helmet', icon: '🪖' },
+      chestplate: { slot: 'chestplate', name: 'Zephyr Chestplate', icon: '🦺' },
+      leggings: { slot: 'leggings', name: 'Zephyr Leggings', icon: '👖' },
+      boots: { slot: 'boots', name: 'Zephyr Boots', icon: '🥾' },
+      ring: { slot: 'ring', name: 'Zephyr Ring', icon: '💍' },
+      weapon: { slot: 'weapon', name: 'Gale Daggers', icon: '🗡️', isWeapon: true, multiplier: 0.20 }
+    },
+    bonuses: {
+      2: { desc: '+12% ATK', ATK_pct: 12 },
+      3: { desc: 'Blow: For each star collide to an enemy, create an explosion dealing 50% aether damage to surrounding enemies.' },
+      4: { desc: '+2 stars' },
+      6: { desc: 'Pierce: Stars now exists for 10 seconds, for each enemy hit, bounce randomly, until the star hits 3 enemies, or star dies out after 10 seconds.' }
+    },
+    slots: ['helmet', 'chestplate', 'leggings', 'boots', 'ring', 'weapon']
+  }
+};
 // ========== RNG ==========
 class RNG {
   constructor(seed) {
@@ -1977,6 +2189,53 @@ function computeDerivedStats() {
       else if (affix.name === 'Crit Rate') sumCritRate += affix.value;
       else if (affix.name === 'Crit Damage') sumCritDmg += affix.value;
     });
+  });
+
+  // Count equipped set pieces
+  const setCounts = {};
+  Object.values(p.equipment).forEach(item => {
+    if (item && item.setId) {
+      setCounts[item.setId] = (setCounts[item.setId] || 0) + 1;
+    }
+  });
+  
+  // Initialize set tracking
+  p.activeSets = setCounts;
+  p.elementalDMG = {};
+  p.dmgReduction = 0;
+  
+  // Apply set bonuses
+  Object.keys(setCounts).forEach(setId => {
+    const count = setCounts[setId];
+    // Safety check: Skip if set doesn't exist in EQUIPMENT_SETS
+    if (!EQUIPMENT_SETS[setId]) return;
+    const setData = EQUIPMENT_SETS[setId];
+    if (!setData) return;
+    
+    // 2-piece bonus
+    if (count >= 2 && setData.bonuses[2]) {
+      const bonus = setData.bonuses[2];
+      if (bonus.ATK_pct) sumATKPct += bonus.ATK_pct;
+      if (bonus.HP_pct) sumHPPct += bonus.HP_pct;
+      if (bonus.SPD_pct) sumFlatSPD *= (1 + bonus.SPD_pct / 100);
+      if (bonus.DMG_reduction_pct) p.dmgReduction += bonus.DMG_reduction_pct / 100;
+      if (bonus.AetherDMG_pct) p.elementalDMG.aether = (p.elementalDMG.aether || 0) + bonus.AetherDMG_pct / 100;
+    }
+    
+    // 4-piece bonus
+    if (count >= 4 && setData.bonuses[4]) {
+      const bonus = setData.bonuses[4];
+      if (bonus.WindDMG_pct) p.elementalDMG.wind = (p.elementalDMG.wind || 0) + bonus.WindDMG_pct / 100;
+      if (bonus.LightningDMG_pct) p.elementalDMG.lightning = (p.elementalDMG.lightning || 0) + bonus.LightningDMG_pct / 100;
+      if (bonus.FireDMG_pct) p.elementalDMG.fire = (p.elementalDMG.fire || 0) + bonus.FireDMG_pct / 100;
+      if (bonus.DMG_reduction_pct) p.dmgReduction += bonus.DMG_reduction_pct / 100;
+    }
+    
+    // 5-piece: Nightwing coin bonus
+    if (count >= 5 && setId === 'nightwing') {
+      const coinBonus = Math.min(Math.floor(p.coins / 2000), 5000);
+      sumFlatATK += coinBonus;
+    }
   });
 
   p.activeEffects.forEach(effect => {
@@ -2338,9 +2597,83 @@ const AFFIX_POOL = [
   { name: 'Crit Damage', weight: 15 }
 ];
 
-function generateEquipment(slot, rarity, world) {
+function generateEquipment(slot, rarity, world, setId = null) {
   const ranges = RARITY_RANGES[rarity];
   
+  // If setId provided, generate set item
+  if (setId && EQUIPMENT_SETS[setId]) {
+    const setData = EQUIPMENT_SETS[setId];
+    if (!setData) {
+      console.warn(`Invalid setId "${setId}" in generateEquipment, falling back to normal item`);
+      setId = null;
+    } else {
+    const setItem = setData.items[slot];
+    
+    if (setItem) {
+      const item = {
+        id: `item_${GameState.itemIdCounter++}`,
+        type: 'equipment',
+        slot: setItem.slot,
+        name: setItem.name,
+        icon: setItem.icon,
+        rarity: rarity,
+        level: 1,
+        stars: 0,
+        setId: setId,
+        setName: setData.name,
+        element: setData.element,
+        baseAttribute: { name: slot === 'helmet' || slot === 'weapon' ? 'ATK' : slot === 'boots' ? 'SPD' : slot === 'ring' ? 'DMG%' : 'HP', value: 0 },
+        affixes: [],
+        buyPrice: 0,
+        sellPrice: 0,
+        createdAtWorld: world
+      };
+      
+      // Generate base attribute value
+      const baseAttrName = item.baseAttribute.name;
+      const baseRange = ranges[baseAttrName];
+      item.baseAttribute.value = GameState.rng.randInt(baseRange[0], baseRange[1]);
+      
+      // Generate affixes
+      const availableAffixes = [...AFFIX_POOL];
+      for (let i = 0; i < 4; i++) {
+        const weights = availableAffixes.map(a => a.weight);
+        const chosenAffix = GameState.rng.weightedChoice(availableAffixes, weights);
+        const idx = availableAffixes.indexOf(chosenAffix);
+        availableAffixes.splice(idx, 1);
+
+        const range = ranges[chosenAffix.name];
+        const value = GameState.rng.randInt(range[0], range[1]);
+        const unlockLevel = (CONFIG.STAR_THRESHOLDS && CONFIG.STAR_THRESHOLDS[i] !== undefined)
+          ? CONFIG.STAR_THRESHOLDS[i]
+          : (CONFIG.STAR_THRESHOLDS && CONFIG.STAR_THRESHOLDS.length
+              ? CONFIG.STAR_THRESHOLDS[CONFIG.STAR_THRESHOLDS.length - 1] + (i - (CONFIG.STAR_THRESHOLDS.length - 1)) * 10
+              : 10 + i * 10);
+
+        item.affixes.push({
+          name: chosenAffix.name,
+          value: value,
+          locked: true,
+          unlockLevel: unlockLevel
+        });
+      }
+      
+      // Set weapon properties
+      if (setItem.isWeapon && setItem.multiplier) {
+        item.isWeapon = true;
+        item.weaponMultiplier = setItem.multiplier;
+      }
+      
+      // Calculate prices (set items are more expensive)
+      item.buyPrice = Math.floor(CONFIG.BASE_SHOP_PRICE[rarity] * 1.5 * (1 + world * 0.1) * GameState.rng.randRange(0.9, 1.1));
+      item.sellPrice = Math.floor(item.buyPrice * 0.3);
+      
+      return item;
+    }
+    }
+  }
+  
+  // Original random equipment generation
   let baseAttrName;
   if (slot === 'helmet') baseAttrName = 'ATK';
   else if (slot === 'chestplate') baseAttrName = 'HP';
@@ -2362,7 +2695,7 @@ function generateEquipment(slot, rarity, world) {
 
     const range = ranges[chosenAffix.name];
     const value = GameState.rng.randInt(range[0], range[1]);
-        const unlockLevel = (CONFIG.STAR_THRESHOLDS && CONFIG.STAR_THRESHOLDS[i] !== undefined)
+    const unlockLevel = (CONFIG.STAR_THRESHOLDS && CONFIG.STAR_THRESHOLDS[i] !== undefined)
       ? CONFIG.STAR_THRESHOLDS[i]
       : (CONFIG.STAR_THRESHOLDS && CONFIG.STAR_THRESHOLDS.length
           ? CONFIG.STAR_THRESHOLDS[CONFIG.STAR_THRESHOLDS.length - 1] + (i - (CONFIG.STAR_THRESHOLDS.length - 1)) * 10
@@ -2394,6 +2727,7 @@ function generateEquipment(slot, rarity, world) {
     createdAtWorld: world
   };
 }
+
 
 function rollRarity() {
   const probs = CONFIG.RARITY_PROB;
@@ -2514,7 +2848,7 @@ function onEnemyDeath(enemy) {
   let coins = Math.floor(
     enemy.dropProfile.coinBase * 
     (1 + p.world * 0.5) * 
-    GameState.rng.randRange(0.7, 1.4) *
+    GameState.rng.randRange(0.8, 1.2) *
     (1 + p.luck / 100)
   );
   
@@ -2913,12 +3247,17 @@ function refreshShop() {
   shop.offers.consumables = [];
   
   const slots = ['helmet', 'chestplate', 'leggings', 'boots', 'ring', 'weapon'];
+  const setIds = Object.keys(EQUIPMENT_SETS);
   for (let i = 0; i < 6; i++) {
     const slot = slots[i % slots.length];
     const rarity = rollRarity();
-    const item = generateEquipment(slot, rarity, GameState.player.world);
+    // 30% chance to generate a set item
+    const isSetItem = GameState.rng.rand() < 0.50; // Increased set item rate
+    const setId = isSetItem ? setIds[Math.floor(GameState.rng.rand() * setIds.length)] : null;
+    const item = generateEquipment(slot, rarity, GameState.player.world, setId);
     shop.offers.equipment.push(item);
   }
+
   
   CONSUMABLES.forEach(cons => {
     shop.offers.consumables.push({
@@ -3055,6 +3394,50 @@ function renderEquipmentRing() {
   });
 }
 
+function renderSetBonuses() {
+  const p = GameState.player;
+  const container = document.getElementById('set-bonuses-display');
+  if (!container) return;
+  
+  if (!p.activeSets || Object.keys(p.activeSets).length === 0) {
+    container.innerHTML = '';
+    container.style.display = 'none';
+    return;
+  }
+  
+  container.style.display = 'block';
+  let html = '<div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; margin: 12px 0; border: 2px solid var(--accent-gold);">';
+  html += '<div style="font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--accent-gold); margin-bottom: 8px;">⚡ Set Bonuses</div>';
+  
+  Object.keys(p.activeSets).forEach(setId => {
+    const count = p.activeSets[setId];
+    // Safety check: Skip if set doesn't exist in EQUIPMENT_SETS
+    if (!EQUIPMENT_SETS[setId]) return;
+    const setData = EQUIPMENT_SETS[setId];
+    if (!setData) return;
+    
+    html += `<div style="margin-bottom: 10px; padding: 8px; background: rgba(0,0,0,0.2); border-radius: 4px;">`;
+    html += `<div style="font-weight: 700; color: var(--accent-gold); margin-bottom: 4px;">${setData.name} (${count}/6)</div>`;
+    
+    [2, 3, 4, 6].forEach(tier => {
+      const bonus = setData.bonuses[tier];
+      if (!bonus) return;
+      
+      const active = count >= tier;
+      const color = active ? 'var(--text-primary)' : 'var(--text-dim)';
+      const weight = active ? '600' : '400';
+      html += `<div style="font-size: 11px; color: ${color}; font-weight: ${weight}; padding: 2px 0;">`;
+      html += `<span style="color: ${active ? '#4fc3f7' : 'var(--text-dim)'};">${tier}:</span> ${bonus.desc}`;
+      html += `</div>`;
+    });
+    
+    html += `</div>`;
+  });
+  
+  html += '</div>';
+  container.innerHTML = html;
+}
+
 function renderInventory() {
   const p = GameState.player;
   cleanInventory();  // Clean inventory before rendering
@@ -3110,6 +3493,8 @@ function renderInventory() {
   
   // Update active effects display in inventory
   updateActiveEffects();
+  
+  // Set bonuses are now shown in tooltips, no separate display needed
 }
 
 // Drag and drop handlers for inventory
@@ -3446,23 +3831,1145 @@ function renderEnemies() {
   });
 }
 
-function attackEnemy(enemy) {
-  // Don't attack if player is dead or cannot attack
-  if (GameState.isDead || !GameState.canAttack) return;
-  const result = computeDamage(enemy);
-  enemy.hp -= result.damage;
-  
+// ------------------- new helpers for weapon attacks & VFX -------------------
+function getElementColor(el) {
+  const map = {
+    wind: '#2ecc71',         // green
+    lightning: '#9b59b6',    // purple
+    fire: '#ff8a4b',
+    aether: '#fff8c2',       // light yellow
+    cryo: '#5bc0ff',
+    physical: '#ffffff'
+  };
+  return map[el] || '#ffffff';
+}
+function showElementDamage(damage, elementType, enemyEl, isCrit) {
+  if (!enemyEl) return;
+  const stage = document.getElementById('stage');
+  if (!stage) return;
+
+  // measure
+  const rect = enemyEl.getBoundingClientRect();
+  const stageRect = stage.getBoundingClientRect();
+
+  const dmgEl = document.createElement('div');
+  dmgEl.className = 'drop-item';
+  dmgEl.textContent = isCrit ? `${damage}!` : `${damage}`;
+  dmgEl.style.left = `${rect.left - stageRect.left + rect.width / 2}px`;
+  dmgEl.style.top = `${rect.top - stageRect.top - 30}px`;
+  dmgEl.style.color = getElementColor(elementType);
+  dmgEl.style.fontWeight = 'bold';
+  dmgEl.style.fontSize = '18px';
+  dmgEl.style.textShadow = '0 1px 0 rgba(0,0,0,0.6)';
+
+  const dropLayer = document.getElementById('drop-layer');
+  if (dropLayer) {
+    dropLayer.appendChild(dmgEl);
+    setTimeout(() => dmgEl.remove(), 1800);
+  }
+}
+
+/* ---------- Helper utilities ---------- */
+
+function findEnemiesInRadius(x, y, radius) {
+  // GameState.enemies expected to have .x/.y positions (or .position.x/.position.y)
+  return GameState.enemies.filter(e => {
+    const ex = (e.position && e.position.x) || e.x || 0;
+    const ey = (e.position && e.position.y) || e.y || 0;
+    const dx = ex - x, dy = ey - y;
+    return (dx*dx + dy*dy) <= (radius * radius);
+  });
+}
+
+function applyDamageToEnemy(enemy, dmg, ctx = {}) {
+  if (!enemy || enemy.hp <= 0) return;
+  enemy.hp -= dmg;
+  // attach lastHit context for on-death detection
+  enemy.lastHit = Object.assign({}, ctx, { damage: dmg, timestamp: Date.now() });
+
+  // floating damage display: color by element (special-case aether & wind etc)
   const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
   if (enemyEl) {
-    const dmgEl = document.createElement('div');
-    dmgEl.className = 'drop-item';
-    dmgEl.textContent = result.crit ? `${result.damage}! ⚡` : result.damage;
-    dmgEl.style.left = `${enemy.position.x}px`;
-    dmgEl.style.top = `${enemy.position.y - 30}px`;
-    dmgEl.style.color = result.crit ? '#ff0' : '#fff';
-    dmgEl.style.fontWeight = 'bold';
-    document.getElementById('drop-layer').appendChild(dmgEl);
-    setTimeout(() => dmgEl.remove(), 2000);
+    showElementDamage(Math.floor(dmg), ctx.type || 'physical', enemyEl, !!ctx.crit);
+  }
+
+  if (enemy.hp <= 0) {
+    // spawn skywarden explosion if kill was wind + source set = skywarden and not spawned by explosion
+    if (ctx.type === 'wind' && ctx.setId === 'skywarden' && !ctx.source?.includes?.('explosion')) {
+      // spawn big explosion centered on enemy
+      if (typeof spawnAoE === 'function') {
+        const R = window.R_windExplosion || 80;
+        spawnAoE(enemy.position?.x || enemy.x || 0, enemy.position?.y || enemy.y || 0, R, Math.floor((GameState.player.currentStats?.finalATK || GameState.player.ATK) * 0.35), 'wind', { source: 'skywarden_explosion' });
+      } else {
+        // fallback: shockwave visual
+        const enemyElRect = enemyEl.getBoundingClientRect();
+        spawnShockwave(enemyElRect.left + enemyElRect.width/2, enemyElRect.top + enemyElRect.height/2, 90, getElementColor('wind'), 360);
+        // apply AoE damage manually
+        const hits = findEnemiesInRadius(enemy.position?.x||enemy.x||0, enemy.position?.y||enemy.y||0, 80);
+        for (const h of hits) {
+          if (h.id === enemy.id) continue;
+          applyDamageToEnemy(h, Math.floor((GameState.player.currentStats?.finalATK || GameState.player.ATK) * 0.35), { type:'wind', source:'skywarden_explosion', setId:'skywarden', isAoE:true });
+        }
+      }
+    }
+    // call onEnemyDeath as before
+    onEnemyDeath(enemy);
+    GameState.enemies = GameState.enemies.filter(e => e.id !== enemy.id);
+  }
+}
+
+function applyStatus(enemy, statusName, data) {
+  enemy.status = enemy.status || {};
+  enemy.status[statusName] = Object.assign({ appliedAt: Date.now() }, data);
+}
+
+/* Lightweight projectile VFX factory (returns DOM node for additional control) */
+function createProjectile(options) {
+  // options: {fromX, fromY, toX, toY, color, size, travelMs, onArrive(callback(enemyHit)), pierce:false}
+  const stage = document.getElementById('stage');
+  if (!stage) return null;
+  const stageRect = stage.getBoundingClientRect();
+  const p = document.createElement('div');
+  p.className = 'weapon-proj';
+  Object.assign(p.style, {
+    position: 'absolute',
+    left: `${options.fromX - stageRect.left}px`,
+    top: `${options.fromY - stageRect.top}px`,
+    width: `${options.size||12}px`,
+    height: `${options.size||12}px`,
+    borderRadius: '50%',
+    background: options.color || '#fff',
+    boxShadow: `0 0 12px ${options.color||'#fff'}`,
+    transform: 'translate(-50%,-50%)',
+    zIndex: 60,
+    pointerEvents: 'none',
+    transition: `transform ${options.travelMs||260}ms linear, opacity 180ms linear`
+  });
+  stage.appendChild(p);
+
+  // compute translation
+  const dx = (options.toX - options.fromX);
+  const dy = (options.toY - options.fromY);
+  requestAnimationFrame(() => { p.style.transform = `translate(${dx}px, ${dy}px)`; });
+
+  setTimeout(() => {
+    // on arrive
+    if (typeof options.onArrive === 'function') options.onArrive();
+    // small impact flash
+    const impact = document.createElement('div');
+    Object.assign(impact.style, {
+      position: 'absolute',
+      left: `${options.toX - stageRect.left}px`,
+      top: `${options.toY - stageRect.top}px`,
+      transform: 'translate(-50%,-50%)',
+      width: `${(options.size||12)*3}px`,
+      height: `${(options.size||12)*3}px`,
+      borderRadius: '50%',
+      background: options.color || '#fff',
+      opacity: 0.85,
+      boxShadow: `0 0 22px ${options.color||'#fff'}`,
+      zIndex: 61,
+      pointerEvents: 'none'
+    });
+    stage.appendChild(impact);
+    setTimeout(()=> impact.remove(), 280);
+    p.remove();
+  }, options.travelMs || 260);
+
+  // safety remove
+  setTimeout(()=>{ if(p.parentNode) p.remove(); }, (options.travelMs||260)+600);
+  return p;
+}
+
+function spawnShockwave(x, y, radius, color, durationMs = 380) {
+  const stage = document.getElementById('stage');
+  if (!stage) return;
+  const stageRect = stage.getBoundingClientRect();
+  const w = document.createElement('div');
+  Object.assign(w.style, {
+    position: 'absolute',
+    left: `${x - stageRect.left}px`,
+    top: `${y - stageRect.top}px`,
+    width: `4px`,
+    height: `4px`,
+    borderRadius: '50%',
+    transform: 'translate(-50%,-50%)',
+    zIndex: 59,
+    pointerEvents: 'none',
+    background: color,
+    boxShadow: `0 0 22px ${color}`,
+    opacity: '0.9',
+    transition: `width ${durationMs}ms ease-out, height ${durationMs}ms ease-out, opacity ${durationMs}ms linear`
+  });
+  stage.appendChild(w);
+  requestAnimationFrame(()=>{
+    w.style.width = `${radius*2}px`;
+    w.style.height = `${radius*2}px`;
+    w.style.opacity = '0';
+  });
+  setTimeout(()=> w.remove(), durationMs+40);
+}
+
+
+/* ---------- safe player HP getters/setters ---------- */
+function getPlayerHP(p) {
+  return p.HP_current ?? p.currentHP ?? p.hp ?? (p.currentStats && p.currentStats.HP_current) ?? (p.HP_max ?? 0);
+}
+function setPlayerHP(p, value) {
+  if (p.HP_current !== undefined) p.HP_current = value;
+  else if (p.currentHP !== undefined) p.currentHP = value;
+  else if (p.hp !== undefined) p.hp = value;
+  else if (p.currentStats && p.currentStats.HP_current !== undefined) p.currentStats.HP_current = value;
+  else p.HP_current = value;
+}
+
+/* ---------- SVG lightning arc (nice purple lightning) ---------- */
+function createLightningArc(fromX, fromY, toX, toY, color, duration = 260) {
+  // create an SVG path with jaggedness randomized to feel like lightning
+  const stage = document.getElementById('stage');
+  if (!stage) return;
+  // create svg overlay if none
+  let svg = document.getElementById('vfx-svg-overlay');
+  if (!svg) {
+    svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('id','vfx-svg-overlay');
+    svg.style.position = 'absolute';
+    svg.style.left = '0';
+    svg.style.top = '0';
+    svg.style.width = '100%';
+    svg.style.height = '100%';
+    svg.style.pointerEvents = 'none';
+    svg.style.zIndex = '999';
+    stage.appendChild(svg);
+  }
+  const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+  const dx = toX - fromX, dy = toY - fromY;
+  const dist = Math.sqrt(dx*dx + dy*dy) || 1;
+  // generate jagged midpoints
+  const spikes = Math.max(2, Math.floor(dist / 60));
+  const pts = [{x:fromX,y:fromY}];
+  for (let i=1;i<spikes;i++){
+    const t = i/spikes;
+    const nx = fromX + dx * t + (Math.random()*40 - 20);
+    const ny = fromY + dy * t + (Math.random()*40 - 20);
+    pts.push({x:nx,y:ny});
+  }
+  pts.push({x:toX,y:toY});
+  // build smooth polyline into path string
+  let d = `M ${pts[0].x} ${pts[0].y}`;
+  for (let i=1;i<pts.length;i++){
+    d += ` L ${pts[i].x} ${pts[i].y}`;
+  }
+  path.setAttribute('d', d);
+  path.setAttribute('stroke', color);
+  path.setAttribute('stroke-width', 3);
+  path.setAttribute('fill', 'none');
+  path.setAttribute('stroke-linecap', 'round');
+  path.setAttribute('stroke-linejoin', 'round');
+  path.style.opacity = '0.95';
+  path.style.filter = 'drop-shadow(0 0 8px ' + color + ')';
+  svg.appendChild(path);
+
+  // animate fade out
+  setTimeout(()=> {
+    path.style.transition = `opacity ${Math.max(150,duration)}ms ease-out, stroke-width 180ms ease-out`;
+    path.style.opacity = '0';
+    path.setAttribute('stroke-width', 1);
+    setTimeout(()=> path.remove(), Math.max(300,duration+80));
+  }, duration);
+  // return path node if caller wants to remove earlier
+  return path;
+}
+
+/* ---------- Status tick processor (burn, slow expirations, etc) ----------
+   Call processEnemyStatusTicks(deltaMs) from your main game tick loop.
+*/
+let _burnTickAcc = {}; // track last tick times per enemy for precise ticks if needed
+function processEnemyStatusTicks(deltaMs) {
+  // for each enemy
+  const now = Date.now();
+  for (const enemy of (GameState.enemies || [])) {
+    if (!enemy.status) continue;
+    // BURN: apply tick damage
+    if (enemy.status.burn) {
+      const s = enemy.status.burn;
+      const elapsed = now - (s._lastTickAt || s.appliedAt || now);
+      // tick every s.tickInterval (ms)
+      if (elapsed >= (s.tickInterval || 1000)) {
+        // compute number of ticks passed
+        const ticks = Math.floor(elapsed / (s.tickInterval || 1000));
+        for (let i=0;i<ticks;i++){
+          applyDamageToEnemy(enemy, Math.floor(s.tickDamage || 0), { type: 'fire', source: 'dot', setId: s.sourceSet || null });
+        }
+        s._lastTickAt = (s._lastTickAt || s.appliedAt || now) + ticks * (s.tickInterval || 1000);
+      }
+      // expire burn after duration
+      if (now - (s.appliedAt || now) >= (s.duration || 5000)) {
+        delete enemy.status.burn;
+      }
+    }
+
+    // SLOW: visual and expiration
+    if (enemy.status.slow) {
+      const s = enemy.status.slow;
+      // add visual to indicate slow
+      addSlowVisual(enemy);
+      if (now - (s.appliedAt || now) >= (s.duration || 3000)) {
+        // remove slow
+        delete enemy.status.slow;
+        removeSlowVisual(enemy);
+      }
+    } else {
+      // ensure visual removed if no slow
+      removeSlowVisual(enemy);
+    }
+  }
+}
+
+/* slow visual functions (blue tint) */
+function addSlowVisual(enemy) {
+  const el = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
+  if (!el) return;
+  if (!el.classList.contains('vfx-slow')) {
+    el.classList.add('vfx-slow');
+    // define vfx-slow style if not already present (inject)
+    if (!document.getElementById('vfx-slow-style')) {
+      const st = document.createElement('style');
+      st.id = 'vfx-slow-style';
+      st.innerHTML = `
+        .vfx-slow { filter: hue-rotate(200deg) saturate(120%) brightness(85%); transition: filter 180ms; box-shadow: 0 0 8px rgba(90,160,255,0.6); }
+      `;
+      document.head.appendChild(st);
+    }
+  }
+}
+function removeSlowVisual(enemy) {
+  const el = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
+  if (!el) return;
+  el.classList.remove('vfx-slow');
+}
+
+/* ---------- Aegis orbiters system ---------- */
+GameState.orbiters = GameState.orbiters || []; // global array for orbiters
+
+function ensureAegisOrbiters(player) {
+  // determine number of orbiters from equipped Aegis set pieces
+  const weapon = player.equipment && player.equipment.weapon;
+  if (!weapon || weapon.setId !== 'aegis') return; // only when Aegis equipped
+  // base orb count = number of Aegis pieces equipped (we'll read computeDerivedStats or count)
+  const piecesCount = (() => {
+    const slots = ['helmet','chestplate','leggings','boots','ring','weapon'];
+    let c = 0;
+    for (const s of slots) {
+      const it = player.equipment && player.equipment[s];
+      if (it && it.setId === 'aegis') c++;
+    }
+    return c;
+  })();
+  const add = (piecesCount >= 4) ? 2 : 0;
+  const orbCount = Math.max(1, piecesCount + add);
+
+  // if existing orbiters match, do nothing
+  if (GameState.orbiters.length >= orbCount) return;
+
+  // spawn missing orbiters
+  for (let i = GameState.orbiters.length; i < orbCount; i++) {
+    GameState.orbiters.push({
+      angle: (i / orbCount) * Math.PI * 2,
+      radius: 80 + (i * 6),
+      speed: 0.01 + (i * 0.002),
+      size: 14,
+      damage: Math.floor((player.currentStats?.finalATK || player.ATK) * 0.20),
+      lastHitIds: new Set(), // to avoid repeated hits in same orbit tick
+      createdAt: Date.now()
+    });
+  }
+}
+
+function updateOrbiters(deltaMs) {
+  // called each tick. Move orbiters around player and check collisions
+  const player = GameState.player;
+  if (!player) return;
+  // if player does not have Aegis equipped, clear orbiters
+  const weapon = player.equipment && player.equipment.weapon;
+  if (!weapon || weapon.setId !== 'aegis') {
+    GameState.orbiters = [];
+    return;
+  }
+  ensureAegisOrbiters(player);
+  const playerEl = document.getElementById('player-container');
+  if (!playerEl) return;
+
+  const pRect = playerEl.getBoundingClientRect();
+  const cx = pRect.left + pRect.width / 2;
+  const cy = pRect.top + pRect.height / 2;
+
+  // update each orb
+  for (const orb of GameState.orbiters) {
+    orb.angle += orb.speed * deltaMs;
+    // compute position
+    const ox = cx + Math.cos(orb.angle) * orb.radius;
+    const oy = cy + Math.sin(orb.angle) * orb.radius;
+    // draw DOM node for orb (create if not existing)
+    if (!orb.el) {
+      const el = document.createElement('div');
+      el.className = 'aegis-orb';
+      Object.assign(el.style, {
+        position: 'absolute',
+        left: `${ox}px`,
+        top: `${oy}px`,
+        width: `${orb.size}px`,
+        height: `${orb.size}px`,
+        transform: 'translate(-50%,-50%)',
+        borderRadius: '50%',
+        background: getElementColor('aether'),
+        boxShadow: `0 0 12px ${getElementColor('aether')}`,
+        pointerEvents: 'none',
+        zIndex: 70
+      });
+      orb.el = el;
+      document.getElementById('stage').appendChild(el);
+    } else {
+      orb.el.style.left = `${ox}px`;
+      orb.el.style.top = `${oy}px`;
+    }
+
+    // collision with enemies: find any enemy whose center is within a small radius
+    const hits = (GameState.enemies || []).filter(e => {
+      const ex = (e.position?.x||e.x||0), ey = (e.position?.y||e.y||0);
+      const dx = ex - ox, dy = ey - oy;
+      return dx*dx + dy*dy <= ( (orb.size/2 + 18) * (orb.size/2 + 18) ); // collision radius
+    });
+
+    for (const en of hits) {
+      if (orb.lastHitIds.has(en.id)) continue; // avoid repeating in same orb instance frequently
+      applyDamageToEnemy(en, orb.damage, { type:'aether', source:'aegis_orb', setId:'aegis' });
+      orb.lastHitIds.add(en.id);
+      // clear the set after short timeout so orb can hit again later
+      setTimeout(()=> orb.lastHitIds.delete(en.id), 600);
+    }
+  }
+}
+
+/* ---------- star projectile style helper (for Zephyr) ---------- */
+function createStarProjectile(options) {
+  // like createProjectile but star-shaped using clip-path + CSS
+  const stage = document.getElementById('stage');
+  if (!stage) return null;
+  const stageRect = stage.getBoundingClientRect();
+  const s = document.createElement('div');
+  s.className = 'weapon-star';
+  Object.assign(s.style, {
+    position: 'absolute',
+    left: `${options.fromX - stageRect.left}px`,
+    top: `${options.fromY - stageRect.top}px`,
+    width: `${options.size||14}px`,
+    height: `${options.size||14}px`,
+    pointerEvents: 'none',
+    zIndex: 60,
+    transform: 'translate(-50%,-50%)',
+    transition: `transform ${options.travelMs||260}ms linear, opacity 180ms linear`,
+    background: options.color || '#fff',
+    clipPath: 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)',
+    boxShadow: `0 0 12px ${options.color||'#fff'}`
+  });
+  stage.appendChild(s);
+  const dx = (options.toX - options.fromX);
+  const dy = (options.toY - options.fromY);
+  requestAnimationFrame(() => s.style.transform = `translate(${dx}px, ${dy}px)`);
+  setTimeout(()=> {
+    if (typeof options.onArrive === 'function') options.onArrive();
+    s.remove();
+  }, options.travelMs || 260);
+  // safety remove
+  setTimeout(()=> { if (s.parentNode) s.remove(); }, (options.travelMs||260) + 600);
+}
+
+
+/* ---------- Aegis circle spawner ---------- */
+function spawnAegisCircle(centerX, centerY, index, totalCircles, player) {
+  const stage = document.getElementById('stage');
+  if (!stage) return;
+  
+  const radius = 60;
+  const angleOffset = (index / totalCircles) * Math.PI * 2;
+  const rotationSpeed = 2000; // ms per rotation
+  
+  const circle = document.createElement('div');
+  circle.className = 'aegis-circle';
+  Object.assign(circle.style, {
+    position: 'absolute',
+    width: '20px',
+    height: '20px',
+    borderRadius: '50%',
+    background: 'radial-gradient(circle, #fff8c2, #f0e68c)',
+    boxShadow: '0 0 15px #fff8c2',
+    pointerEvents: 'none',
+    zIndex: 55,
+    left: `${centerX}px`,
+    top: `${centerY}px`,
+    transform: 'translate(-50%, -50%)'
+  });
+  
+  stage.appendChild(circle);
+  
+  const startTime = Date.now();
+  const duration = 3000; // circles last 3 seconds
+  
+  const animate = () => {
+    const elapsed = Date.now() - startTime;
+    if (elapsed > duration) {
+      circle.remove();
+      return;
+    }
+    
+    const angle = angleOffset + (elapsed / rotationSpeed) * Math.PI * 2;
+    const x = centerX + Math.cos(angle) * radius;
+    const y = centerY + Math.sin(angle) * radius;
+    
+    circle.style.left = `${x}px`;
+    circle.style.top = `${y}px`;
+    
+    // Check for enemy collisions
+    const circleDmg = Math.floor((player.currentStats?.finalATK || player.ATK) * 0.10);
+    GameState.enemies.forEach(enemy => {
+      const enemyX = enemy.position?.x || enemy.x || 0;
+      const enemyY = enemy.position?.y || enemy.y || 0;
+      const dist = Math.sqrt((x - enemyX)**2 + (y - enemyY)**2);
+      if (dist < 30) { // collision radius
+        applyDamageToEnemy(enemy, circleDmg, { type: 'aether', source: 'aegis_circle', setId: 'aegis' });
+      }
+    });
+    
+    requestAnimationFrame(animate);
+  };
+  
+  animate();
+}
+
+/* ---------- Fire zone creator ---------- */
+function createFireZone(centerX, centerY, burnTick, duration, player) {
+  const stage = document.getElementById('stage');
+  if (!stage) return;
+  
+  const zone = document.createElement('div');
+  zone.className = 'fire-zone';
+  Object.assign(zone.style, {
+    position: 'absolute',
+    width: '120px',
+    height: '120px',
+    borderRadius: '50%',
+    background: 'radial-gradient(circle, rgba(255,138,75,0.4), rgba(255,69,0,0.2))',
+    border: '2px solid rgba(255,138,75,0.6)',
+    boxShadow: '0 0 20px rgba(255,138,75,0.5), inset 0 0 20px rgba(255,69,0,0.3)',
+    pointerEvents: 'none',
+    zIndex: 45,
+    left: `${centerX}px`,
+    top: `${centerY}px`,
+    transform: 'translate(-50%, -50%)',
+    animation: 'fire-pulse 1s infinite'
+  });
+  
+  stage.appendChild(zone);
+  
+  // Apply burn DoT to enemies in zone every second
+  const tickInterval = setInterval(() => {
+    GameState.enemies.forEach(enemy => {
+      const enemyX = enemy.position?.x || enemy.x || 0;
+      const enemyY = enemy.position?.y || enemy.y || 0;
+      const dist = Math.sqrt((centerX - enemyX)**2 + (centerY - enemyY)**2);
+      if (dist < 60) { // zone radius
+        applyStatus(enemy, 'burn', { 
+          tickDamage: burnTick, 
+          tickInterval: 1000, 
+          duration: 5000, 
+          appliedAt: Date.now(), 
+          sourceSet: 'emberkin' 
+        });
+      }
+    });
+  }, 1000);
+  
+  // Remove zone after duration
+  setTimeout(() => {
+    clearInterval(tickInterval);
+    zone.remove();
+  }, duration);
+}
+
+function spawnAegisHoveringBall(targetEnemy, ballDmg, duration, player) {
+  const stage = document.getElementById('stage');
+  if (!stage) return;
+  
+  const ball = document.createElement('div');
+  Object.assign(ball.style, {
+    position: 'absolute',
+    width: '24px',
+    height: '24px',
+    borderRadius: '50%',
+    background: 'radial-gradient(circle, rgba(147,112,219,0.9), rgba(138,43,226,0.6))',
+    border: '2px solid rgba(186,85,211,0.8)',
+    boxShadow: '0 0 15px rgba(147,112,219,0.8)',
+    pointerEvents: 'none',
+    zIndex: 50
+  });
+  
+  stage.appendChild(ball);
+  
+  let currentEnemy = targetEnemy;
+  const startTime = Date.now();
+  const hitInterval = 500; // Hit every 0.5 seconds
+  
+  const updateBall = setInterval(() => {
+    const elapsed = Date.now() - startTime;
+    
+    // Check if ball should expire
+    if (elapsed >= duration) {
+      clearInterval(updateBall);
+      ball.remove();
+      return;
+    }
+    
+    // Check if current enemy is still alive
+    if (!GameState.enemies.find(e => e.id === currentEnemy.id)) {
+      // Enemy died, find a random new enemy
+      const availableEnemies = GameState.enemies.filter(e => e.hp > 0);
+      if (availableEnemies.length === 0) {
+        clearInterval(updateBall);
+        ball.remove();
+        return;
+      }
+      currentEnemy = availableEnemies[Math.floor(Math.random() * availableEnemies.length)];
+    }
+    
+    // Position ball to hover around current enemy
+    const enemyEl = document.querySelector(`[data-enemy-id="${currentEnemy.id}"]`);
+    if (enemyEl) {
+      const rect = enemyEl.getBoundingClientRect();
+      const stageRect = stage.getBoundingClientRect();
+      const angle = (elapsed / 1000) * Math.PI * 2; // Rotate around enemy
+      const radius = 40;
+      const offsetX = Math.cos(angle) * radius;
+      const offsetY = Math.sin(angle) * radius;
+      
+      ball.style.left = `${rect.left - stageRect.left + rect.width/2 + offsetX}px`;
+      ball.style.top = `${rect.top - stageRect.top + rect.height/2 + offsetY}px`;
+    }
+  }, 50);
+  
+  // Deal damage every hitInterval
+  const damageInterval = setInterval(() => {
+    const elapsed = Date.now() - startTime;
+    if (elapsed >= duration) {
+      clearInterval(damageInterval);
+      return;
+    }
+    
+    // Check if current enemy still exists
+    const enemy = GameState.enemies.find(e => e.id === currentEnemy.id);
+    if (enemy) {
+      applyDamageToEnemy(enemy, ballDmg, { type: 'aether', source: 'weapon_ball', setId: 'aegis' });
+    }
+  }, hitInterval);
+}
+
+function createCryoZone(centerX, centerY, aoeDmg, duration, player) {
+  const stage = document.getElementById('stage');
+  if (!stage) return;
+  
+  const zone = document.createElement('div');
+  zone.className = 'cryo-zone';
+  Object.assign(zone.style, {
+    position: 'absolute',
+    width: '140px',
+    height: '140px',
+    borderRadius: '50%',
+    background: 'radial-gradient(circle, rgba(135,206,250,0.4), rgba(70,130,180,0.2))',
+    border: '2px solid rgba(135,206,250,0.6)',
+    boxShadow: '0 0 25px rgba(135,206,250,0.6), inset 0 0 25px rgba(70,130,180,0.3)',
+    pointerEvents: 'none',
+    zIndex: 45,
+    left: `${centerX}px`,
+    top: `${centerY}px`,
+    transform: 'translate(-50%, -50%)',
+    animation: 'fire-pulse 1.5s infinite'
+  });
+  
+  stage.appendChild(zone);
+  
+  // Track which enemies have been frozen
+  const frozenEnemies = new Set();
+  
+  // Check for enemies in zone every 100ms
+  const checkInterval = setInterval(() => {
+    GameState.enemies.forEach(enemy => {
+      const enemyX = enemy.position?.x || enemy.x || 0;
+      const enemyY = enemy.position?.y || enemy.y || 0;
+      const dist = Math.sqrt((centerX - enemyX)**2 + (centerY - enemyY)**2);
+      
+      if (dist < 70 && !frozenEnemies.has(enemy.id)) { // zone radius
+        frozenEnemies.add(enemy.id);
+        // Freeze enemy for 3 seconds and deal 10% cryo damage
+        applyDamageToEnemy(enemy, aoeDmg, { type: 'cryo', source: 'weapon_zone', setId: 'glacier' });
+        applyStatus(enemy, 'freeze', { duration: 3000, appliedAt: Date.now() });
+        
+        const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
+        if (enemyEl) {
+          enemyEl.style.filter = 'brightness(1.5) saturate(0.3) hue-rotate(180deg)';
+          setTimeout(() => {
+            if (enemyEl) enemyEl.style.filter = '';
+          }, 3000);
+        }
+      }
+    });
+  }, 100);
+  
+  // Remove zone after duration
+  setTimeout(() => {
+    clearInterval(checkInterval);
+    zone.remove();
+  }, duration);
+}
+
+const WEAPON_HANDLERS = {
+  // Aquila Longbow (Skywarden) - wind green, pushback, big explosion on kill
+  skywarden: (p, enemy, weapon) => {
+    const element = 'wind';
+    const windDmg = Math.floor((p.currentStats?.finalATK || p.ATK || 0) * 0.20);
+    // arrow projectile (green)
+    const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
+    const playerEl = document.getElementById('player-container');
+    if (playerEl && enemyEl) {
+      const fromR = playerEl.getBoundingClientRect();
+      const toR = enemyEl.getBoundingClientRect();
+      createProjectile({
+        fromX: fromR.left + fromR.width/2, fromY: fromR.top + fromR.height/2,
+        toX: toR.left + toR.width/2, toY: toR.top + toR.height/2,
+        color: getElementColor(element), size: 36, travelMs: 200,
+        onArrive: ()=> spawnShockwave(toR.left + toR.width/2, toR.top + toR.height/2, 24, getElementColor(element), 180)
+      });
+    }
+    applyDamageToEnemy(enemy, windDmg, { type: element, source: 'weapon', setId: 'skywarden' });
+    
+    // Randomly pushes that enemy and 2 nearby enemies back and deal 10% wind damage to them
+    const pushbackRadius = 150;
+    const enemyX = enemy.position?.x || enemy.x || 0;
+    const enemyY = enemy.position?.y || enemy.y || 0;
+    const playerX = playerEl ? (playerEl.getBoundingClientRect().left + playerEl.getBoundingClientRect().width/2) : 0;
+    const playerY = playerEl ? (playerEl.getBoundingClientRect().top + playerEl.getBoundingClientRect().height/2) : 0;
+    
+    // Find 2 nearby enemies (excluding the main target)
+    const nearbyEnemies = findEnemiesInRadius(enemyX, enemyY, pushbackRadius).filter(e => e.id !== enemy.id);
+    const shuffled = nearbyEnemies.sort(() => 0.5 - Math.random());
+    const pushTargets = [enemy, ...shuffled.slice(0, 2)]; // Main target + 2 nearby
+    const pushDmg = Math.floor((p.currentStats?.finalATK || p.ATK || 0) * 0.10);
+    
+    pushTargets.forEach(target => {
+      // Apply 10% wind damage to all 3 targets
+      if (target.id !== enemy.id) {
+        applyDamageToEnemy(target, pushDmg, { type: element, source: 'weapon_pushback', setId: 'skywarden' });
+      }
+      
+      // Push enemy away from player
+      const dx = (target.position?.x || target.x || 0) - playerX;
+      const dy = (target.position?.y || target.y || 0) - playerY;
+      const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+      const pushDistance = 100;
+      target.position.x += (dx / dist) * pushDistance;
+      target.position.y += (dy / dist) * pushDistance;
+    });
+    
+    // After enemy dies to wind damage, create AOE explosion (50% wind damage to surrounding enemies)
+    if (enemy.hp <= 0) {
+      const explosionDmg = Math.floor((p.currentStats?.finalATK || p.ATK || 0) * 0.50);
+      const explosionRadius = 120;
+      
+      if (enemyEl) {
+        const eR = enemyEl.getBoundingClientRect();
+        const centerX = eR.left + eR.width/2;
+        const centerY = eR.top + eR.height/2;
+        
+        // Create expanding shockwave similar to cryo but with wind color
+        spawnShockwave(centerX, centerY, 90, getElementColor(element), 400);
+      }
+      
+      const nearbyEnemiesExplosion = findEnemiesInRadius(enemyX, enemyY, explosionRadius);
+      nearbyEnemiesExplosion.forEach(e => {
+        if (e.id !== enemy.id) {
+          applyDamageToEnemy(e, explosionDmg, { type: element, source: 'weapon_explosion', setId: 'skywarden' });
+        }
+      });
+    }
+  },
+
+  // Storm Pike (Stormbreaker) - purple lightning arc & chaining arcs
+  stormbreaker: (p, enemy, weapon) => {
+    const element = 'lightning';
+    const main = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.20);
+    // create arc from player to enemy
+    const playerEl = document.getElementById('player-container');
+    const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
+    let px = 0, py = 0, ex = 0, ey = 0;
+    if (playerEl && enemyEl) {
+      const pr = playerEl.getBoundingClientRect();
+      const er = enemyEl.getBoundingClientRect();
+      px = pr.left + pr.width/2; py = pr.top + pr.height/2;
+      ex = er.left + er.width/2; ey = er.top + er.height/2;
+      createLightningArc(px, py, ex, ey, getElementColor(element), 220);
+    } else {
+      // fallback simple projectile if DOM missing
+      createProjectile({ fromX: px, fromY: py, toX: ex, toY: ey, color: getElementColor(element), size: 10, travelMs: 200 });
+    }
+    applyDamageToEnemy(enemy, main, { type: element, source: 'weapon', setId: 'stormbreaker' });
+
+    // chaining: 50% chance for 2nd hit (15% damage), 25% chance for 3rd hit (10% damage)
+    const chainRadius = 180;
+    const centerX = enemy.position?.x || enemy.x || 0;
+    const centerY = enemy.position?.y || enemy.y || 0;
+    const usedIds = new Set([enemy.id]);
+    let prevEnemy = enemy;
+    
+    // First chain: 50% chance, 15% damage
+    if (Math.random() < 0.50) {
+      const candidates = findEnemiesInRadius(centerX, centerY, chainRadius).filter(e => !usedIds.has(e.id));
+      if (candidates.length > 0) {
+        candidates.sort((a,b) => {
+          const ax = (a.position?.x||a.x||0)-centerX, ay = (a.position?.y||a.y||0)-centerY;
+          const bx = (b.position?.x||b.x||0)-centerX, by = (b.position?.y||b.y||0)-centerY;
+          return (ax*ax+ay*ay) - (bx*bx+by*by);
+        });
+        const target = candidates[0];
+        const targetEl = document.querySelector(`[data-enemy-id="${target.id}"]`);
+        const prevEl = document.querySelector(`[data-enemy-id="${prevEnemy.id}"]`);
+        let fromX = centerX, fromY = centerY, toX = target.position?.x||target.x||0, toY = target.position?.y||target.y||0;
+        if (prevEl) {
+          const r = prevEl.getBoundingClientRect(); fromX = r.left + r.width/2; fromY = r.top + r.height/2;
+        }
+        if (targetEl) { const rr = targetEl.getBoundingClientRect(); toX = rr.left + rr.width/2; toY = rr.top + rr.height/2; }
+        createLightningArc(fromX, fromY, toX, toY, getElementColor(element), 200);
+        const chainDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.15);
+        applyDamageToEnemy(target, chainDmg, { type: element, source:'weapon_chain', setId:'stormbreaker' });
+        usedIds.add(target.id);
+        prevEnemy = target;
+        
+        // Second chain: 25% chance, 10% damage
+        if (Math.random() < 0.25) {
+          const centerX2 = target.position?.x || target.x || 0;
+          const centerY2 = target.position?.y || target.y || 0;
+          const candidates2 = findEnemiesInRadius(centerX2, centerY2, chainRadius).filter(e => !usedIds.has(e.id));
+          if (candidates2.length > 0) {
+            candidates2.sort((a,b) => {
+              const ax = (a.position?.x||a.x||0)-centerX2, ay = (a.position?.y||a.y||0)-centerY2;
+              const bx = (b.position?.x||b.x||0)-centerX2, by = (b.position?.y||b.y||0)-centerY2;
+              return (ax*ax+ay*ay) - (bx*bx+by*by);
+            });
+            const target2 = candidates2[0];
+            const target2El = document.querySelector(`[data-enemy-id="${target2.id}"]`);
+            const prev2El = document.querySelector(`[data-enemy-id="${prevEnemy.id}"]`);
+            let fromX2 = centerX2, fromY2 = centerY2, toX2 = target2.position?.x||target2.x||0, toY2 = target2.position?.y||target2.y||0;
+            if (prev2El) {
+              const r = prev2El.getBoundingClientRect(); fromX2 = r.left + r.width/2; fromY2 = r.top + r.height/2;
+            }
+            if (target2El) { const rr = target2El.getBoundingClientRect(); toX2 = rr.left + rr.width/2; toY2 = rr.top + rr.height/2; }
+            createLightningArc(fromX2, fromY2, toX2, toY2, getElementColor(element), 230);
+            const chainDmg2 = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.10);
+            applyDamageToEnemy(target2, chainDmg2, { type: element, source:'weapon_chain', setId:'stormbreaker' });
+          }
+        }
+      }
+    }
+  },
+
+  // Bastion - Titan Warhammer with AoE damage
+  bastion: (p, enemy, weapon) => {
+    const element = 'physical';
+    const atkComponent = (p.currentStats?.finalATK || p.ATK) * 0.20;
+    const hpComponent = (getPlayerHP(p) || 0) * 0.30;
+    const total = Math.floor(atkComponent + hpComponent);
+    const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
+    const cx = enemyEl ? (enemyEl.getBoundingClientRect().left + enemyEl.getBoundingClientRect().width/2) : (enemy.x||0);
+    const cy = enemyEl ? (enemyEl.getBoundingClientRect().top + enemyEl.getBoundingClientRect().height/2) : (enemy.y||0);
+    spawnShockwave(cx, cy, 48, getElementColor('physical'), 360);
+    applyDamageToEnemy(enemy, total, { type: element, source:'weapon', setId:'bastion' });
+    
+    // AoE damage: 10% physical damage equal to 20% player's HP
+    const aoeHpComponent = (getPlayerHP(p) || 0) * 0.20;
+    const aoeDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.10 + aoeHpComponent);
+    const aoeRadius = 100;
+    const enemyX = enemy.position?.x || enemy.x || 0;
+    const enemyY = enemy.position?.y || enemy.y || 0;
+    
+    const nearbyEnemies = findEnemiesInRadius(enemyX, enemyY, aoeRadius);
+    nearbyEnemies.forEach(e => {
+      if (e.id !== enemy.id) {
+        applyDamageToEnemy(e, aoeDmg, { type: element, source: 'weapon_aoe', setId: 'bastion' });
+      }
+    });
+  },
+
+  // Raven's Volley - Repeating crossbow with bouncing coins
+  nightwing: (p, enemy, weapon) => {
+    const element = 'physical';
+    const atkComp = (p.currentStats?.finalATK || p.ATK) * 0.20;
+    const mainDmg = Math.floor(atkComp);
+    
+    // Main attack visual and damage
+    const playerEl = document.getElementById('player-container');
+    const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
+    if (playerEl && enemyEl) {
+      const pR = playerEl.getBoundingClientRect();
+      const eR = enemyEl.getBoundingClientRect();
+      createProjectile({ fromX:pR.left+pR.width/2, fromY:pR.top+pR.height/2, toX:eR.left+eR.width/2, toY:eR.top+eR.height/2, color: getElementColor('physical'), size:10, travelMs:220 });
+    }
+    applyDamageToEnemy(enemy, mainDmg, { type: element, source:'weapon', setId:'nightwing' });
+    
+    // After hit, spawn 2 bouncing coins that bounce 3 times each
+    const coins = (p.coins || 0);
+    const coinDmg = Math.floor(coins * 0.077);
+    
+    for (let coinNum = 0; coinNum < 2; coinNum++) {
+      let currentEnemy = enemy;
+      const usedIds = new Set([enemy.id]);
+      
+      for (let bounce = 0; bounce < 3; bounce++) {
+        setTimeout(() => {
+          const candidates = GameState.enemies.filter(e => !usedIds.has(e.id));
+          if (candidates.length === 0) return;
+          
+          const nextEnemy = candidates[Math.floor(Math.random() * candidates.length)];
+          usedIds.add(nextEnemy.id);
+          
+          const fromEl = document.querySelector(`[data-enemy-id="${currentEnemy.id}"]`);
+          const toEl = document.querySelector(`[data-enemy-id="${nextEnemy.id}"]`);
+          
+          if (fromEl && toEl) {
+            const fromR = fromEl.getBoundingClientRect();
+            const toR = toEl.getBoundingClientRect();
+            createProjectile({
+              fromX: fromR.left + fromR.width/2,
+              fromY: fromR.top + fromR.height/2,
+              toX: toR.left + toR.width/2,
+              toY: toR.top + toR.height/2,
+              color: '#ffd700',
+              size: 12,
+              travelMs: 200,
+              onArrive: () => {
+                applyDamageToEnemy(nextEnemy, coinDmg, { type: element, source: 'weapon_coin', setId: 'nightwing' });
+                showElementDamage(coinDmg, 'physical', toEl, false);
+              }
+            });
+          }
+          
+          currentEnemy = nextEnemy;
+        }, bounce * 250 + coinNum * 100);
+      }
+    }
+  },
+
+  // Wraith Scythe - HP sacrifice with execute and lifesteal on kill
+  shade: (p, enemy, weapon) => {
+    const element = 'physical';
+    const small = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.10);
+    
+    // Lose 2% max HP
+    const hpMax = p.maxHp || p.HP_max || 1;
+    const hpLost = Math.floor(hpMax * 0.02);
+    const currentHP = getPlayerHP(p);
+    const newHP = Math.max(1, currentHP - hpLost);
+    setPlayerHP(p, newHP);
+    
+    // Track HP loss for Overflow stacks
+    if (!p.lossAccumulator) p.lossAccumulator = 0;
+    p.lossAccumulator += hpLost;
+    
+    // Deal 20% physical damage + 200% of HP lost
+    const execDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.20 + 2 * hpLost);
+    
+    // Red execute VFX
+    const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
+    if (enemyEl) {
+      createProjectile({ 
+        fromX: enemyEl.getBoundingClientRect().left + enemyEl.getBoundingClientRect().width/2 + 120,
+        fromY: enemyEl.getBoundingClientRect().top + enemyEl.getBoundingClientRect().height/2 - 40,
+        toX: enemyEl.getBoundingClientRect().left + enemyEl.getBoundingClientRect().width/2,
+        toY: enemyEl.getBoundingClientRect().top + enemyEl.getBoundingClientRect().height/2,
+        color: '#ff3b3b', size: 26, travelMs: 180,
+        onArrive: ()=> spawnShockwave(
+          enemyEl.getBoundingClientRect().left + enemyEl.getBoundingClientRect().width/2, 
+          enemyEl.getBoundingClientRect().top + enemyEl.getBoundingClientRect().height/2, 
+          44, '#ff3b3b', 300
+        )
+      });
+    }
+    
+    applyDamageToEnemy(enemy, execDmg, { type: element, source:'weapon', setId:'shade' });
+    
+    // If enemy dies, restore 15% max HP
+    if (enemy.hp <= 0) {
+      const healAmount = Math.floor(hpMax * 0.15);
+      const newHPAfterHeal = Math.min(hpMax, getPlayerHP(p) + healAmount);
+      setPlayerHP(p, newHPAfterHeal);
+      
+      // Track healing for Overflow stacks
+      if (!p.healAccumulator) p.healAccumulator = 0;
+      p.healAccumulator += healAmount;
+      
+      // Show heal visual
+      showFloatingChange(healAmount, 'heal');
+    }
+  },
+
+  // Aegis Scepter - launches a ball that hovers around enemy dealing continuous damage
+  aegis: (p, enemy, weapon) => {
+    const element = 'aether';
+    const dmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.20);
+    
+    applyDamageToEnemy(enemy, dmg, { type: element, source:'weapon', setId:'aegis' });
+    
+    // Launch a ball that continuously hovers around the enemy
+    // Ball deals 10% aether damage each hit
+    // If enemy dies, ball launches to random enemy
+    // Ball lasts for 5 seconds
+    const ballDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.10);
+    spawnAegisHoveringBall(enemy, ballDmg, 5000, p);
+  },
+
+  // Glacier - cryo rod: deal damage and slow, create cryo AOE on death that freezes
+  glacier: (p, enemy, weapon) => {
+    const element = 'cryo';
+    const cryoDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.20);
+    applyDamageToEnemy(enemy, cryoDmg, { type: element, source:'weapon', setId:'glacier' });
+    
+    const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
+    if (enemyEl) {
+      spawnShockwave(enemyEl.getBoundingClientRect().left + enemyEl.getBoundingClientRect().width/2, enemyEl.getBoundingClientRect().top + enemyEl.getBoundingClientRect().height/2, 28, getElementColor(element), 260);
+    }
+    
+    // After enemy is dead, create a cryo AOE that freezes enemies
+    if (enemy.hp <= 0) {
+      const enemyX = enemy.position?.x || enemy.x || 0;
+      const enemyY = enemy.position?.y || enemy.y || 0;
+      const aoeDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.10);
+      
+      // Create cryo AOE zone that freezes enemies for 3 seconds and deals 10% cryo damage
+      createCryoZone(enemyX, enemyY, aoeDmg, 5000, p);
+    }
+  },
+
+  // Emberkin - Inferno Blade: instant damage + fire AoE zone
+  emberkin: (p, enemy, weapon) => {
+    const element = 'fire';
+    const instant = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.20);
+    const burnTick = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.10);
+    
+    applyDamageToEnemy(enemy, instant, { type: element, source:'weapon', setId:'emberkin' });
+    
+    const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
+    if (enemyEl) {
+      createProjectile({ 
+        fromX: enemyEl.getBoundingClientRect().left + enemyEl.getBoundingClientRect().width/2 + 80,
+        fromY: enemyEl.getBoundingClientRect().top + enemyEl.getBoundingClientRect().height/2 - 20,
+        toX: enemyEl.getBoundingClientRect().left + enemyEl.getBoundingClientRect().width/2,
+        toY: enemyEl.getBoundingClientRect().top + enemyEl.getBoundingClientRect().height/2,
+        color: getElementColor(element), size: 18, travelMs: 200 
+      });
+    }
+    
+    // Create fire AoE zone that lasts 10 seconds
+    const enemyX = enemy.position?.x || enemy.x || 0;
+    const enemyY = enemy.position?.y || enemy.y || 0;
+    createFireZone(enemyX, enemyY, burnTick, 10000, p);
+  },
+
+  // Zephyr - Gale Daggers: stars (star-shaped) and explosions
+  zephyr: (p, enemy, weapon) => {
+    const element = 'aether';
+    const main = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.20);
+    applyDamageToEnemy(enemy, main, { type: element, source:'weapon', setId:'zephyr' });
+
+    const nStars = 4; // Always 4 stars as per documentation
+    const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
+    const fromX = enemyEl ? (enemyEl.getBoundingClientRect().left + enemyEl.getBoundingClientRect().width/2) : (enemy.x||0);
+    const fromY = enemyEl ? (enemyEl.getBoundingClientRect().top + enemyEl.getBoundingClientRect().height/2) : (enemy.y||0);
+
+    for (let i=0;i<nStars;i++){
+      // target random nearby enemy or direction
+      const candidates = GameState.enemies.filter(e => e.id !== enemy.id);
+      const randTarget = candidates.length ? candidates[Math.floor(Math.random()*candidates.length)] : null;
+      const toX = randTarget ? (randTarget.position?.x||randTarget.x||0) : (fromX + (Math.random()*240 - 120));
+      const toY = randTarget ? (randTarget.position?.y||randTarget.y||0) : (fromY + (Math.random()*240 - 120));
+      createStarProjectile({
+        fromX, fromY, toX, toY, color: getElementColor(element), size: 12, travelMs: 260,
+        onArrive: ()=> {
+          // Each star deals 10% damage
+          const hits = findEnemiesInRadius(toX, toY, 40);
+          hits.forEach(h => applyDamageToEnemy(h, Math.floor((p.currentStats?.finalATK || p.ATK) * 0.10), { type: element, source:'weapon_star', setId:'zephyr' }));
+        }
+      });
+    }
+  }
+}; // end WEAPON_HANDLERS
+/* ---------- Updated attackEnemy to call weapon handler ---------- */
+
+/* ---------- attackEnemy: updated to skip click when Aegis equipped ---------- */
+function attackEnemy(enemy) {
+  if (GameState.isDead || !GameState.canAttack) return;
+
+  const player = GameState.player;
+  const weaponItem = player.equipment && player.equipment.weapon;
+  const isAegisEquipped = weaponItem && weaponItem.setId === 'aegis';
+
+  // If Aegis is equipped, clicking does NOT apply click damage. Instead, ensure orbiters exist.
+  if (!isAegisEquipped) {
+    // existing click damage
+    const clickResult = computeDamage(enemy); // keep existing function
+    enemy.hp -= clickResult.damage;
+    enemy.lastHit = { type: 'physical', source: 'click', setId: null, damage: clickResult.damage };
+    // show click number
+    const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
+    if (enemyEl) {
+      const n = document.createElement('div');
+      n.className = 'drop-item';
+      n.textContent = clickResult.crit ? `${clickResult.damage}!` : `${clickResult.damage}`;
+      n.style.left = `${enemy.position?.x || enemy.x || 0}px`;
+      n.style.top = `${(enemy.position?.y || enemy.y || 0) - 30}px`;
+      n.style.color = clickResult.crit ? '#ff0' : '#fff';
+      n.style.fontWeight = '700';
+      document.getElementById('drop-layer').appendChild(n);
+      setTimeout(()=> n.remove(), 1400);
+    }
+  } else {
+    // ensure orbiters spawn and show small pulse so player sees something when clicking
+    ensureAegisOrbiters(player);
+    const playerEl = document.getElementById('player-container');
+    if (playerEl) {
+      const pr = playerEl.getBoundingClientRect();
+      spawnShockwave(pr.left + pr.width/2, pr.top + pr.height/2, 32, getElementColor('aether'), 220);
+    }
+  }
+
+  // weapon unique attack executed even for Aegis (some weapons used orbiters instead)
+  if (weaponItem && weaponItem.isWeapon && weaponItem.setId) {
+    const handler = WEAPON_HANDLERS[weaponItem.setId];
+    if (handler) {
+      try { handler(player, enemy, weaponItem); }
+      catch(e){ console.error('weapon handler error', e); }
+    } else {
+      // fallback: elemental extra damage
+      const p = player;
+      const weaponBase = Math.floor((p.currentStats?.finalATK || p.ATK) * (weaponItem.weaponMultiplier || 0.20));
+      const el = weaponItem.element || (weaponItem.setId && (EQUIPMENT_SETS[weaponItem.setId]?.element || 'physical')) || 'physical';
+      applyDamageToEnemy(enemy, weaponBase, { type: el, source:'weapon', setId: weaponItem.setId||null });
+    }
+  }
+
+  // handle death if hp <= 0 (applyDamageToEnemy handles AoE explosion for skywarden)
+  if (enemy.hp <= 0) {
+    // onEnemyDeath already invoked inside applyDamageToEnemy
+    // fallback in case click killed before weapon applied:
+    if (enemy.lastHit && enemy.lastHit.type === 'wind' && enemy.lastHit.setId === 'skywarden') {
+      // handled earlier; nothing extra
+    }
   }
 }
 
@@ -3521,8 +5028,41 @@ function buildItemTooltipHtml(item, isEquipped) {
   `;
 
   if (item.type === 'equipment') {
-    html += ``;
+    // Add set information if item is part of a set
+    if (item.setId && EQUIPMENT_SETS[item.setId]) {
+      const setData = EQUIPMENT_SETS[item.setId];
+      const p = GameState.player;
+      const setCount = (p.activeSets && p.activeSets[item.setId]) || 0;
+      
+      html += `<div style="padding: 10px; margin: 8px 0; background: rgba(212,175,55,0.15); border: 2px solid var(--accent-gold); border-radius: 6px;">`;
+      html += `<div style="color: var(--accent-gold); font-weight: 700; margin-bottom: 6px; font-size: 13px;">${setData.icon} ${setData.name} Set (${setCount}/6)</div>`;
+      
+      // Show weapon ability if this is a weapon
+      if (item.slot === 'weapon' && setData.weaponName && setData.weaponDesc) {
+        html += `<div style="padding: 6px; margin: 6px 0; background: rgba(0,0,0,0.3); border-left: 3px solid var(--accent-gold); font-size: 10px;">`;
+        html += `<div style="color: var(--accent-gold-bright); font-weight: 600; margin-bottom: 3px;">⚔️ ${setData.weaponName}</div>`;
+        html += `<div style="color: var(--text-secondary); line-height: 1.4;">${setData.weaponDesc}</div>`;
+        html += `</div>`;
+      }
+      
+      // Show set bonuses
+      html += `<div style="margin-top: 8px; font-size: 10px;">`;
+      [2, 3, 4, 6].forEach(tier => {
+        const bonus = setData.bonuses[tier];
+        if (bonus) {
+          const active = setCount >= tier;
+          const color = active ? 'var(--text-primary)' : 'var(--text-dim)';
+          const weight = active ? '600' : '400';
+          const checkmark = active ? '✓' : '○';
+          html += `<div style="color: ${color}; font-weight: ${weight}; padding: 2px 0; line-height: 1.3;">`;
+          html += `<span style="color: ${active ? '#4fc3f7' : 'var(--text-dim)'};">${checkmark} ${tier}-piece:</span> ${bonus.desc}`;
+          html += `</div>`;
+        }
+      });
+      html += `</div></div>`;
+    }
 
+    // Item attributes
     item.affixes.forEach(affix => {
       const suffix = (affix.name.includes('%') || affix.name.includes('Crit')) ? '%' : '';
       if (affix.locked) {
@@ -3575,6 +5115,40 @@ function buildShopItemTooltipHtml(item) {
   `;
 
   if (item.type === 'equipment') {
+    // Add set information if item is part of a set
+    if (item.setId && EQUIPMENT_SETS[item.setId]) {
+      const setData = EQUIPMENT_SETS[item.setId];
+      const p = GameState.player;
+      const setCount = (p.activeSets && p.activeSets[item.setId]) || 0;
+      
+      html += `<div style="padding: 10px; margin: 8px 0; background: rgba(212,175,55,0.15); border: 2px solid var(--accent-gold); border-radius: 6px;">`;
+      html += `<div style="color: var(--accent-gold); font-weight: 700; margin-bottom: 6px; font-size: 13px;">${setData.icon} ${setData.name} Set (${setCount}/6)</div>`;
+      
+      // Show weapon ability if this is a weapon
+      if (item.slot === 'weapon' && setData.weaponName && setData.weaponDesc) {
+        html += `<div style="padding: 6px; margin: 6px 0; background: rgba(0,0,0,0.3); border-left: 3px solid var(--accent-gold); font-size: 10px;">`;
+        html += `<div style="color: var(--accent-gold-bright); font-weight: 600; margin-bottom: 3px;">⚔️ ${setData.weaponName}</div>`;
+        html += `<div style="color: var(--text-secondary); line-height: 1.4;">${setData.weaponDesc}</div>`;
+        html += `</div>`;
+      }
+      
+      // Show set bonuses
+      html += `<div style="margin-top: 8px; font-size: 10px;">`;
+      [2, 3, 4, 6].forEach(tier => {
+        const bonus = setData.bonuses[tier];
+        if (bonus) {
+          const active = setCount >= tier;
+          const color = active ? 'var(--text-primary)' : 'var(--text-dim)';
+          const weight = active ? '600' : '400';
+          const checkmark = active ? '✓' : '○';
+          html += `<div style="color: ${color}; font-weight: ${weight}; padding: 2px 0; line-height: 1.3;">`;
+          html += `<span style="color: ${active ? '#4fc3f7' : 'var(--text-dim)'};">${checkmark} ${tier}-piece:</span> ${bonus.desc}`;
+          html += `</div>`;
+        }
+      });
+      html += `</div></div>`;
+    }
+    
     item.affixes.forEach(affix => {
       const suffix = (affix.name.includes('%') || affix.name.includes('Crit')) ? '%' : '';
       if (affix.locked) {
@@ -3592,8 +5166,7 @@ function buildShopItemTooltipHtml(item) {
     `;
   } else if (item.type === 'consumable') {
     html += `
-      <div style="margin-bottom: 8px;">Duration: ${item.duration}s</div>
-      <div style="margin-bottom: 8px;">Effect: ${item.effectId.replace(/_/g, ' ').replace(/\d+/g, m => 'x' + (parseInt(m)/100))}</div>
+      <div style="padding: 8px;">${item.desc || item.name}</div>
       </div>
       <div class="tooltip-actions">
         <button class="tooltip-btn primary buy-shop-btn" data-item-id="${item.id}">Buy (💎${item.price})</button>
@@ -4113,6 +5686,9 @@ function gameTick() {
   
   updateEnemies(dt);
   
+  // Process status effects (burn, slow, freeze, etc.)
+  processEnemyStatusTicks(CONFIG.TICK_INTERVAL_MS);
+  
   // Update death system
   updateDeathSystem(dt);
   
@@ -4220,6 +5796,50 @@ function updateDebugPanel() {
 }
 
 // ========== Initialization ==========
+
+// Clean up invalid setIds from equipment (for old save data compatibility)
+function cleanupInvalidSetIds() {
+  const p = GameState.player;
+  if (!p) return;
+  
+  // Clean equipment
+  Object.keys(p.equipment || {}).forEach(slot => {
+    const item = p.equipment[slot];
+    if (item && item.setId && !EQUIPMENT_SETS[item.setId]) {
+      console.warn(`Removing invalid setId "${item.setId}" from ${item.name}`);
+      delete item.setId;
+    }
+  });
+  
+  // Clean inventory
+  (p.inventory || []).forEach(item => {
+    if (item && item.setId && !EQUIPMENT_SETS[item.setId]) {
+      console.warn(`Removing invalid setId "${item.setId}" from ${item.name}`);
+      delete item.setId;
+    }
+  });
+  
+  // Clean shop
+  if (GameState.shop && GameState.shop.offers) {
+    (GameState.shop.offers.equipment || []).forEach(item => {
+      if (item && item.setId && !EQUIPMENT_SETS[item.setId]) {
+        console.warn(`Removing invalid setId "${item.setId}" from ${item.name}`);
+        delete item.setId;
+      }
+    });
+  }
+  
+  // Rebuild activeSets from scratch
+  const setCounts = {};
+  Object.keys(p.equipment || {}).forEach(slot => {
+    const item = p.equipment[slot];
+    if (item && item.setId && EQUIPMENT_SETS[item.setId]) {
+      setCounts[item.setId] = (setCounts[item.setId] || 0) + 1;
+    }
+  });
+  p.activeSets = setCounts;
+}
+
 function init() {
   GameState.rng = new RNG(CONFIG.AUTO_ATTACK_SEED);
   
@@ -4230,6 +5850,9 @@ function init() {
     GameState.worldProgress = createWorldProgress();
     refreshShop();
   }
+  
+  // Clean up any invalid setIds from old save data
+  cleanupInvalidSetIds();
   
   computeDerivedStats();
   renderUI();
