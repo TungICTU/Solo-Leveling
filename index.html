@@ -192,6 +192,23 @@
       margin: 0 auto;
     }
 
+    #attack-range-circle {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      border: 2px solid;
+      pointer-events: none;
+      opacity: 0.3;
+      z-index: 45;
+      display: none;
+    }
+
+    #attack-range-circle.visible {
+      display: block;
+    }
+
     #player-hpbar {
       position: absolute;
       top: 70px;
@@ -1586,6 +1603,7 @@
     </header>
 
     <main id="stage">
+      <div id="attack-range-circle"></div>
       <div id="player-container">
         <div id="player" aria-label="player" role="img"></div>
         <div id="player-hpbar">
@@ -1797,6 +1815,18 @@
       <button class="debug-btn" onclick="DevTools.grantGems(100)">+100 Gems</button>
       <button class="debug-btn" onclick="DevTools.levelUp()">Level Up</button>
       <button class="debug-btn" onclick="DevTools.clearSave()">Clear Save</button>
+      <div style="border-top: 1px solid #444; margin: 8px 0; padding-top: 8px;">
+        <div style="font-weight: bold; margin-bottom: 4px;">Grant Equipment Sets:</div>
+        <button class="debug-btn" onclick="DevTools.grantSet('skywarden')">Skywarden</button>
+        <button class="debug-btn" onclick="DevTools.grantSet('stormbreaker')">Stormbreaker</button>
+        <button class="debug-btn" onclick="DevTools.grantSet('bastion')">Bastion</button>
+        <button class="debug-btn" onclick="DevTools.grantSet('nightwing')">Nightwing</button>
+        <button class="debug-btn" onclick="DevTools.grantSet('shade')">Shade</button>
+        <button class="debug-btn" onclick="DevTools.grantSet('aegis')">Aegis</button>
+        <button class="debug-btn" onclick="DevTools.grantSet('glacier')">Glacier</button>
+        <button class="debug-btn" onclick="DevTools.grantSet('emberkin')">Emberkin</button>
+        <button class="debug-btn" onclick="DevTools.grantSet('zephyr')">Zephyr</button>
+      </div>
     </div>
 
     <div id="notification-container"></div>
@@ -1820,8 +1850,8 @@ const CONFIG = {
   DEFAULT_CONSUMABLE_DURATION_S: 3600,
   TEST_CONSUMABLE_DURATION_S: 300,
   WAVE_INTERVAL_SEC: 15,
-  MIN_WAVE_ENEMIES: 5,
-  MAX_WAVE_ENEMIES: 50,
+  MIN_WAVE_ENEMIES: 50,
+  MAX_WAVE_ENEMIES: 5000,
   RARITY_PROB: { common:0.45, uncommon:0.35, rare:0.10, epic:0.05, legendary:0.03, mythic:0.02 },
   EQUIP_BASE_UPGRADE_COST: { common:50, uncommon:200, rare:1000, epic:5000, legendary:25000, mythic:100000 },
   STAR_THRESHOLDS: [10,25,50,75,100],
@@ -1845,20 +1875,20 @@ const EQUIPMENT_SETS = {
     element: 'wind',
     icon: '🌪️',
     weaponName: 'Aquila Longbow',
-    weaponDesc: 'Deal 20% wind damage to an enemy, randomly pushes 2 nearby enemies back and deal 10% wind damage to them. After enemy dies to wind damage, creates an AOE wind explosion on the dead enemy area that deals 50% wind damage to surrounding enemies.',
+    weaponDesc: 'Deal 120% wind damage to an enemy, randomly pushes that enemy and 2 nearby enemies back and deal 50% wind damage to them. After enemy dies to wind damage, creates an AOE wind explosion on the dead enemy area that deals 150% wind damage to surrounding enemies.',
     items: {
       helmet: { slot: 'helmet', name: 'Skywarden Helmet', icon: '🪖' },
       chestplate: { slot: 'chestplate', name: 'Skywarden Chestplate', icon: '🦺' },
       leggings: { slot: 'leggings', name: 'Skywarden Leggings', icon: '👖' },
       boots: { slot: 'boots', name: 'Skywarden Boots', icon: '🥾' },
       ring: { slot: 'ring', name: 'Skywarden Ring', icon: '💍' },
-      weapon: { slot: 'weapon', name: 'Aquila Longbow', icon: '🏹', isWeapon: true, multiplier: 0.20 }
+      weapon: { slot: 'weapon', name: 'Aquila Longbow', icon: '🏹', isWeapon: true, multiplier: 1.20 }
     },
     bonuses: {
       2: { desc: '+12% ATK', ATK_pct: 12 },
       3: { desc: 'Wind Storm: If enemy killed with wind damage, create 3 AOE wind explosions nearby that enemy that deals 50% wind damage to surrounding enemies.' },
       4: { desc: '+12% Wind DMG', WindDMG_pct: 12 },
-      6: { desc: 'Aquila Tornado: For every 10 enemy killed with wind damage, create a tornado at a random enemy, pull every enemy nearby to the tornado, dealing 20% wind damage each second for 5 seconds.' }
+      6: { desc: 'Aquila Tornado: For every 20 enemy killed with wind damage, create a tornado at a random enemy, pull every enemy nearby to the tornado, dealing 50% wind damage each second for 5 seconds.' }
     },
     slots: ['helmet', 'chestplate', 'leggings', 'boots', 'ring', 'weapon']
   },
@@ -1867,20 +1897,20 @@ const EQUIPMENT_SETS = {
     element: 'lightning',
     icon: '⚡',
     weaponName: 'Storm Pike',
-    weaponDesc: 'Deal 20% lightning damage to an enemy, theres a 50% chance to hit a nearby enemy, dealing 15% lightning damage to that enemy, then theres a 25% chance to hit another nearby enemy, dealing 10% lightning damage to that enemy.',
+    weaponDesc: 'Deal 120% lightning damage to an enemy, there is a 50% chance to hit a nearby enemy, dealing 75% lightning damage to that enemy, then there is a 25% chance to hit another nearby enemy, dealing 50% lightning damage to that enemy.',
     items: {
       helmet: { slot: 'helmet', name: 'Stormbreaker Helmet', icon: '🪖' },
       chestplate: { slot: 'chestplate', name: 'Stormbreaker Chestplate', icon: '🦺' },
       leggings: { slot: 'leggings', name: 'Stormbreaker Leggings', icon: '👖' },
       boots: { slot: 'boots', name: 'Stormbreaker Boots', icon: '🥾' },
       ring: { slot: 'ring', name: 'Stormbreaker Ring', icon: '💍' },
-      weapon: { slot: 'weapon', name: 'Storm Pike', icon: '🔱', isWeapon: true, multiplier: 0.20 }
+      weapon: { slot: 'weapon', name: 'Storm Pike', icon: '🔱', isWeapon: true, multiplier: 1.20 }
     },
     bonuses: {
       2: { desc: '+12% ATK', ATK_pct: 12 },
-      3: { desc: 'Lightning Surge: Lightning is guaranteed to hit at least 2 nearby enemies after hitting an enemy, 50% chance to hit the 4th and 25% chance to hit the 5th, lightning now deals consistent 20% lightning damage.' },
+      3: { desc: 'Lightning Surge: Lightning is guaranteed to hit at least 2 nearby enemies after hitting an enemy, 50% chance to hit the 4th and 25% chance to hit the 5th, lightning now deals consistent 75% lightning damage.' },
       4: { desc: '+12% Lightning DMG', LightningDMG_pct: 12 },
-      6: { desc: 'Multishot: Hitting one enemy will hit the enemy and 3 enemies around it, lightning now deals consistent 50% lightning damage.' }
+      6: { desc: 'Multishot: Creates 3 lightning arcs to that enemy and 2 nearby enemies, lightning now deals consistent 120% lightning damage.' }
     },
     slots: ['helmet', 'chestplate', 'leggings', 'boots', 'ring', 'weapon']
   },
@@ -1889,20 +1919,20 @@ const EQUIPMENT_SETS = {
     element: 'physical',
     icon: '🛡️',
     weaponName: 'Titan Warhammer',
-    weaponDesc: 'Deal 20% physical damage equal to 30% player HP, and 10% physical damage equal to 20% player HP in surrounding area.',
+    weaponDesc: 'Deal 120% physical damage equal to 30% player HP and 80% physical damage equal to 20% player HP in surrounding area.',
     items: {
       helmet: { slot: 'helmet', name: 'Bastion Helmet', icon: '🪖' },
       chestplate: { slot: 'chestplate', name: 'Bastion Chestplate', icon: '🦺' },
       leggings: { slot: 'leggings', name: 'Bastion Leggings', icon: '👖' },
       boots: { slot: 'boots', name: 'Bastion Boots', icon: '🥾' },
       ring: { slot: 'ring', name: 'Bastion Ring', icon: '💍' },
-      weapon: { slot: 'weapon', name: 'Titan Warhammer', icon: '🔨', isWeapon: true, multiplier: 0.20 }
+      weapon: { slot: 'weapon', name: 'Titan Warhammer', icon: '🔨', isWeapon: true, multiplier: 1.20 }
     },
     bonuses: {
       2: { desc: '+12% HP', HP_pct: 12 },
-      3: { desc: 'Shock Roar: Creates a shock area around the player every 5 seconds, dealing damage equal to 20% of players HP.' },
+      3: { desc: 'Shock Roar: Creates a giant shock area around the player every 2 seconds, dealing 80% damage equal to 20% of players HP.' },
       4: { desc: 'Reduce damage taken by 12%', DMG_reduction_pct: 12 },
-      6: { desc: 'Metal Fierce: +20% DMG when player <50% HP' }
+      6: { desc: 'Metal Fierce: +20% DMG when player <50% HP, increase area of Shock Roar and the player\'s attack, change color of Shock Roar and player\'s attack to light red' }
     },
     slots: ['helmet', 'chestplate', 'leggings', 'boots', 'ring', 'weapon']
   },
@@ -1911,20 +1941,20 @@ const EQUIPMENT_SETS = {
     element: 'physical',
     icon: '🦇',
     weaponName: "Raven's Volley",
-    weaponDesc: 'Deal 20% physical damage equal to 20% of players ATK, after hit an enemy, bounce 2 coins randomly 3 times, dealing 7.7% physical damage of players total coins.',
+    weaponDesc: 'Deal 120% physical damage equal to 20% of players ATK, after hit an enemy, bounce 2 coins randomly 3 times, dealing 0.77% physical damage of players total coins (this damage appears yellow).',
     items: {
       helmet: { slot: 'helmet', name: 'Nightwing Helmet', icon: '🪖' },
       chestplate: { slot: 'chestplate', name: 'Nightwing Chestplate', icon: '🦺' },
       leggings: { slot: 'leggings', name: 'Nightwing Leggings', icon: '👖' },
       boots: { slot: 'boots', name: 'Nightwing Boots', icon: '🥾' },
       ring: { slot: 'ring', name: 'Nightwing Ring', icon: '💍' },
-      weapon: { slot: 'weapon', name: "Raven's Volley", icon: '🏹', isWeapon: true, multiplier: 0.20 }
+      weapon: { slot: 'weapon', name: "Raven's Volley", icon: '🏹', isWeapon: true, multiplier: 1.20 }
     },
     bonuses: {
       2: { desc: '+12% ATK', ATK_pct: 12 },
-      3: { desc: 'Stealth: Increase coin gain by 50%, for every 2000 coins player have, add 1 ATK point, max 5000 ATK.' },
+      3: { desc: 'Rich Man\'s Blow: For every enemy killed with coin damage, shoot 5 coins from the dead enemy in star pattern, each coin hit deals 0.99% physical yellow damage of players total coins. Increase coin obtained from enemies killed with coin damage by 50%.' },
       4: { desc: '+6% SPD', SPD_pct: 6 },
-      6: { desc: 'Wealth: For every 10000 coin collected, gain 1 stack of Wealth, max 9 stacks. Each stack of Wealth +20% DMG for 30 seconds.' }
+      6: { desc: 'Wealth: For every 20 enemy killed with coin damage, rains coins and each coin hit deals 1.88% physical yellow damage of players total coins to the enemies on the field, this rain lasts for 5 seconds.' }
     },
     slots: ['helmet', 'chestplate', 'leggings', 'boots', 'ring', 'weapon']
   },
@@ -1933,20 +1963,20 @@ const EQUIPMENT_SETS = {
     element: 'physical',
     icon: '💀',
     weaponName: 'Wraith Scythe',
-    weaponDesc: 'Deal 10% physical damage to an enemy, lose 2% max HP, and deals 20% physical damage + 200% of HP lost to an enemy. If an enemy dies, restores 15% max HP.',
+    weaponDesc: 'Deal 50% physical damage to an enemy, lose 2% max HP, and deals extra 200% physical damage + 200% of HP lost to an enemy (this damage appears red), if an enemy dies, restores 5% max HP. If the player has lower than 2% max HP, set the player\'s HP to 1.',
     items: {
       helmet: { slot: 'helmet', name: 'Shade Helmet', icon: '🪖' },
       chestplate: { slot: 'chestplate', name: 'Shade Chestplate', icon: '🦺' },
       leggings: { slot: 'leggings', name: 'Shade Leggings', icon: '👖' },
       boots: { slot: 'boots', name: 'Shade Boots', icon: '🥾' },
       ring: { slot: 'ring', name: 'Shade Ring', icon: '💍' },
-      weapon: { slot: 'weapon', name: 'Wraith Scythe', icon: '⚔️', isWeapon: true, multiplier: 0.10 }
+      weapon: { slot: 'weapon', name: 'Wraith Scythe', icon: '⚔️', isWeapon: true, multiplier: 0.50 }
     },
     bonuses: {
       2: { desc: '+12% HP', HP_pct: 12 },
-      3: { desc: 'Lifesteal: Restores 10% more max HP after killing an enemy, increase damage dealt by HP lost by 200%.' },
+      3: { desc: 'Bloodbath: Increase damage dealt by HP lost by 200%, create a small rain area lasts for 5 seconds, enemies entering or within the area takes damage equal to 300% of HP lost every tick for 5 seconds.' },
       4: { desc: 'Reduce damage taken by 12%', DMG_reduction_pct: 12 },
-      6: { desc: 'Overflow: For every 200 HP lost or healed, gain 1 stack of Bloodthirst (max 99 stacks). Each stack +2% DMG for 30 seconds.' }
+      6: { desc: 'Overflow: For every 2000 HP lost or healed, +50% DMG for 30 seconds. If the player has <50% HP, heals up to full HP and creates a giant red explosion, dealing 500% HP lost to surrounding enemies.' }
     },
     slots: ['helmet', 'chestplate', 'leggings', 'boots', 'ring', 'weapon']
   },
@@ -1955,20 +1985,20 @@ const EQUIPMENT_SETS = {
     element: 'aether',
     icon: '✨',
     weaponName: 'Aether Scepter',
-    weaponDesc: 'Deal 20% aether damage to an enemy, launches a ball that continuously hover around the enemy, dealing 10% aether damage each hit. If the enemy is dead, the ball launches to a random enemy, dealing 10% aether damage each hit. The ball lasts for 15 seconds.',
+    weaponDesc: 'Launches a ball that continuously hover around the enemy, dealing 120% aether damage each enemy hit, if the enemy is dead, the ball launches to a random enemy, dealing 120% aether damage each hit, the ball lasts for 5 seconds.',
     items: {
       helmet: { slot: 'helmet', name: 'Aegis Helmet', icon: '🪖' },
       chestplate: { slot: 'chestplate', name: 'Aegis Chestplate', icon: '🦺' },
       leggings: { slot: 'leggings', name: 'Aegis Leggings', icon: '👖' },
       boots: { slot: 'boots', name: 'Aegis Boots', icon: '🥾' },
       ring: { slot: 'ring', name: 'Aegis Ring', icon: '💍' },
-      weapon: { slot: 'weapon', name: 'Aether Scepter', icon: '🪄', isWeapon: true, multiplier: 0.20 }
+      weapon: { slot: 'weapon', name: 'Aether Scepter', icon: '🪄', isWeapon: true, multiplier: 1.20 }
     },
     bonuses: {
       2: { desc: '+12% Aether DMG', AetherDMG_pct: 12 },
-      3: { desc: 'Myth: For every enemy hit, there is a 20% chance to spawn another ball, launches to a random enemy, that continuously hover around the enemy, dealing 10% aether damage each hit. The ball lasts for 5 seconds or after the enemy is dead.' },
-      4: { desc: '+1 ball' },
-      6: { desc: 'Star Shooter: After the enemy is dead, spawn 3 balls spinning around the dead enemy for 3 seconds, each circle deals 10% aether damage, then launch that 3 balls to 3 random enemies, dealing 25% aether damage upon hit.' }
+      3: { desc: 'Myth: For every enemy hit, there is a 20% chance to spawn another ball from the enemy, launches to a random enemy, that continuously hover around the enemy, dealing 120% aether damage each hit, the ball lasts for 3 seconds or after the enemy is dead' },
+      4: { desc: 'Launches 2 balls that continuously hover around the enemy, dealing 150% aether damage each enemy hit, if the enemy is dead, the ball launches to a random enemy, dealing 150% aether damage each hit, the ball lasts for 8 seconds.' },
+      6: { desc: 'Star Shooter: after the enemy is dead, spawn 3 balls spinning around the dead enemy for 3 seconds, each circle deals 80% aether damage, then launch that 3 balls to 3 random enemies, explodes and dealing 200% aether damage upon hit.' }
     },
     slots: ['helmet', 'chestplate', 'leggings', 'boots', 'ring', 'weapon']
   },
@@ -1977,20 +2007,20 @@ const EQUIPMENT_SETS = {
     element: 'cryo',
     icon: '❄️',
     weaponName: 'Cryo Rod',
-    weaponDesc: 'If the enemy is hit, freeze the enemy for 3 seconds and deal 20% cryo damage to an enemy. After the enemy is dead, create a cryo AOE that any enemy moved or within the area will be freezed for 3 seconds, dealing 10% cryo damage.',
+    weaponDesc: 'Immediately freezes the enemy for 2 seconds and deal 120% cryo damage to an enemy, if an enemy is already frozen before, they cant be frozen again for 10 seconds, after the enemy is dead, create a cryo AOE that any enemy moved or within the area will be freezed for 3 seconds, dealing 20% cryo damage every tick for 3 seconds.',
     items: {
       helmet: { slot: 'helmet', name: 'Glacier Helmet', icon: '🪖' },
       chestplate: { slot: 'chestplate', name: 'Glacier Chestplate', icon: '🦺' },
       leggings: { slot: 'leggings', name: 'Glacier Leggings', icon: '👖' },
       boots: { slot: 'boots', name: 'Glacier Boots', icon: '🥾' },
       ring: { slot: 'ring', name: 'Glacier Ring', icon: '💍' },
-      weapon: { slot: 'weapon', name: 'Cryo Rod', icon: '🪄', isWeapon: true, multiplier: 0.20 }
+      weapon: { slot: 'weapon', name: 'Cryo Rod', icon: '🪄', isWeapon: true, multiplier: 1.20 }
     },
     bonuses: {
       2: { desc: '+12% ATK', ATK_pct: 12 },
-      3: { desc: 'Frozen Spikes: After the enemy is unfrozen, create an explosion and deal 50% cryo damage to that enemy.' },
+      3: { desc: 'Frozen Spikes: After the enemy is unfrozen, create an explosion and deal 120% cryo damage to that enemy.' },
       4: { desc: 'Freezed enemies take +20% damage' },
-      6: { desc: 'Ice Storm: If an enemy dies to cryo damage, randomly freeze 3 enemies and deal 25% cryo damage to them.' }
+      6: { desc: 'Ice Storm: If an enemy dies to cryo damage, randomly freeze 3 enemies surrounding the enemy and deal 150% cryo damage to them.' }
     },
     slots: ['helmet', 'chestplate', 'leggings', 'boots', 'ring', 'weapon']
   },
@@ -1999,20 +2029,20 @@ const EQUIPMENT_SETS = {
     element: 'fire',
     icon: '🔥',
     weaponName: 'Inferno Blade',
-    weaponDesc: 'Deals 20% fire damage, create a fire AOE for 10 seconds, enemy within the fire AOE will take fire damage over time equal to 10% fire damage every second for 5 seconds.',
+    weaponDesc: 'Deals 120% fire damage, create a fire AOE for 10 seconds, enemy entering or within the fire AOE will take fire damage over time equal to 20% fire damage every tick for 5 seconds.',
     items: {
       helmet: { slot: 'helmet', name: 'Emberkin Helmet', icon: '🪖' },
       chestplate: { slot: 'chestplate', name: 'Emberkin Chestplate', icon: '🦺' },
       leggings: { slot: 'leggings', name: 'Emberkin Leggings', icon: '👖' },
       boots: { slot: 'boots', name: 'Emberkin Boots', icon: '🥾' },
       ring: { slot: 'ring', name: 'Emberkin Ring', icon: '💍' },
-      weapon: { slot: 'weapon', name: 'Inferno Blade', icon: '⚔️', isWeapon: true, multiplier: 0.20 }
+      weapon: { slot: 'weapon', name: 'Inferno Blade', icon: '⚔️', isWeapon: true, multiplier: 1.20 }
     },
     bonuses: {
       2: { desc: '+12% ATK', ATK_pct: 12 },
-      3: { desc: 'Burn: Burning DoT scales by +8% of player ATK per second.' },
+      3: { desc: 'Burn: Burning DoT scales by +8% of player ATK per tick.' },
       4: { desc: '+12% Fire DMG', FireDMG_pct: 12 },
-      6: { desc: 'Ignite: After killing 10 enemies with fire damage, randomly creates 3 red pink-ish fire AOEs that enemy within the fire AOE will take fire damage over time equal to 25% fire damage for 15 seconds.' }
+      6: { desc: 'Ignite: After killing 10 enemies with fire damage, randomly creates 3 giant red pink-ish fire around the player that enemy entering or within the fire AOE will immediately take fire damage over time equal to 65% fire damage every tick for 10 seconds.' }
     },
     slots: ['helmet', 'chestplate', 'leggings', 'boots', 'ring', 'weapon']
   },
@@ -2021,20 +2051,20 @@ const EQUIPMENT_SETS = {
     element: 'aether',
     icon: '🌟',
     weaponName: 'Gale Daggers',
-    weaponDesc: 'Deals 20% aether damage to an enemy, then split into 4 stars shooting randomly, each star deals 10% aether damage to enemy collide with the star.',
+    weaponDesc: 'Deals 120% aether damage to an enemy, then split into 4 stars shooting randomly, each star deals 50% aether damage to enemy collide with the star.',
     items: {
       helmet: { slot: 'helmet', name: 'Zephyr Helmet', icon: '🪖' },
       chestplate: { slot: 'chestplate', name: 'Zephyr Chestplate', icon: '🦺' },
       leggings: { slot: 'leggings', name: 'Zephyr Leggings', icon: '👖' },
       boots: { slot: 'boots', name: 'Zephyr Boots', icon: '🥾' },
       ring: { slot: 'ring', name: 'Zephyr Ring', icon: '💍' },
-      weapon: { slot: 'weapon', name: 'Gale Daggers', icon: '🗡️', isWeapon: true, multiplier: 0.20 }
+      weapon: { slot: 'weapon', name: 'Gale Daggers', icon: '🗡️', isWeapon: true, multiplier: 1.20 }
     },
     bonuses: {
       2: { desc: '+12% ATK', ATK_pct: 12 },
       3: { desc: 'Blow: For each star collide to an enemy, create an explosion dealing 50% aether damage to surrounding enemies.' },
       4: { desc: '+2 stars' },
-      6: { desc: 'Pierce: Stars now exists for 10 seconds, for each enemy hit, bounce randomly, until the star hits 3 enemies, or star dies out after 10 seconds.' }
+      6: { desc: 'Bounce: Stars after hit the first enemy, now bounces to another random enemy, for each enemy hit, deals 50% aether damage to enemy.' }
     },
     slots: ['helmet', 'chestplate', 'leggings', 'boots', 'ring', 'weapon']
   }
@@ -2169,26 +2199,39 @@ function computeDerivedStats() {
   Object.values(p.equipment).forEach(item => {
     if (!item) return;
     
+    // Add safety check for baseAttribute
     const attr = item.baseAttribute;
-    if (attr.name === 'ATK') sumFlatATK += attr.value;
-    else if (attr.name === 'HP') sumFlatHP += attr.value;
-    else if (attr.name === 'SPD') sumFlatSPD += attr.value;
-    else if (attr.name === 'DMG%') sumDMGPct += attr.value;
-    else if (attr.name === 'ATK%') sumATKPct += attr.value;
-    else if (attr.name === 'HP%') sumHPPct += attr.value;
+    if (attr && attr.name) {
+      if (attr.name === 'ATK') sumFlatATK += attr.value;
+      else if (attr.name === 'HP') sumFlatHP += attr.value;
+      else if (attr.name === 'SPD') sumFlatSPD += attr.value;
+      else if (attr.name === 'DMG%') sumDMGPct += attr.value;
+      else if (attr.name === 'ATK%') sumATKPct += attr.value;
+      else if (attr.name === 'HP%') sumHPPct += attr.value;
+    }
+    
+    // Add from item.stats if baseAttribute doesn't exist (for debug-granted items)
+    if (item.stats) {
+      if (item.stats.ATK) sumFlatATK += item.stats.ATK;
+      if (item.stats.HP) sumFlatHP += item.stats.HP;
+      if (item.stats.SPD) sumFlatSPD += item.stats.SPD;
+    }
 
-    item.affixes.forEach(affix => {
-      if (affix.locked) return;
-      
-      if (affix.name === 'ATK') sumFlatATK += affix.value;
-      else if (affix.name === 'HP') sumFlatHP += affix.value;
-      else if (affix.name === 'SPD') sumFlatSPD += affix.value;
-      else if (affix.name === 'DMG%') sumDMGPct += affix.value;
-      else if (affix.name === 'ATK%') sumATKPct += affix.value;
-      else if (affix.name === 'HP%') sumHPPct += affix.value;
-      else if (affix.name === 'Crit Rate') sumCritRate += affix.value;
-      else if (affix.name === 'Crit Damage') sumCritDmg += affix.value;
-    });
+    // Add safety check for affixes
+    if (item.affixes && Array.isArray(item.affixes)) {
+      item.affixes.forEach(affix => {
+        if (affix.locked) return;
+        
+        if (affix.name === 'ATK') sumFlatATK += affix.value;
+        else if (affix.name === 'HP') sumFlatHP += affix.value;
+        else if (affix.name === 'SPD') sumFlatSPD += affix.value;
+        else if (affix.name === 'DMG%') sumDMGPct += affix.value;
+        else if (affix.name === 'ATK%') sumATKPct += affix.value;
+        else if (affix.name === 'HP%') sumHPPct += affix.value;
+        else if (affix.name === 'Crit Rate') sumCritRate += affix.value;
+        else if (affix.name === 'Crit Damage') sumCritDmg += affix.value;
+      });
+    }
   });
 
   // Count equipped set pieces
@@ -2235,6 +2278,23 @@ function computeDerivedStats() {
     if (count >= 5 && setId === 'nightwing') {
       const coinBonus = Math.min(Math.floor(p.coins / 2000), 5000);
       sumFlatATK += coinBonus;
+    }
+  });
+  
+  Object.keys(setCounts).forEach(setId => {
+    const count = setCounts[setId];
+    if (count >= 6 && setId === 'nightwing') {
+      const wealthStacks = (p.setBonusTracking && p.setBonusTracking.nightwing && p.setBonusTracking.nightwing.wealthStacks) || 0;
+      sumDMGPct += wealthStacks * 20;
+    }
+    if (count >= 6 && setId === 'bastion') {
+      const currentHp = p.hp || 0;
+      const maxHp = p.maxHp || p.HP_max || 1;
+      if (currentHp < maxHp * 0.5) sumDMGPct += 20;
+    }
+    if (count >= 6 && setId === 'shade') {
+      const bloodthirstStacks = (p.setBonusTracking && p.setBonusTracking.shade && p.setBonusTracking.shade.bloodthirstStacks) || 0;
+      sumDMGPct += bloodthirstStacks * 2;
     }
   });
 
@@ -2318,7 +2378,9 @@ function dealDamageToPlayer(amount) {
   // Don't take damage if dead or invincible
   if (GameState.isDead || GameState.isInvincible) return;
   
+  const oldHP = GameState.player.hp;
   GameState.player.hp = Math.max(0, GameState.player.hp - amount);
+  trackShadeHPChange(GameState.player.hp - oldHP);
   
   // Track damage taken
   if (GameState.player.statistics) {
@@ -2855,6 +2917,8 @@ function onEnemyDeath(enemy) {
   const coinsBoost = p.activeEffects.find(e => e.id === 'coins_boost_200');
   if (coinsBoost) coins *= coinsBoost.params.multiplier;
   
+  if (getSetCount('nightwing') >= 3) coins *= 1.5;
+  
   p.coins += Math.floor(coins);
   if (p.statistics) {
     p.statistics.totalCoinsEarned += Math.floor(coins);
@@ -2898,6 +2962,8 @@ function onEnemyDeath(enemy) {
   }
   
   showDrop(enemy.position, '💰');
+  
+  handleSetBonusOnKill(enemy);
   
   checkLevelUp();
   updateWorldProgress();
@@ -3367,6 +3433,7 @@ function renderUI() {
   
   renderEquipmentRing();
   updateActiveEffects();
+  updateAttackRangeCircle();
 }
 
 function renderEquipmentRing() {
@@ -3392,6 +3459,47 @@ function renderEquipmentRing() {
     icon.style.transform = 'translate(-50%, -50%)';
     ring.appendChild(icon);
   });
+}
+
+function updateAttackRangeCircle() {
+  const p = GameState.player;
+  const weaponItem = p.equipment && p.equipment.weapon;
+  const circle = document.getElementById('attack-range-circle');
+  
+  if (!circle) return;
+  
+  // Show attack range circle if player has a weapon equipped
+  if (weaponItem) {
+    circle.classList.add('visible');
+    
+    // Get weapon range - use increased range for set weapons
+    let range = CONFIG.ENGAGE_RADIUS_PX;
+    if (weaponItem.setId) {
+      // Set weapons have increased range (50% more)
+      range = CONFIG.ENGAGE_RADIUS_PX * 1.5;
+    }
+    
+    // Set circle size (diameter = 2 * radius)
+    const diameter = range * 2;
+    circle.style.width = `${diameter}px`;
+    circle.style.height = `${diameter}px`;
+    
+    // Set circle color based on weapon rarity
+    const rarityColors = {
+      common: 'var(--color-common)',
+      uncommon: 'var(--color-uncommon)',
+      rare: 'var(--color-rare)',
+      epic: 'var(--color-epic)',
+      legendary: 'var(--color-legendary)',
+      mythic: 'var(--color-mythic)'
+    };
+    
+    const color = rarityColors[weaponItem.rarity] || '#888';
+    circle.style.borderColor = color;
+  } else {
+    // No weapon equipped - hide the circle
+    circle.classList.remove('visible');
+  }
 }
 
 function renderSetBonuses() {
@@ -3564,7 +3672,7 @@ document.addEventListener('drop', (e) => {
       const draggedItem = p.inventory[draggedSlotIndex];
       const targetItem = p.inventory[targetIndex];
       
-      // Only proceed if there's actually an item to drag
+      // Only proceed if there is actually an item to drag
       if (draggedItem) {
         // Swap the items (or move to empty slot)
         if (targetIndex < CONFIG.MAX_INVENTORY_SLOTS) {
@@ -3621,7 +3729,7 @@ document.addEventListener('drop', (e) => {
       const invItem = p.inventory[targetIndex];
       
       if (!invItem) {
-        // Simple unequip to empty slot - check if there's space
+        // Simple unequip to empty slot - check if there is space
         if (getInventoryCount() < CONFIG.MAX_INVENTORY_SLOTS) {
           // Place at the target slot
           p.inventory[targetIndex] = equippedItem;
@@ -4535,7 +4643,7 @@ const WEAPON_HANDLERS = {
   // Aquila Longbow (Skywarden) - wind green, pushback, big explosion on kill
   skywarden: (p, enemy, weapon) => {
     const element = 'wind';
-    const windDmg = Math.floor((p.currentStats?.finalATK || p.ATK || 0) * 0.20);
+    const windDmg = Math.floor((p.currentStats?.finalATK || p.ATK || 0) * 1.20);
     // arrow projectile (green)
     const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
     const playerEl = document.getElementById('player-container');
@@ -4551,7 +4659,7 @@ const WEAPON_HANDLERS = {
     }
     applyDamageToEnemy(enemy, windDmg, { type: element, source: 'weapon', setId: 'skywarden' });
     
-    // Randomly pushes that enemy and 2 nearby enemies back and deal 10% wind damage to them
+    // Randomly pushes that enemy and 2 nearby enemies back and deal 50% wind damage to them
     const pushbackRadius = 150;
     const enemyX = enemy.position?.x || enemy.x || 0;
     const enemyY = enemy.position?.y || enemy.y || 0;
@@ -4562,10 +4670,10 @@ const WEAPON_HANDLERS = {
     const nearbyEnemies = findEnemiesInRadius(enemyX, enemyY, pushbackRadius).filter(e => e.id !== enemy.id);
     const shuffled = nearbyEnemies.sort(() => 0.5 - Math.random());
     const pushTargets = [enemy, ...shuffled.slice(0, 2)]; // Main target + 2 nearby
-    const pushDmg = Math.floor((p.currentStats?.finalATK || p.ATK || 0) * 0.10);
+    const pushDmg = Math.floor((p.currentStats?.finalATK || p.ATK || 0) * 0.50);
     
     pushTargets.forEach(target => {
-      // Apply 10% wind damage to all 3 targets
+      // Apply 50% wind damage to all 3 targets
       if (target.id !== enemy.id) {
         applyDamageToEnemy(target, pushDmg, { type: element, source: 'weapon_pushback', setId: 'skywarden' });
       }
@@ -4579,9 +4687,9 @@ const WEAPON_HANDLERS = {
       target.position.y += (dy / dist) * pushDistance;
     });
     
-    // After enemy dies to wind damage, create AOE explosion (50% wind damage to surrounding enemies)
+    // After enemy dies to wind damage, create AOE explosion (150% wind damage to surrounding enemies)
     if (enemy.hp <= 0) {
-      const explosionDmg = Math.floor((p.currentStats?.finalATK || p.ATK || 0) * 0.50);
+      const explosionDmg = Math.floor((p.currentStats?.finalATK || p.ATK || 0) * 1.50);
       const explosionRadius = 120;
       
       if (enemyEl) {
@@ -4605,7 +4713,7 @@ const WEAPON_HANDLERS = {
   // Storm Pike (Stormbreaker) - purple lightning arc & chaining arcs
   stormbreaker: (p, enemy, weapon) => {
     const element = 'lightning';
-    const main = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.20);
+    const main = Math.floor((p.currentStats?.finalATK || p.ATK) * 1.20);
     // create arc from player to enemy
     const playerEl = document.getElementById('player-container');
     const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
@@ -4622,14 +4730,14 @@ const WEAPON_HANDLERS = {
     }
     applyDamageToEnemy(enemy, main, { type: element, source: 'weapon', setId: 'stormbreaker' });
 
-    // chaining: 50% chance for 2nd hit (15% damage), 25% chance for 3rd hit (10% damage)
+    // chaining: 50% chance for 2nd hit (75% damage), 25% chance for 3rd hit (50% damage)
     const chainRadius = 180;
     const centerX = enemy.position?.x || enemy.x || 0;
     const centerY = enemy.position?.y || enemy.y || 0;
     const usedIds = new Set([enemy.id]);
     let prevEnemy = enemy;
     
-    // First chain: 50% chance, 15% damage
+    // First chain: 50% chance, 75% damage
     if (Math.random() < 0.50) {
       const candidates = findEnemiesInRadius(centerX, centerY, chainRadius).filter(e => !usedIds.has(e.id));
       if (candidates.length > 0) {
@@ -4647,12 +4755,12 @@ const WEAPON_HANDLERS = {
         }
         if (targetEl) { const rr = targetEl.getBoundingClientRect(); toX = rr.left + rr.width/2; toY = rr.top + rr.height/2; }
         createLightningArc(fromX, fromY, toX, toY, getElementColor(element), 200);
-        const chainDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.15);
+        const chainDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.75);
         applyDamageToEnemy(target, chainDmg, { type: element, source:'weapon_chain', setId:'stormbreaker' });
         usedIds.add(target.id);
         prevEnemy = target;
         
-        // Second chain: 25% chance, 10% damage
+        // Second chain: 25% chance, 50% damage
         if (Math.random() < 0.25) {
           const centerX2 = target.position?.x || target.x || 0;
           const centerY2 = target.position?.y || target.y || 0;
@@ -4672,7 +4780,7 @@ const WEAPON_HANDLERS = {
             }
             if (target2El) { const rr = target2El.getBoundingClientRect(); toX2 = rr.left + rr.width/2; toY2 = rr.top + rr.height/2; }
             createLightningArc(fromX2, fromY2, toX2, toY2, getElementColor(element), 230);
-            const chainDmg2 = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.10);
+            const chainDmg2 = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.50);
             applyDamageToEnemy(target2, chainDmg2, { type: element, source:'weapon_chain', setId:'stormbreaker' });
           }
         }
@@ -4683,7 +4791,7 @@ const WEAPON_HANDLERS = {
   // Bastion - Titan Warhammer with AoE damage
   bastion: (p, enemy, weapon) => {
     const element = 'physical';
-    const atkComponent = (p.currentStats?.finalATK || p.ATK) * 0.20;
+    const atkComponent = (p.currentStats?.finalATK || p.ATK) * 1.20;
     const hpComponent = (getPlayerHP(p) || 0) * 0.30;
     const total = Math.floor(atkComponent + hpComponent);
     const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
@@ -4692,9 +4800,9 @@ const WEAPON_HANDLERS = {
     spawnShockwave(cx, cy, 48, getElementColor('physical'), 360);
     applyDamageToEnemy(enemy, total, { type: element, source:'weapon', setId:'bastion' });
     
-    // AoE damage: 10% physical damage equal to 20% player's HP
+    // AoE damage: 80% physical damage equal to 20% player HP
     const aoeHpComponent = (getPlayerHP(p) || 0) * 0.20;
-    const aoeDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.10 + aoeHpComponent);
+    const aoeDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.80 + aoeHpComponent);
     const aoeRadius = 100;
     const enemyX = enemy.position?.x || enemy.x || 0;
     const enemyY = enemy.position?.y || enemy.y || 0;
@@ -4710,7 +4818,7 @@ const WEAPON_HANDLERS = {
   // Raven's Volley - Repeating crossbow with bouncing coins
   nightwing: (p, enemy, weapon) => {
     const element = 'physical';
-    const atkComp = (p.currentStats?.finalATK || p.ATK) * 0.20;
+    const atkComp = (p.currentStats?.finalATK || p.ATK) * 1.20;
     const mainDmg = Math.floor(atkComp);
     
     // Main attack visual and damage
@@ -4725,7 +4833,7 @@ const WEAPON_HANDLERS = {
     
     // After hit, spawn 2 bouncing coins that bounce 3 times each
     const coins = (p.coins || 0);
-    const coinDmg = Math.floor(coins * 0.077);
+    const coinDmg = Math.floor(coins * 0.0077);
     
     for (let coinNum = 0; coinNum < 2; coinNum++) {
       let currentEnemy = enemy;
@@ -4769,21 +4877,30 @@ const WEAPON_HANDLERS = {
   // Wraith Scythe - HP sacrifice with execute and lifesteal on kill
   shade: (p, enemy, weapon) => {
     const element = 'physical';
-    const small = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.10);
+    const small = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.50);
     
-    // Lose 2% max HP
+    // Lose 2% max HP, but if player has lower than 2% max HP, set HP to 1
     const hpMax = p.maxHp || p.HP_max || 1;
-    const hpLost = Math.floor(hpMax * 0.02);
     const currentHP = getPlayerHP(p);
-    const newHP = Math.max(1, currentHP - hpLost);
+    const twoPercentHP = Math.floor(hpMax * 0.02);
+    
+    let hpLost = twoPercentHP;
+    let newHP = currentHP - hpLost;
+    
+    // If current HP is lower than 2% max HP or would go below 1, set to 1
+    if (currentHP <= twoPercentHP || newHP < 1) {
+      hpLost = Math.max(0, currentHP - 1);
+      newHP = 1;
+    }
+    
     setPlayerHP(p, newHP);
     
     // Track HP loss for Overflow stacks
     if (!p.lossAccumulator) p.lossAccumulator = 0;
     p.lossAccumulator += hpLost;
     
-    // Deal 20% physical damage + 200% of HP lost
-    const execDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.20 + 2 * hpLost);
+    // Deal 200% physical damage + 200% of HP lost
+    const execDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 2.00 + 2 * hpLost);
     
     // Red execute VFX
     const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
@@ -4804,9 +4921,9 @@ const WEAPON_HANDLERS = {
     
     applyDamageToEnemy(enemy, execDmg, { type: element, source:'weapon', setId:'shade' });
     
-    // If enemy dies, restore 15% max HP
+    // If enemy dies, restore 5% max HP
     if (enemy.hp <= 0) {
-      const healAmount = Math.floor(hpMax * 0.15);
+      const healAmount = Math.floor(hpMax * 0.05);
       const newHPAfterHeal = Math.min(hpMax, getPlayerHP(p) + healAmount);
       setPlayerHP(p, newHPAfterHeal);
       
@@ -4822,22 +4939,22 @@ const WEAPON_HANDLERS = {
   // Aegis Scepter - launches a ball that hovers around enemy dealing continuous damage
   aegis: (p, enemy, weapon) => {
     const element = 'aether';
-    const dmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.20);
+    const dmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 1.20);
     
     applyDamageToEnemy(enemy, dmg, { type: element, source:'weapon', setId:'aegis' });
     
     // Launch a ball that continuously hovers around the enemy
-    // Ball deals 10% aether damage each hit
+    // Ball deals 120% aether damage each hit
     // If enemy dies, ball launches to random enemy
     // Ball lasts for 5 seconds
-    const ballDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.10);
+    const ballDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 1.20);
     spawnAegisHoveringBall(enemy, ballDmg, 5000, p);
   },
 
-  // Glacier - cryo rod: deal damage and slow, create cryo AOE on death that freezes
+  // Glacier - cryo rod: deal damage and freeze, create cryo AOE on death that freezes
   glacier: (p, enemy, weapon) => {
     const element = 'cryo';
-    const cryoDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.20);
+    const cryoDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 1.20);
     applyDamageToEnemy(enemy, cryoDmg, { type: element, source:'weapon', setId:'glacier' });
     
     const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
@@ -4845,13 +4962,26 @@ const WEAPON_HANDLERS = {
       spawnShockwave(enemyEl.getBoundingClientRect().left + enemyEl.getBoundingClientRect().width/2, enemyEl.getBoundingClientRect().top + enemyEl.getBoundingClientRect().height/2, 28, getElementColor(element), 260);
     }
     
+    // Freeze enemy for 2 seconds - if enemy is already frozen before, they can't be frozen again for 10 seconds
+    const now = Date.now();
+    if (!enemy.freezeCooldownUntil || now >= enemy.freezeCooldownUntil) {
+      enemy.frozen = true;
+      enemy.frozenTimer = 2.0; // 2 second freeze
+      enemy.frozenAt = now;
+      enemy.originalSpeed = enemy.speed;
+      enemy.speed = 0; // Stop movement while frozen
+      
+      // Set cooldown: after unfrozen, can't freeze again for 10 seconds
+      enemy.freezeCooldownUntil = now + 12000; // 2s freeze + 10s cooldown
+    }
+    
     // After enemy is dead, create a cryo AOE that freezes enemies
     if (enemy.hp <= 0) {
       const enemyX = enemy.position?.x || enemy.x || 0;
       const enemyY = enemy.position?.y || enemy.y || 0;
-      const aoeDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.10);
+      const aoeDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.20);
       
-      // Create cryo AOE zone that freezes enemies for 3 seconds and deals 10% cryo damage
+      // Create cryo AOE zone that freezes enemies for 3 seconds and deals 20% cryo damage every tick
       createCryoZone(enemyX, enemyY, aoeDmg, 5000, p);
     }
   },
@@ -4859,8 +4989,8 @@ const WEAPON_HANDLERS = {
   // Emberkin - Inferno Blade: instant damage + fire AoE zone
   emberkin: (p, enemy, weapon) => {
     const element = 'fire';
-    const instant = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.20);
-    const burnTick = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.10);
+    const instant = Math.floor((p.currentStats?.finalATK || p.ATK) * 1.20);
+    const burnTick = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.20);
     
     applyDamageToEnemy(enemy, instant, { type: element, source:'weapon', setId:'emberkin' });
     
@@ -4876,6 +5006,7 @@ const WEAPON_HANDLERS = {
     }
     
     // Create fire AoE zone that lasts 10 seconds
+    // Enemies entering or within the AOE take 20% fire damage every tick for 5 seconds
     const enemyX = enemy.position?.x || enemy.x || 0;
     const enemyY = enemy.position?.y || enemy.y || 0;
     createFireZone(enemyX, enemyY, burnTick, 10000, p);
@@ -4884,7 +5015,7 @@ const WEAPON_HANDLERS = {
   // Zephyr - Gale Daggers: stars (star-shaped) and explosions
   zephyr: (p, enemy, weapon) => {
     const element = 'aether';
-    const main = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.20);
+    const main = Math.floor((p.currentStats?.finalATK || p.ATK) * 1.20);
     applyDamageToEnemy(enemy, main, { type: element, source:'weapon', setId:'zephyr' });
 
     const nStars = 4; // Always 4 stars as per documentation
@@ -4917,12 +5048,14 @@ function attackEnemy(enemy) {
 
   const player = GameState.player;
   const weaponItem = player.equipment && player.equipment.weapon;
+  const hasSetWeapon = weaponItem && weaponItem.setId;
   const isAegisEquipped = weaponItem && weaponItem.setId === 'aegis';
 
-  // If Aegis is equipped, clicking does NOT apply click damage. Instead, ensure orbiters exist.
-  if (!isAegisEquipped) {
-    // existing click damage
-    const clickResult = computeDamage(enemy); // keep existing function
+  // If player has a weapon from a set: Deal ONLY Element Damage (no physical click damage)
+  // If player has no weapon or non-set weapon: Deal physical damage normally
+  if (!hasSetWeapon) {
+    // No set weapon equipped - deal normal physical click damage
+    const clickResult = computeDamage(enemy);
     enemy.hp -= clickResult.damage;
     enemy.lastHit = { type: 'physical', source: 'click', setId: null, damage: clickResult.damage };
     // show click number
@@ -4938,8 +5071,8 @@ function attackEnemy(enemy) {
       document.getElementById('drop-layer').appendChild(n);
       setTimeout(()=> n.remove(), 1400);
     }
-  } else {
-    // ensure orbiters spawn and show small pulse so player sees something when clicking
+  } else if (isAegisEquipped) {
+    // Aegis special case: ensure orbiters spawn and show small pulse
     ensureAegisOrbiters(player);
     const playerEl = document.getElementById('player-container');
     if (playerEl) {
@@ -4947,17 +5080,19 @@ function attackEnemy(enemy) {
       spawnShockwave(pr.left + pr.width/2, pr.top + pr.height/2, 32, getElementColor('aether'), 220);
     }
   }
+  // Note: If hasSetWeapon is true (but not Aegis), we skip physical damage entirely
+  // and only deal elemental damage through the weapon handler below
 
-  // weapon unique attack executed even for Aegis (some weapons used orbiters instead)
+  // Weapon unique attack - deals ONLY elemental damage for set weapons
   if (weaponItem && weaponItem.isWeapon && weaponItem.setId) {
     const handler = WEAPON_HANDLERS[weaponItem.setId];
     if (handler) {
       try { handler(player, enemy, weaponItem); }
       catch(e){ console.error('weapon handler error', e); }
     } else {
-      // fallback: elemental extra damage
+      // fallback: elemental damage only
       const p = player;
-      const weaponBase = Math.floor((p.currentStats?.finalATK || p.ATK) * (weaponItem.weaponMultiplier || 0.20));
+      const weaponBase = Math.floor((p.currentStats?.finalATK || p.ATK) * (weaponItem.weaponMultiplier || 1.20));
       const el = weaponItem.element || (weaponItem.setId && (EQUIPMENT_SETS[weaponItem.setId]?.element || 'physical')) || 'physical';
       applyDamageToEnemy(enemy, weaponBase, { type: el, source:'weapon', setId: weaponItem.setId||null });
     }
@@ -5547,12 +5682,95 @@ function loadGame() {
       GameState.player.statistics.sessionStartTime = Date.now();
     }
     
+    // Clean up invalid equipment data before computing stats
+    try {
+      cleanupInvalidEquipment();
+    } catch (cleanupError) {
+      console.error('Error during equipment cleanup:', cleanupError);
+    }
+    
     computeDerivedStats();
     return true;
   } catch (e) {
     console.error('Failed to load save:', e);
+    showNotification('Error: Failed to load save: ' + e.message, 'danger');
     return false;
   }
+}
+
+// Clean up any invalid equipment data that might cause errors
+function cleanupInvalidEquipment() {
+  const p = GameState.player;
+  if (!p || !p.equipment) return;
+  
+  // Check each equipment slot
+  Object.keys(p.equipment).forEach(slot => {
+    const item = p.equipment[slot];
+    if (!item) return;
+    
+    // Ensure item has required properties
+    if (!item.name) {
+      console.warn(`Equipment in slot ${slot} has no name, removing:`, item);
+      p.equipment[slot] = null;
+      return;
+    }
+    
+    // If item has a setId, validate it exists
+    if (item.setId) {
+      const setData = EQUIPMENT_SETS[item.setId];
+      if (!setData) {
+        console.warn(`Removing invalid setId "${item.setId}" from ${item.name}`);
+        delete item.setId;
+      }
+    }
+  });
+  
+  // Check inventory
+  if (p.inventory) {
+    for (let i = 0; i < CONFIG.MAX_INVENTORY_SLOTS; i++) {
+      const item = p.inventory[i];
+      if (!item) continue;
+      
+      if (!item.name) {
+        console.warn(`Inventory item at index ${i} has no name, removing:`, item);
+        delete p.inventory[i];
+        continue;
+      }
+      
+      if (item.setId) {
+        const setData = EQUIPMENT_SETS[item.setId];
+        if (!setData) {
+          console.warn(`Removing invalid setId "${item.setId}" from ${item.name}`);
+          delete item.setId;
+        }
+      }
+    }
+  }
+  
+  // Check shop offers
+  if (GameState.shop && GameState.shop.offers && GameState.shop.offers.equipment) {
+    GameState.shop.offers.equipment = GameState.shop.offers.equipment.filter(item => {
+      if (!item || !item.name) {
+        console.warn('Removing invalid shop item:', item);
+        return false;
+      }
+      if (item.setId && !EQUIPMENT_SETS[item.setId]) {
+        console.warn(`Removing invalid setId "${item.setId}" from shop item ${item.name}`);
+        delete item.setId;
+      }
+      return true;
+    });
+  }
+  
+  // Rebuild activeSets from scratch
+  const setCounts = {};
+  Object.keys(p.equipment || {}).forEach(slot => {
+    const item = p.equipment[slot];
+    if (item && item.setId && EQUIPMENT_SETS[item.setId]) {
+      setCounts[item.setId] = (setCounts[item.setId] || 0) + 1;
+    }
+  });
+  p.activeSets = setCounts;
 }
 
 // ========== Notifications ==========
@@ -5679,6 +5897,202 @@ function closeOverlay(id) {
   hideTooltip();
 }
 
+
+// ========== SET BONUS IMPLEMENTATION ==========
+
+function getSetCount(setId) {
+  const p = GameState.player;
+  return (p.activeSets && p.activeSets[setId]) || 0;
+}
+
+function initializeSetBonusTracking() {
+  const p = GameState.player;
+  if (!p.setBonusTracking) {
+    p.setBonusTracking = {
+      nightwing: { coinsCollected: 0, wealthStacks: 0, wealthStackExpiry: [] },
+      shade: { hpLossAccumulator: 0, hpHealAccumulator: 0, bloodthirstStacks: 0, bloodthirstStackExpiry: [] },
+      bastion: { shockRoarTimer: 0 },
+      emberkin: { fireKillCount: 0, igniteAOEs: [] },
+      glacier: { frozenEnemies: new Set() },
+      aegis: { activeBalls: [] },
+      zephyr: { activeStars: [] }
+    };
+  }
+}
+
+function updateSetBonusesPeriodic(dt) {
+  const p = GameState.player;
+  initializeSetBonusTracking();
+  
+  // BASTION 3-PIECE: Shock Roar every 2 seconds
+  if (getSetCount('bastion') >= 3) {
+    p.setBonusTracking.bastion.shockRoarTimer += dt;
+    if (p.setBonusTracking.bastion.shockRoarTimer >= 2.0) {
+      p.setBonusTracking.bastion.shockRoarTimer = 0;
+      const stage = document.getElementById('stage');
+      const playerX = stage.clientWidth / 2;
+      const playerY = stage.clientHeight / 2;
+      const playerEl = document.getElementById('player-container');
+      if (playerEl) {
+        const rect = playerEl.getBoundingClientRect();
+        spawnShockwave(rect.left + rect.width/2, rect.top + rect.height/2, 80, '#d4af37', 400);
+      }
+      const shockRadius = 100;
+      const shockDamage = Math.floor((p.maxHp || 0) * 0.20 * 0.80);
+      GameState.enemies.forEach(enemy => {
+        const dx = playerX - enemy.position.x;
+        const dy = playerY - enemy.position.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance <= shockRadius) {
+          applyDamageToEnemy(enemy, shockDamage, { type: 'physical', source: 'shock_roar', setId: 'bastion' });
+        }
+      });
+    }
+  }
+  
+  // NIGHTWING 6-PIECE: Wealth stack decay
+  if (getSetCount('nightwing') >= 6) {
+    p.setBonusTracking.nightwing.wealthStackExpiry = p.setBonusTracking.nightwing.wealthStackExpiry.filter(expiry => {
+      if (Date.now() >= expiry) {
+        p.setBonusTracking.nightwing.wealthStacks = Math.max(0, p.setBonusTracking.nightwing.wealthStacks - 1);
+        computeDerivedStats();
+        return false;
+      }
+      return true;
+    });
+  }
+  
+  // SHADE 6-PIECE: Bloodthirst stack decay
+  if (getSetCount('shade') >= 6) {
+    p.setBonusTracking.shade.bloodthirstStackExpiry = p.setBonusTracking.shade.bloodthirstStackExpiry.filter(expiry => {
+      if (Date.now() >= expiry) {
+        p.setBonusTracking.shade.bloodthirstStacks = Math.max(0, p.setBonusTracking.shade.bloodthirstStacks - 1);
+        computeDerivedStats();
+        return false;
+      }
+      return true;
+    });
+  }
+  
+  // EMBERKIN 6-PIECE: Ignite AOE damage ticks
+  if (getSetCount('emberkin') >= 6 && p.setBonusTracking.emberkin.igniteAOEs) {
+    p.setBonusTracking.emberkin.igniteAOEs = p.setBonusTracking.emberkin.igniteAOEs.filter(aoe => {
+      if (Date.now() - aoe.startTime > aoe.duration) {
+        if (aoe.element && aoe.element.parentNode) aoe.element.remove();
+        return false;
+      }
+      GameState.enemies.forEach(enemy => {
+        const dx = aoe.x - enemy.position.x;
+        const dy = aoe.y - enemy.position.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance <= aoe.radius) {
+          const tickDmg = Math.floor((p.currentStats?.finalATK || 0) * 0.65);
+          applyDamageToEnemy(enemy, tickDmg, { type: 'fire', source: 'ignite_aoe', setId: 'emberkin', isDoT: true });
+        }
+      });
+      return true;
+    });
+  }
+}
+
+function handleSetBonusOnKill(enemy) {
+  const p = GameState.player;
+  initializeSetBonusTracking();
+  
+  // NIGHTWING 6-PIECE: Wealth stacks
+  if (getSetCount('nightwing') >= 6) {
+    const coins = enemy.dropProfile?.coinBase || 0;
+    p.setBonusTracking.nightwing.coinsCollected = (p.setBonusTracking.nightwing.coinsCollected || 0) + coins;
+    while (p.setBonusTracking.nightwing.coinsCollected >= 10000 && p.setBonusTracking.nightwing.wealthStacks < 9) {
+      p.setBonusTracking.nightwing.coinsCollected -= 10000;
+      p.setBonusTracking.nightwing.wealthStacks++;
+      p.setBonusTracking.nightwing.wealthStackExpiry.push(Date.now() + 30000);
+      showNotification('💰 Wealth stack gained! (+20% DMG)', 'legendary');
+      computeDerivedStats();
+    }
+  }
+  
+  // EMBERKIN 6-PIECE: Ignite
+  if (getSetCount('emberkin') >= 6 && enemy.lastHit && enemy.lastHit.type === 'fire') {
+    p.setBonusTracking.emberkin.fireKillCount = (p.setBonusTracking.emberkin.fireKillCount || 0) + 1;
+    if (p.setBonusTracking.emberkin.fireKillCount >= 10) {
+      p.setBonusTracking.emberkin.fireKillCount = 0;
+      const stage = document.getElementById('stage');
+      const w = stage.clientWidth;
+      const h = stage.clientHeight;
+      for (let i = 0; i < 3; i++) {
+        const x = Math.random() * w;
+        const y = Math.random() * h;
+        const fireAOE = document.createElement('div');
+        fireAOE.className = 'fire-aoe';
+        fireAOE.style.cssText = 'position:absolute;left:'+x+'px;top:'+y+'px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(255,100,100,0.6),rgba(255,50,0,0.3));border:2px solid #ff6347;box-shadow:0 0 30px rgba(255,100,0,0.8);transform:translate(-50%,-50%);pointer-events:none;z-index:40;';
+        document.getElementById('enemy-layer').appendChild(fireAOE);
+        p.setBonusTracking.emberkin.igniteAOEs.push({ x: x, y: y, radius: 60, startTime: Date.now(), duration: 10000, element: fireAOE });
+      }
+      showNotification('🔥 Ignite! Created 3 fire zones!', 'legendary');
+    }
+  }
+  
+  // GLACIER 6-PIECE: Ice Storm
+  if (getSetCount('glacier') >= 6 && enemy.lastHit && enemy.lastHit.type === 'cryo') {
+    const candidates = GameState.enemies.filter(e => e.hp > 0);
+    const toFreeze = candidates.sort(() => 0.5 - Math.random()).slice(0, 3);
+    toFreeze.forEach(e => {
+      applyStatusEffect(e, 'frozen', 3000);
+      const iceDmg = Math.floor((p.currentStats?.finalATK || 0) * 1.50);
+      applyDamageToEnemy(e, iceDmg, { type: 'cryo', source: 'ice_storm', setId: 'glacier' });
+    });
+  }
+  
+  // SKYWARDEN 3-PIECE & 6-PIECE
+  if (getSetCount('skywarden') >= 3 && enemy.lastHit && enemy.lastHit.type === 'wind') {
+    const tornadoEl = document.createElement('div');
+    tornadoEl.style.cssText = 'position:absolute;left:'+enemy.position.x+'px;top:'+enemy.position.y+'px;width:80px;height:80px;border-radius:50%;background:conic-gradient(from 0deg,transparent,rgba(152,251,152,0.6),transparent);transform:translate(-50%,-50%);animation:spin 0.5s linear;pointer-events:none;z-index:45;';
+    document.getElementById('enemy-layer').appendChild(tornadoEl);
+    setTimeout(() => tornadoEl.remove(), 500);
+  }
+  if (getSetCount('skywarden') >= 6 && enemy.lastHit && enemy.lastHit.type === 'wind') {
+    const explRadius = 80;
+    const explDmg = Math.floor((p.currentStats?.finalATK || 0) * 0.50);
+    GameState.enemies.forEach(e => {
+      if (e.id === enemy.id) return;
+      const dx = enemy.position.x - e.position.x;
+      const dy = enemy.position.y - e.position.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist <= explRadius) {
+        applyDamageToEnemy(e, explDmg, { type: 'wind', source: 'wind_explosion', setId: 'skywarden' });
+      }
+    });
+  }
+}
+
+function trackShadeHPChange(amount) {
+  const p = GameState.player;
+  if (getSetCount('shade') < 6) return;
+  initializeSetBonusTracking();
+  if (amount < 0) {
+    p.setBonusTracking.shade.hpLossAccumulator = (p.setBonusTracking.shade.hpLossAccumulator || 0) + Math.abs(amount);
+  } else {
+    p.setBonusTracking.shade.hpHealAccumulator = (p.setBonusTracking.shade.hpHealAccumulator || 0) + amount;
+  }
+  const totalChange = (p.setBonusTracking.shade.hpLossAccumulator || 0) + (p.setBonusTracking.shade.hpHealAccumulator || 0);
+  while (totalChange >= 200 && p.setBonusTracking.shade.bloodthirstStacks < 99) {
+    const toDeduct = Math.min(200, p.setBonusTracking.shade.hpLossAccumulator + p.setBonusTracking.shade.hpHealAccumulator);
+    if (p.setBonusTracking.shade.hpLossAccumulator >= toDeduct) {
+      p.setBonusTracking.shade.hpLossAccumulator -= toDeduct;
+    } else {
+      const remaining = toDeduct - p.setBonusTracking.shade.hpLossAccumulator;
+      p.setBonusTracking.shade.hpLossAccumulator = 0;
+      p.setBonusTracking.shade.hpHealAccumulator -= remaining;
+    }
+    p.setBonusTracking.shade.bloodthirstStacks++;
+    p.setBonusTracking.shade.bloodthirstStackExpiry.push(Date.now() + 30000);
+    showNotification('💀 Bloodthirst stack gained! (+2% DMG)', 'legendary');
+    computeDerivedStats();
+  }
+}
+
+
 // ========== Game Loop ==========
 function gameTick() {
   
@@ -5696,11 +6110,46 @@ function gameTick() {
   if (GameState && GameState.enemies) GameState.enemies.forEach(e => { e.prevX = e.position.x; e.prevY = e.position.y; });
   GameState.lastPhysicsTs = performance.now();
   
+  updateSetBonusesPeriodic(dt);
+  
   GameState.autoAttackTimer += dt;
   const attackInterval = getAttackInterval();
   if (GameState.autoAttackTimer >= attackInterval) {
     GameState.autoAttackTimer -= attackInterval;
-    const target = GameState.enemies.find(e => e.engaged);
+    
+    // Get player's auto-attack range (different from enemy engagement range)
+    const weaponItem = GameState.player.equipment && GameState.player.equipment.weapon;
+    let playerAttackRange = CONFIG.ENGAGE_RADIUS_PX;
+    if (weaponItem) {
+      // Weapon equipped - increase player's attack range
+      if (weaponItem.setId) {
+        // Set weapon - 50% increased range
+        playerAttackRange = CONFIG.ENGAGE_RADIUS_PX * 1.5;
+      } else {
+        // Regular weapon - 25% increased range
+        playerAttackRange = CONFIG.ENGAGE_RADIUS_PX * 1.25;
+      }
+    }
+    
+    // Find closest enemy within player's attack range
+    const stage = document.getElementById('stage');
+    const playerX = stage.clientWidth / 2;
+    const playerY = stage.clientHeight / 2;
+    
+    let target = null;
+    let minDistance = playerAttackRange;
+    
+    GameState.enemies.forEach(enemy => {
+      const dx = playerX - enemy.position.x;
+      const dy = playerY - enemy.position.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      
+      if (distance <= playerAttackRange && distance < minDistance) {
+        minDistance = distance;
+        target = enemy;
+      }
+    });
+    
     if (target) {
       attackEnemy(target);
     }
@@ -5779,6 +6228,149 @@ const DevTools = {
       localStorage.removeItem(CONFIG.SAVE_KEY);
       location.reload();
     }
+  },
+  
+  grantSet(setId) {
+    try {
+      const p = GameState.player;
+      if (!p) {
+        console.error('GameState.player is undefined');
+        showNotification('Error: Player not initialized', 'danger');
+        return;
+      }
+      
+      const setData = EQUIPMENT_SETS[setId];
+      if (!setData) {
+        console.error('Set not found:', setId);
+        showNotification(`Unknown set: ${setId}`, 'danger');
+        return;
+      }
+      
+      console.log('Granting set:', setId, setData);
+      
+      // Initialize equipment and inventory if needed
+      if (!p.equipment) p.equipment = {};
+      if (!p.inventory) p.inventory = {};
+      if (!GameState.itemIdCounter) GameState.itemIdCounter = 1000;
+      
+      // Clear current equipment and move to inventory if there's space
+      Object.keys(p.equipment).forEach(slot => {
+        const item = p.equipment[slot];
+        if (item) {
+          // Find first empty slot in inventory
+          let placed = false;
+          for (let i = 0; i < CONFIG.MAX_INVENTORY_SLOTS; i++) {
+            if (p.inventory[i] == null) {
+              p.inventory[i] = item;
+              placed = true;
+              break;
+            }
+          }
+          // If inventory is full, just discard the old item
+          if (!placed) {
+            console.log('Inventory full, discarding old item:', item.name);
+          }
+        }
+        p.equipment[slot] = null;
+      });
+      
+      // Grant all items from the set at mythic rarity with max stats
+      if (!setData.items) {
+        console.error('Set has no items:', setId);
+        showNotification('Error: Set has no items', 'danger');
+        return;
+      }
+      
+      const mythicRanges = RARITY_RANGES.mythic;
+      
+      Object.keys(setData.items).forEach(itemKey => {
+        const itemTemplate = setData.items[itemKey];
+        if (!itemTemplate) {
+          console.error('Item template is undefined for key:', itemKey);
+          return;
+        }
+        
+        const slot = itemTemplate.slot;
+        
+        // Determine base attribute based on slot (matching generateEquipment)
+        let baseAttrName;
+        if (slot === 'helmet') baseAttrName = 'ATK';
+        else if (slot === 'chestplate') baseAttrName = 'HP';
+        else if (slot === 'leggings') baseAttrName = 'HP';
+        else if (slot === 'boots') baseAttrName = 'SPD';
+        else if (slot === 'ring') baseAttrName = 'DMG%';
+        else if (slot === 'weapon') baseAttrName = 'ATK';
+        
+        // Create item with full structure matching generateEquipment
+        const item = {
+          id: `item_${GameState.itemIdCounter++}`,
+          type: 'equipment',
+          slot: slot,
+          name: itemTemplate.name,
+          icon: itemTemplate.icon,
+          rarity: 'mythic',
+          level: 1,
+          stars: 0,
+          setId: setId,
+          setName: setData.name,
+          element: setData.element,
+          baseAttribute: {
+            name: baseAttrName,
+            value: mythicRanges[baseAttrName][1] // Max value for mythic
+          },
+          affixes: [
+            {
+              name: 'ATK%',
+              value: mythicRanges['ATK%'][1], // 35 (max)
+              locked: false, // Unlocked since we're giving them for testing
+              unlockLevel: 10
+            },
+            {
+              name: 'DMG%',
+              value: mythicRanges['DMG%'][1], // 100 (max)
+              locked: false,
+              unlockLevel: 25
+            },
+            {
+              name: 'Crit Rate',
+              value: mythicRanges['Crit Rate'][1], // 35 (max)
+              locked: false,
+              unlockLevel: 50
+            },
+            {
+              name: 'Crit Damage',
+              value: mythicRanges['Crit Damage'][1], // 250 (max)
+              locked: false,
+              unlockLevel: 75
+            }
+          ],
+          buyPrice: 0,
+          sellPrice: 0,
+          createdAtWorld: p.world || 1
+        };
+        
+        // Set weapon properties if it's a weapon
+        if (itemTemplate.isWeapon) {
+          item.isWeapon = true;
+          item.weaponMultiplier = itemTemplate.multiplier || 1.0;
+        }
+        
+        console.log('Equipping item:', item);
+        
+        // Equip the item
+        p.equipment[slot] = item;
+      });
+      
+      // Recompute stats
+      computeDerivedStats();
+      renderInventory();
+      renderPlayerStats();
+      
+      showNotification(`✨ Granted full ${setData.name} set (Level 1, Max Stats)!`, 'success');
+    } catch (error) {
+      console.error('Error in grantSet:', error);
+      showNotification(`Error: ${error.message}`, 'danger');
+    }
   }
 };
 
@@ -5799,75 +6391,47 @@ function updateDebugPanel() {
 
 // Clean up invalid setIds from equipment (for old save data compatibility)
 function cleanupInvalidSetIds() {
-  const p = GameState.player;
-  if (!p) return;
-  
-  // Clean equipment
-  Object.keys(p.equipment || {}).forEach(slot => {
-    const item = p.equipment[slot];
-    if (item && item.setId && !EQUIPMENT_SETS[item.setId]) {
-      console.warn(`Removing invalid setId "${item.setId}" from ${item.name}`);
-      delete item.setId;
-    }
-  });
-  
-  // Clean inventory
-  (p.inventory || []).forEach(item => {
-    if (item && item.setId && !EQUIPMENT_SETS[item.setId]) {
-      console.warn(`Removing invalid setId "${item.setId}" from ${item.name}`);
-      delete item.setId;
-    }
-  });
-  
-  // Clean shop
-  if (GameState.shop && GameState.shop.offers) {
-    (GameState.shop.offers.equipment || []).forEach(item => {
-      if (item && item.setId && !EQUIPMENT_SETS[item.setId]) {
-        console.warn(`Removing invalid setId "${item.setId}" from ${item.name}`);
-        delete item.setId;
-      }
-    });
-  }
-  
-  // Rebuild activeSets from scratch
-  const setCounts = {};
-  Object.keys(p.equipment || {}).forEach(slot => {
-    const item = p.equipment[slot];
-    if (item && item.setId && EQUIPMENT_SETS[item.setId]) {
-      setCounts[item.setId] = (setCounts[item.setId] || 0) + 1;
-    }
-  });
-  p.activeSets = setCounts;
+  cleanupInvalidEquipment();
 }
 
 function init() {
-  GameState.rng = new RNG(CONFIG.AUTO_ATTACK_SEED);
-  
-  const loaded = loadGame();
-  if (!loaded) {
-    GameState.player = createPlayer();
-    GameState.shop = createShop();
-    GameState.worldProgress = createWorldProgress();
-    refreshShop();
+  try {
+    GameState.rng = new RNG(CONFIG.AUTO_ATTACK_SEED);
+    
+    const loaded = loadGame();
+    if (!loaded) {
+      GameState.player = createPlayer();
+      GameState.shop = createShop();
+      GameState.worldProgress = createWorldProgress();
+      refreshShop();
+    }
+    
+    // Clean up any invalid setIds from old save data
+    cleanupInvalidSetIds();
+    
+    computeDerivedStats();
+    renderUI();
+    renderInventory();
+    renderPlayerStats();
+    renderShop();
+    updateWorldProgress();
+    
+    setInterval(gameTick, CONFIG.TICK_INTERVAL_MS);
+    setInterval(uiTick, CONFIG.UI_UPDATE_MS);
+    if (CONFIG.DEV_MODE) {
+      setInterval(updateDebugPanel, 500);
+    }
+    
+    spawnWave();
+  } catch (error) {
+    console.error('Fatal error during initialization:', error);
+    alert('Game failed to initialize. Check console for details. Error: ' + error.message);
+    // Try to clear save and reload
+    if (confirm('Would you like to clear your save data and restart?')) {
+      localStorage.removeItem(CONFIG.SAVE_KEY);
+      location.reload();
+    }
   }
-  
-  // Clean up any invalid setIds from old save data
-  cleanupInvalidSetIds();
-  
-  computeDerivedStats();
-  renderUI();
-  renderInventory();
-  renderPlayerStats();
-  renderShop();
-  updateWorldProgress();
-  
-  setInterval(gameTick, CONFIG.TICK_INTERVAL_MS);
-  setInterval(uiTick, CONFIG.UI_UPDATE_MS);
-  if (CONFIG.DEV_MODE) {
-    setInterval(updateDebugPanel, 500);
-  }
-  
-  spawnWave();
 }
 
 // ========== Event Listeners ==========
