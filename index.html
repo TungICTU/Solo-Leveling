@@ -60,9 +60,9 @@
 
     #hud {
       background: var(--bg-secondary);
-      font-family:var(--font-display); 
-      font-weight:600; 
-      font-size:11px; 
+      font-family:var(--font-display);
+      font-weight:600;
+      font-size:11px;
       padding: 8px 12px;
       display: flex;
       flex-wrap: nowrap;
@@ -82,7 +82,7 @@
 
     #coins::before { content: '💰 '; }
     #gems::before { content: '💎 '; }
-    #world { 
+    #world {
       background: var(--bg-tertiary);
       padding: 4px 8px;
       border-radius: 4px;
@@ -142,17 +142,17 @@
     }
 
     #btn-challenge-boss {
-      padding:6px 12px; 
-      background:linear-gradient(135deg,#8b0000 0%,#dc143c 100%); 
-      border:2px solid #ff6347; 
-      border-radius:var(--border-radius); 
-      color:white; 
-      font-family:var(--font-display); 
-      font-weight:600; 
-      font-size:11px; 
-      cursor:pointer; 
-      box-shadow:var(--shadow-sm); 
-      transition:all 0.2s; 
+      padding:6px 12px;
+      background:linear-gradient(135deg,#8b0000 0%,#dc143c 100%);
+      border:2px solid #ff6347;
+      border-radius:var(--border-radius);
+      color:white;
+      font-family:var(--font-display);
+      font-weight:600;
+      font-size:11px;
+      cursor:pointer;
+      box-shadow:var(--shadow-sm);
+      transition:all 0.2s;
       text-transform:uppercase;
     }
 
@@ -168,7 +168,7 @@
     #stage {
       flex: 1;
       position: relative;
-      background:linear-gradient(135deg,rgba(58,47,42,0.6) 0%,rgba(42,31,26,0.6) 100%); 
+      background:linear-gradient(135deg,rgba(58,47,42,0.6) 0%,rgba(42,31,26,0.6) 100%);
       overflow: hidden;
       touch-action: none;
     }
@@ -339,11 +339,11 @@
     }
 
     @keyframes boss-pulse {
-      0%, 100% { 
+      0%, 100% {
         box-shadow: 0 0 30px rgba(244, 67, 54, 0.9);
         filter: brightness(1);
       }
-      50% { 
+      50% {
         box-shadow: 0 0 45px rgba(244, 67, 54, 1);
         filter: brightness(1.2);
       }
@@ -423,7 +423,7 @@
       top: 0;
       background: var(--bg-primary);
       padding: 8px;
-      border-radius:var(--border-radius); 
+      border-radius:var(--border-radius);
       z-index: 10;
     }
 
@@ -432,32 +432,32 @@
       font-weight: bold;
       color: #ffd700;
     }
-    
-    .btn, .btn-refresh, .tooltip-btn, .nav-btn { 
-      padding:14px 20px; 
-      background:linear-gradient(135deg,var(--accent-copper) 0%,var(--accent-gold) 100%); 
-      border:2px solid var(--accent-gold-bright); 
-      border-radius:var(--border-radius); 
-      color:var(--bg-primary); 
-      font-family:var(--font-display); 
-      font-weight:700; 
-      font-size:14px; 
-      cursor:pointer; 
+
+    .btn, .btn-refresh, .tooltip-btn, .nav-btn {
+      padding:14px 20px;
+      background:linear-gradient(135deg,var(--accent-copper) 0%,var(--accent-gold) 100%);
+      border:2px solid var(--accent-gold-bright);
+      border-radius:var(--border-radius);
+      color:var(--bg-primary);
+      font-family:var(--font-display);
+      font-weight:700;
+      font-size:14px;
+      cursor:pointer;
       gap: 8px;
-      box-shadow:var(--shadow-md); 
-      transition:all 0.2s; 
-      text-transform:uppercase; 
-      letter-spacing:0.5px; 
+      box-shadow:var(--shadow-md);
+      transition:all 0.2s;
+      text-transform:uppercase;
+      letter-spacing:0.5px;
     }
-    .btn:hover, .btn-refresh:hover { 
-      transform:translateY(-2px); 
-      box-shadow:0 6px 16px rgba(206, 196, 165, 0.4); 
+    .btn:hover, .btn-refresh:hover {
+      transform:translateY(-2px);
+      box-shadow:0 6px 16px rgba(206, 196, 165, 0.4);
     }
     .btn-close {
       background: #e74c3c;
-      font-family:var(--font-display); 
-      font-weight:600; 
-      font-size:11px; 
+      font-family:var(--font-display);
+      font-weight:600;
+      font-size:11px;
       color: white;
       border: none;
       padding: 8px 16px;
@@ -610,18 +610,18 @@
     }
 
     .stats-box {
-      background:linear-gradient(135deg,rgba(58,47,42,0.6) 0%,rgba(42,31,26,0.6) 100%); 
+      background:linear-gradient(135deg,rgba(58,47,42,0.6) 0%,rgba(42,31,26,0.6) 100%);
       border:2px solid var(--accent-copper);
-      border-radius:var(--border-radius); 
+      border-radius:var(--border-radius);
       padding: 12px;
       width: 200px;
       margin-top: 8px;
     }
 
     .inv-resources {
-      background:linear-gradient(135deg,rgba(58,47,42,0.6) 0%,rgba(42,31,26,0.6) 100%); 
+      background:linear-gradient(135deg,rgba(58,47,42,0.6) 0%,rgba(42,31,26,0.6) 100%);
       border:2px solid var(--accent-gold);
-      border-radius:var(--border-radius); 
+      border-radius:var(--border-radius);
       padding: 12px;
       width: 200px;
       display: flex;
@@ -657,9 +657,9 @@
     }
 
     .inv-active-effects {
-      background:linear-gradient(135deg,rgba(58,47,42,0.6) 0%,rgba(42,31,26,0.6) 100%); 
+      background:linear-gradient(135deg,rgba(58,47,42,0.6) 0%,rgba(42,31,26,0.6) 100%);
       border:2px solid var(--accent-gold);
-      border-radius:var(--border-radius); 
+      border-radius:var(--border-radius);
       padding: 12px;
       width: 200px;
     }
@@ -781,7 +781,7 @@
     .equip-slot.dragging {
       opacity: 0.5;
     }
-    
+
     .equip-slot.drag-over {
       border-color: #ffd700;
       background: var(--bg-secondary);
@@ -822,11 +822,11 @@
       position: relative;
       touch-action: manipulation;
     }
-    
+
     .inv-slot.dragging {
       opacity: 0.5;
     }
-    
+
     .inv-slot.drag-over {
       border-color: #ffd700;
       background: var(--bg-secondary);
@@ -1013,9 +1013,9 @@
 
     .btn-refresh {
       background: #2196f3;
-      font-family:var(--font-display); 
-      font-weight:600; 
-      font-size:11px; 
+      font-family:var(--font-display);
+      font-weight:600;
+      font-size:11px;
       color: white;
       border: none;
       padding: 8px 16px;
@@ -1251,9 +1251,9 @@
 
     .nav-btn {
       flex: 1;
-      font-family:var(--font-display); 
-      font-weight:600; 
-      font-size:11px; 
+      font-family:var(--font-display);
+      font-weight:600;
+      font-size:11px;
       background: var(--bg-tertiary);
       color: var(--text-primary);
       border: 1px solid var(--border-color);
@@ -1574,10 +1574,15 @@
       color: var(--accent-gold-bright);
     }
 
-  
+
     @keyframes fire-pulse {
       0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
       50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.05); }
+    }
+
+    @keyframes wind-pulse {
+      0%, 100% { opacity: 0.8; }
+      50% { opacity: 1; }
     }
     #set-bonuses-display {
       display: none !important;
@@ -1653,13 +1658,13 @@
                 <span class="inv-resource-value" id="inv-gems">0</span>
               </div>
             </div>
-            
+
             <div id="inv-active-effects" class="inv-active-effects">
               <div id="active-effects-icons" class="active-effects-icons">
                 <!-- Effects will be rendered here as icons -->
               </div>
             </div>
-            
+
             <!-- Set Bonuses Display -->
             <div id="set-bonuses-display" style="margin-top: 12px;"></div>
           </div>
@@ -1733,7 +1738,7 @@
               <div class="stat-line"><span class="stat-label">Crit Rate</span><span class="stat-value" id="stat-crit-rate-detail">0%</span></div>
               <div class="stat-line"><span class="stat-label">Crit Dmg</span><span class="stat-value" id="stat-crit-dmg-detail">0%</span></div>
             </div>
-            
+
             <h3>Player Statistics</h3>
             <div style="background: var(--bg-tertiary); padding: 16px; border-radius: 8px;">
               <div class="stat-line"><span class="stat-label">Total Kills</span><span class="stat-value" id="stat-total-kills">0</span></div>
@@ -1750,7 +1755,7 @@
               <div class="stat-line"><span class="stat-label">Items Purchased</span><span class="stat-value" id="stat-items-bought">0</span></div>
               <div class="stat-line"><span class="stat-label">Play Time</span><span class="stat-value" id="stat-playtime">0h 0m</span></div>
             </div>
-            
+
             <button id="btn-reset-progress" style="width: 100%; margin-top: 16px; padding: 10px; background: linear-gradient(135deg, #8b0000 0%, #dc143c 100%); border: 2px solid #ff6347; border-radius: 8px; color: white; font-family: var(--font-display); font-weight: 600; font-size: 13px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.3); transition: all 0.2s; text-transform: uppercase;">
               Reset All Progress
             </button>
@@ -1811,7 +1816,7 @@
       <div id="debug-info"></div>
       <button class="debug-btn" onclick="DevTools.spawnEnemies(10, 'normal')">Spawn 10 Normal</button>
       <button class="debug-btn" onclick="DevTools.spawnEnemies(5, 'elite')">Spawn 5 Elite</button>
-      <button class="debug-btn" onclick="DevTools.grantCoins(10000)">+10k Coins</button>
+      <button class="debug-btn" onclick="DevTools.grantCoins(100000000)">+1m Coins</button>
       <button class="debug-btn" onclick="DevTools.grantGems(100)">+100 Gems</button>
       <button class="debug-btn" onclick="DevTools.levelUp()">Level Up</button>
       <button class="debug-btn" onclick="DevTools.clearSave()">Clear Save</button>
@@ -1849,9 +1854,9 @@ const CONFIG = {
   SHOP_MANUAL_COOLDOWN_SEC: 5,
   DEFAULT_CONSUMABLE_DURATION_S: 3600,
   TEST_CONSUMABLE_DURATION_S: 300,
-  WAVE_INTERVAL_SEC: 15,
-  MIN_WAVE_ENEMIES: 50,
-  MAX_WAVE_ENEMIES: 5000,
+  WAVE_INTERVAL_SEC: 10,
+  MIN_WAVE_ENEMIES: 10,
+  MAX_WAVE_ENEMIES: 200,
   RARITY_PROB: { common:0.45, uncommon:0.35, rare:0.10, epic:0.05, legendary:0.03, mythic:0.02 },
   EQUIP_BASE_UPGRADE_COST: { common:50, uncommon:200, rare:1000, epic:5000, legendary:25000, mythic:100000 },
   STAR_THRESHOLDS: [10,25,50,75,100],
@@ -1875,7 +1880,7 @@ const EQUIPMENT_SETS = {
     element: 'wind',
     icon: '🌪️',
     weaponName: 'Aquila Longbow',
-    weaponDesc: 'Deal 120% wind damage to an enemy, randomly pushes that enemy and 2 nearby enemies back and deal 50% wind damage to them. After enemy dies to wind damage, creates an AOE wind explosion on the dead enemy area that deals 150% wind damage to surrounding enemies.',
+    weaponDesc: 'Deal 120% wind damage to an enemy, randomly pushes that enemy and 2 nearby enemies back a small distance, and deal 50% wind damage to them. After enemy dies to wind damage, creates an AOE wind explosion on the dead enemy area that deals 50% wind damage to surrounding enemies and push them back.',
     items: {
       helmet: { slot: 'helmet', name: 'Skywarden Helmet', icon: '🪖' },
       chestplate: { slot: 'chestplate', name: 'Skywarden Chestplate', icon: '🦺' },
@@ -1888,7 +1893,7 @@ const EQUIPMENT_SETS = {
       2: { desc: '+12% ATK', ATK_pct: 12 },
       3: { desc: 'Wind Storm: If enemy killed with wind damage, create 3 AOE wind explosions nearby that enemy that deals 50% wind damage to surrounding enemies.' },
       4: { desc: '+12% Wind DMG', WindDMG_pct: 12 },
-      6: { desc: 'Aquila Tornado: For every 20 enemy killed with wind damage, create a tornado at a random enemy, pull every enemy nearby to the tornado, dealing 50% wind damage each second for 5 seconds.' }
+      6: { desc: 'Aquila Tornado: For every 20 enemy killed with wind damage, create a tornado at a random enemy, pull every enemy nearby to the tornado, dealing 50% wind damage each tick for 5 seconds.' }
     },
     slots: ['helmet', 'chestplate', 'leggings', 'boots', 'ring', 'weapon']
   },
@@ -1930,7 +1935,7 @@ const EQUIPMENT_SETS = {
     },
     bonuses: {
       2: { desc: '+12% HP', HP_pct: 12 },
-      3: { desc: 'Shock Roar: Creates a giant shock area around the player every 2 seconds, dealing 80% damage equal to 20% of players HP.' },
+      3: { desc: 'Shock Roar: Creates a giant shock area around the player every 1.5 seconds, dealing 180% damage equal to 50% of players HP.' },
       4: { desc: 'Reduce damage taken by 12%', DMG_reduction_pct: 12 },
       6: { desc: 'Metal Fierce: +20% DMG when player <50% HP, increase area of Shock Roar and the player\'s attack, change color of Shock Roar and player\'s attack to light red' }
     },
@@ -1954,7 +1959,7 @@ const EQUIPMENT_SETS = {
       2: { desc: '+12% ATK', ATK_pct: 12 },
       3: { desc: 'Rich Man\'s Blow: For every enemy killed with coin damage, shoot 5 coins from the dead enemy in star pattern, each coin hit deals 0.99% physical yellow damage of players total coins. Increase coin obtained from enemies killed with coin damage by 50%.' },
       4: { desc: '+6% SPD', SPD_pct: 6 },
-      6: { desc: 'Wealth: For every 20 enemy killed with coin damage, rains coins and each coin hit deals 1.88% physical yellow damage of players total coins to the enemies on the field, this rain lasts for 5 seconds.' }
+      6: { desc: 'Wealth: For every 20 enemy killed with coin damage, rains coins and each coin hit deals 1.88% physical yellow damage of players total coins to the enemies on the field, this rain lasts for 5 seconds, kills from rain coins do not count towards 20 enemy killed with coin damage.' }
     },
     slots: ['helmet', 'chestplate', 'leggings', 'boots', 'ring', 'weapon']
   },
@@ -1997,8 +2002,8 @@ const EQUIPMENT_SETS = {
     bonuses: {
       2: { desc: '+12% Aether DMG', AetherDMG_pct: 12 },
       3: { desc: 'Myth: For every enemy hit, there is a 20% chance to spawn another ball from the enemy, launches to a random enemy, that continuously hover around the enemy, dealing 120% aether damage each hit, the ball lasts for 3 seconds or after the enemy is dead' },
-      4: { desc: 'Launches 2 balls that continuously hover around the enemy, dealing 150% aether damage each enemy hit, if the enemy is dead, the ball launches to a random enemy, dealing 150% aether damage each hit, the ball lasts for 8 seconds.' },
-      6: { desc: 'Star Shooter: after the enemy is dead, spawn 3 balls spinning around the dead enemy for 3 seconds, each circle deals 80% aether damage, then launch that 3 balls to 3 random enemies, explodes and dealing 200% aether damage upon hit.' }
+      4: { desc: 'Launches 2 balls that continuously hover around the enemy instead of 1, dealing 150% aether damage each enemy hit, if the enemy is dead, the balls move to a random enemy, dealing 150% aether damage each hit, the balls last for 8 seconds.' },
+      6: { desc: 'Star Shooter: after the enemy is dead, the balls no longer moves to a random enemy, but instead spins around the dead enemy for 3 seconds, each ball deals 80% aether damage, then launch those balls to random enemies, explodes and dealing 200% aether damage to the enemy.' }
     },
     slots: ['helmet', 'chestplate', 'leggings', 'boots', 'ring', 'weapon']
   },
@@ -2020,7 +2025,7 @@ const EQUIPMENT_SETS = {
       2: { desc: '+12% ATK', ATK_pct: 12 },
       3: { desc: 'Frozen Spikes: After the enemy is unfrozen, create an explosion and deal 120% cryo damage to that enemy.' },
       4: { desc: 'Freezed enemies take +20% damage' },
-      6: { desc: 'Ice Storm: If an enemy dies to cryo damage, randomly freeze 3 enemies surrounding the enemy and deal 150% cryo damage to them.' }
+      6: { desc: 'Ice Storm: If an enemy dies to cryo damage, freeze all enemies on the field for 5 seconds, this effect can only be activated every 30 seconds.' }
     },
     slots: ['helmet', 'chestplate', 'leggings', 'boots', 'ring', 'weapon']
   },
@@ -2029,7 +2034,7 @@ const EQUIPMENT_SETS = {
     element: 'fire',
     icon: '🔥',
     weaponName: 'Inferno Blade',
-    weaponDesc: 'Deals 120% fire damage, create a fire AOE for 10 seconds, enemy entering or within the fire AOE will take fire damage over time equal to 20% fire damage every tick for 5 seconds.',
+    weaponDesc: 'Deals 120% fire damage, create a fire AOE for 10 seconds, enemy entering or within the fire AOE will immediately take fire damage over time equal to 20% fire damage every tick for 5 seconds.',
     items: {
       helmet: { slot: 'helmet', name: 'Emberkin Helmet', icon: '🪖' },
       chestplate: { slot: 'chestplate', name: 'Emberkin Chestplate', icon: '🦺' },
@@ -2042,7 +2047,7 @@ const EQUIPMENT_SETS = {
       2: { desc: '+12% ATK', ATK_pct: 12 },
       3: { desc: 'Burn: Burning DoT scales by +8% of player ATK per tick.' },
       4: { desc: '+12% Fire DMG', FireDMG_pct: 12 },
-      6: { desc: 'Ignite: After killing 10 enemies with fire damage, randomly creates 3 giant red pink-ish fire around the player that enemy entering or within the fire AOE will immediately take fire damage over time equal to 65% fire damage every tick for 10 seconds.' }
+      6: { desc: 'Ignite: After killing 10 enemies with fire damage, randomly creates 3 giant red pink-ish fire around the player that lasts for 10 seconds, enemy entering or within the fire AOE will immediately take fire damage over time equal to 65% fire damage every tick for 10 seconds.' }
     },
     slots: ['helmet', 'chestplate', 'leggings', 'boots', 'ring', 'weapon']
   },
@@ -2122,7 +2127,7 @@ const GameState = {
   autoAttackTimer: 0,
   enemyIdCounter: 0,
   itemIdCounter: 0,
-  
+
   // Death system
   isDead: false,
   deathTimer: 0,
@@ -2190,7 +2195,7 @@ function createWorldProgress() {
 function computeDerivedStats() {
   const p = GameState.player;
   const base = p.baseStats;
-  
+
   let sumFlatATK = 0, sumFlatHP = 0, sumFlatSPD = 0;
   let sumATKPct = 0, sumHPPct = 0, sumDMGPct = 0;
   let sumCritRate = 0, sumCritDmg = 0;
@@ -2198,7 +2203,7 @@ function computeDerivedStats() {
 
   Object.values(p.equipment).forEach(item => {
     if (!item) return;
-    
+
     // Add safety check for baseAttribute
     const attr = item.baseAttribute;
     if (attr && attr.name) {
@@ -2209,7 +2214,7 @@ function computeDerivedStats() {
       else if (attr.name === 'ATK%') sumATKPct += attr.value;
       else if (attr.name === 'HP%') sumHPPct += attr.value;
     }
-    
+
     // Add from item.stats if baseAttribute doesn't exist (for debug-granted items)
     if (item.stats) {
       if (item.stats.ATK) sumFlatATK += item.stats.ATK;
@@ -2221,7 +2226,7 @@ function computeDerivedStats() {
     if (item.affixes && Array.isArray(item.affixes)) {
       item.affixes.forEach(affix => {
         if (affix.locked) return;
-        
+
         if (affix.name === 'ATK') sumFlatATK += affix.value;
         else if (affix.name === 'HP') sumFlatHP += affix.value;
         else if (affix.name === 'SPD') sumFlatSPD += affix.value;
@@ -2241,12 +2246,12 @@ function computeDerivedStats() {
       setCounts[item.setId] = (setCounts[item.setId] || 0) + 1;
     }
   });
-  
+
   // Initialize set tracking
   p.activeSets = setCounts;
   p.elementalDMG = {};
   p.dmgReduction = 0;
-  
+
   // Apply set bonuses
   Object.keys(setCounts).forEach(setId => {
     const count = setCounts[setId];
@@ -2254,7 +2259,7 @@ function computeDerivedStats() {
     if (!EQUIPMENT_SETS[setId]) return;
     const setData = EQUIPMENT_SETS[setId];
     if (!setData) return;
-    
+
     // 2-piece bonus
     if (count >= 2 && setData.bonuses[2]) {
       const bonus = setData.bonuses[2];
@@ -2264,7 +2269,7 @@ function computeDerivedStats() {
       if (bonus.DMG_reduction_pct) p.dmgReduction += bonus.DMG_reduction_pct / 100;
       if (bonus.AetherDMG_pct) p.elementalDMG.aether = (p.elementalDMG.aether || 0) + bonus.AetherDMG_pct / 100;
     }
-    
+
     // 4-piece bonus
     if (count >= 4 && setData.bonuses[4]) {
       const bonus = setData.bonuses[4];
@@ -2273,14 +2278,14 @@ function computeDerivedStats() {
       if (bonus.FireDMG_pct) p.elementalDMG.fire = (p.elementalDMG.fire || 0) + bonus.FireDMG_pct / 100;
       if (bonus.DMG_reduction_pct) p.dmgReduction += bonus.DMG_reduction_pct / 100;
     }
-    
+
     // 5-piece: Nightwing coin bonus
     if (count >= 5 && setId === 'nightwing') {
       const coinBonus = Math.min(Math.floor(p.coins / 2000), 5000);
       sumFlatATK += coinBonus;
     }
   });
-  
+
   Object.keys(setCounts).forEach(setId => {
     const count = setCounts[setId];
     if (count >= 6 && setId === 'nightwing') {
@@ -2314,13 +2319,23 @@ function computeDerivedStats() {
   const finalCritRate = Math.max(0, Math.min(100, base.CRIT_RATE_PCT + sumCritRate));
   const finalCritDmg = Math.max(0, base.CRIT_DMG_PCT + sumCritDmg);
 
+  // BASTION 6-PIECE: Metal Fierce - +20% DMG when player <50% HP
+  let bastionDmgMultiplier = 1.0;
+  if (getSetCount('bastion') >= 6) {
+    const currentHP = getPlayerHP(p);
+    const maxHP = p.maxHp || finalHP || 1;
+    if (currentHP < maxHP * 0.50) {
+      bastionDmgMultiplier = 1.20;
+    }
+  }
+
   // Calculate bonuses from items (difference from base stats)
   const atkBonus = finalATK - base.ATK;
   const hpBonus = finalHP - base.HP;
   const spdBonus = finalSPD - base.SPD;
-  const dmgBonus = finalDMGPct - base.DMG_PCT;
+  const dmgBonus = (finalDMGPct * bastionDmgMultiplier) - base.DMG_PCT;
 
-  p.currentStats = { finalATK, finalHP, finalSPD, finalDMGPct, finalCritRate, finalCritDmg };
+  p.currentStats = { finalATK, finalHP, finalSPD, finalDMGPct: finalDMGPct * bastionDmgMultiplier, finalCritRate, finalCritDmg };
   p.statBonuses = { atkBonus, hpBonus, spdBonus, dmgBonus };
   p.luck = luck;
 
@@ -2353,7 +2368,7 @@ function computeDamage(enemy) {
   }
 
   const appliedDamage = Math.max(1, Math.floor(baseDamage * Math.max(0.05, 1 - enemy.resistancePct / 100)));
-  
+
   // Track total damage dealt
   if (p.statistics) {
     p.statistics.totalDamageDealt += appliedDamage;
@@ -2365,23 +2380,23 @@ function computeDamage(enemy) {
 function computePlayerDamage() {
   const p = GameState.player;
   let baseDamage = p.currentStats.finalATK * (p.currentStats.finalDMGPct / 100);
-  
+
   const dmgBoost = p.activeEffects.find(e => e.id === 'dmg_boost_200');
   if (dmgBoost) {
     baseDamage *= dmgBoost.params.multiplier;
   }
-  
+
   return Math.floor(baseDamage);
 }
 
 function dealDamageToPlayer(amount) {
   // Don't take damage if dead or invincible
   if (GameState.isDead || GameState.isInvincible) return;
-  
+
   const oldHP = GameState.player.hp;
   GameState.player.hp = Math.max(0, GameState.player.hp - amount);
   trackShadeHPChange(GameState.player.hp - oldHP);
-  
+
   // Track damage taken
   if (GameState.player.statistics) {
     GameState.player.statistics.totalDamageTaken += amount;
@@ -2395,12 +2410,12 @@ function handlePlayerDeath() {
   GameState.isDead = true;
   GameState.canAttack = false;
   GameState.player.hp = 0;
-  
+
   // Track death
   if (GameState.player.statistics) {
     GameState.player.statistics.deaths++;
   }
-  
+
   // Check if in boss challenge
   if (GameState.inBossChallenge) {
     // Boss challenge failed
@@ -2409,14 +2424,14 @@ function handlePlayerDeath() {
   } else {
     // Normal death
     GameState.deathTimer = 5; // 5 seconds death screen
-    
+
     // Show death screen
     const deathScreen = document.getElementById('death-screen');
     if (deathScreen) {
       deathScreen.classList.add('active');
     }
   }
-  
+
   // Make player invisible
   const player = document.getElementById('player');
   if (player) {
@@ -2428,7 +2443,7 @@ function updateDeathSystem(dt) {
   // Update death timer
   if (GameState.isDead) {
     GameState.deathTimer -= dt;
-    
+
     if (GameState.inBossChallenge) {
       // No need to update timer display for boss failure (handled separately)
       console.log('Boss challenge death timer:', GameState.deathTimer); // Debug log
@@ -2440,7 +2455,7 @@ function updateDeathSystem(dt) {
         respawnTimer.textContent = `Respawning in ${seconds} second${seconds !== 1 ? 's' : ''}...`;
       }
     }
-    
+
     if (GameState.deathTimer <= 0) {
       console.log('Death timer reached 0, inBossChallenge:', GameState.inBossChallenge); // Debug log
       if (GameState.inBossChallenge) {
@@ -2450,11 +2465,11 @@ function updateDeathSystem(dt) {
       }
     }
   }
-  
+
   // Update invincibility timer
   if (GameState.isInvincible) {
     GameState.invincibilityTimer -= dt;
-    
+
     if (GameState.invincibilityTimer <= 0) {
       GameState.isInvincible = false;
       const player = document.getElementById('player');
@@ -2472,23 +2487,23 @@ function respawnPlayer() {
   GameState.isInvincible = true;
   GameState.invincibilityTimer = 3; // 3 seconds of invincibility
   GameState.canAttack = true;
-  
+
   // Hide death screen
   const deathScreen = document.getElementById('death-screen');
   if (deathScreen) {
     deathScreen.classList.remove('active');
   }
-  
+
   // Make player visible and flashing
   const player = document.getElementById('player');
   if (player) {
     player.style.opacity = '1';
     player.classList.add('flashing');
   }
-  
+
   // Create damage burst effect
   createDamageBurst();
-  
+
   // Deal AOE damage to all enemies (300% of player damage)
   dealRespawnDamage();
 }
@@ -2497,36 +2512,36 @@ function respawnPlayer() {
 function handleBossChallengeFailed() {
   // Clear boss challenge flags FIRST to prevent onBossDefeated from triggering
   GameState.suspendWaves = false;
-  
+
   // Show boss failure screen
   const bossFailureScreen = document.getElementById('boss-failure-screen');
   if (bossFailureScreen) {
     bossFailureScreen.classList.add('active');
   }
-  
+
   // Update world display
   const worldSpan = document.getElementById('boss-failure-world');
   if (worldSpan) {
     worldSpan.textContent = GameState.player.world;
   }
-  
+
   // Remove all enemies (boss)
   GameState.enemies = [];
-  
+
   showNotification('💀 Boss challenge failed!', 'danger');
 }
 
 function returnFromBossChallenge() {
   console.log('returnFromBossChallenge called'); // Debug log
-  
+
   // Clear boss challenge state (suspendWaves already cleared in handleBossChallengeFailed)
   GameState.inBossChallenge = false;
   GameState.isDead = false;
   GameState.canAttack = true;
-  
+
   // Restore player HP
   GameState.player.hp = GameState.player.maxHp;
-  
+
   // Hide boss failure screen
   const bossFailureScreen = document.getElementById('boss-failure-screen');
   console.log('Boss failure screen element:', bossFailureScreen); // Debug log
@@ -2534,38 +2549,38 @@ function returnFromBossChallenge() {
     bossFailureScreen.classList.remove('active');
     console.log('Removed active class from boss failure screen'); // Debug log
   }
-  
+
   // Make player visible
   const player = document.getElementById('player');
   if (player) {
     player.style.opacity = '1';
   }
-  
+
   // Update world progress UI
   updateWorldProgress();
-  
+
   // Resume normal wave spawning
   GameState.waveTimer = 0;
   spawnWave();
-  
+
   showNotification(`Returned to World ${GameState.player.world}`, 'info');
 }
 function createDamageBurst() {
   const stage = document.getElementById('stage');
   const playerContainer = document.getElementById('player-container');
-  
+
   if (!stage || !playerContainer) return;
-  
+
   const rect = playerContainer.getBoundingClientRect();
   const stageRect = stage.getBoundingClientRect();
-  
+
   const burst = document.createElement('div');
   burst.className = 'damage-burst';
   burst.style.left = (rect.left - stageRect.left + rect.width / 2) + 'px';
   burst.style.top = (rect.top - stageRect.top + rect.height / 2) + 'px';
-  
+
   stage.appendChild(burst);
-  
+
   // Remove after animation completes
   setTimeout(() => {
     if (burst.parentNode) {
@@ -2577,13 +2592,13 @@ function createDamageBurst() {
 function dealRespawnDamage() {
   const playerDamage = computePlayerDamage();
   const respawnDamage = Math.floor(playerDamage * 3); // 300% damage
-  
+
   GameState.enemies.forEach(enemy => {
     // Visual feedback for each enemy
-    const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`) || 
+    const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`) ||
                     document.querySelector(`[data-boss-id="${enemy.id}"]`) ||
                     document.querySelector(`[data-entity-id="${enemy.id}"]`);
-    
+
     if (enemyEl) {
       // Flash effect on enemy
       enemyEl.style.filter = 'brightness(2) saturate(0)';
@@ -2591,16 +2606,16 @@ function dealRespawnDamage() {
         enemyEl.style.filter = '';
       }, 200);
     }
-    
+
     // Deal damage
     enemy.hp -= respawnDamage;
-    
+
     // Show damage number
     if (enemyEl) {
       showFloatingDamage(respawnDamage, false, enemyEl);
     }
   });
-  
+
   // Filter out dead enemies
   GameState.enemies = GameState.enemies.filter(enemy => {
     if (enemy.hp <= 0) {
@@ -2661,7 +2676,7 @@ const AFFIX_POOL = [
 
 function generateEquipment(slot, rarity, world, setId = null) {
   const ranges = RARITY_RANGES[rarity];
-  
+
   // If setId provided, generate set item
   if (setId && EQUIPMENT_SETS[setId]) {
     const setData = EQUIPMENT_SETS[setId];
@@ -2670,7 +2685,7 @@ function generateEquipment(slot, rarity, world, setId = null) {
       setId = null;
     } else {
     const setItem = setData.items[slot];
-    
+
     if (setItem) {
       const item = {
         id: `item_${GameState.itemIdCounter++}`,
@@ -2690,12 +2705,12 @@ function generateEquipment(slot, rarity, world, setId = null) {
         sellPrice: 0,
         createdAtWorld: world
       };
-      
+
       // Generate base attribute value
       const baseAttrName = item.baseAttribute.name;
       const baseRange = ranges[baseAttrName];
       item.baseAttribute.value = GameState.rng.randInt(baseRange[0], baseRange[1]);
-      
+
       // Generate affixes
       const availableAffixes = [...AFFIX_POOL];
       for (let i = 0; i < 4; i++) {
@@ -2719,22 +2734,22 @@ function generateEquipment(slot, rarity, world, setId = null) {
           unlockLevel: unlockLevel
         });
       }
-      
+
       // Set weapon properties
       if (setItem.isWeapon && setItem.multiplier) {
         item.isWeapon = true;
         item.weaponMultiplier = setItem.multiplier;
       }
-      
+
       // Calculate prices (set items are more expensive)
       item.buyPrice = Math.floor(CONFIG.BASE_SHOP_PRICE[rarity] * 1.5 * (1 + world * 0.1) * GameState.rng.randRange(0.9, 1.1));
       item.sellPrice = Math.floor(item.buyPrice * 0.3);
-      
+
       return item;
     }
     }
   }
-  
+
   // Original random equipment generation
   let baseAttrName;
   if (slot === 'helmet') baseAttrName = 'ATK';
@@ -2795,7 +2810,7 @@ function rollRarity() {
   const probs = CONFIG.RARITY_PROB;
   const total = Object.values(probs).reduce((sum, p) => sum + p, 0);
   const r = GameState.rng.rand() * total;
-  
+
   let cumulative = 0;
   for (const [rarity, prob] of Object.entries(probs)) {
     cumulative += prob;
@@ -2843,7 +2858,7 @@ function randomEdgePosition() {
   const w = stage.clientWidth;
   const h = stage.clientHeight;
   const side = GameState.rng.randInt(0, 3);
-  
+
   if (side === 0) return { x: GameState.rng.randRange(0, w), y: -50 };
   if (side === 1) return { x: w + 50, y: GameState.rng.randRange(0, h) };
   if (side === 2) return { x: GameState.rng.randRange(0, w), y: h + 50 };
@@ -2858,6 +2873,56 @@ function updateEnemies(dt) {
   const playerY = stage.clientHeight / 2;
 
   GameState.enemies.forEach(enemy => {
+    // Handle frozen state
+    if (enemy.frozen && enemy.frozenTimer !== undefined) {
+      enemy.frozenTimer -= dt;
+      if (enemy.frozenTimer <= 0) {
+        enemy.frozen = false;
+        enemy.speed = enemy.originalSpeed || enemy.speed;
+        delete enemy.frozenTimer;
+
+        // Remove frozen visual effect
+        const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
+        if (enemyEl) {
+          enemyEl.style.filter = '';
+        }
+
+        // 3-piece Glacier: Frozen Bomb - explosion after unfreezing
+        if (getSetCount('glacier') >= 3) {
+          const explosionDmg = Math.floor((GameState.player.currentStats?.finalATK || GameState.player.ATK) * 1.20);
+          applyDamageToEnemy(enemy, explosionDmg, { type: 'cryo', source: 'frozen_bomb', setId: 'glacier' });
+
+          const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
+          if (enemyEl) {
+            const rect = enemyEl.getBoundingClientRect();
+            spawnShockwave(rect.left + rect.width/2, rect.top + rect.height/2, 60, getElementColor('cryo'), 300);
+          }
+        }
+      } else {
+        // Apply frozen visual effect
+        const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
+        if (enemyEl && !enemyEl.style.filter.includes('brightness')) {
+          enemyEl.style.filter = 'brightness(1.5) saturate(0.3) hue-rotate(180deg)';
+        }
+      }
+    }
+
+    // Visual indicator for freeze-immune enemies (on cooldown)
+    const now = Date.now();
+    if (enemy.freezeCooldownUntil && now < enemy.freezeCooldownUntil) {
+      const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
+      if (enemyEl && !enemy.frozen) {
+        // Add a subtle red tint to show immunity
+        enemyEl.style.boxShadow = '0 0 10px rgba(255, 100, 100, 0.6)';
+      }
+    } else if (enemy.freezeCooldownUntil && now >= enemy.freezeCooldownUntil) {
+      // Remove immunity visual
+      const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
+      if (enemyEl) {
+        enemyEl.style.boxShadow = '';
+      }
+    }
+
     const dx = playerX - enemy.position.x;
     const dy = playerY - enemy.position.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
@@ -2893,7 +2958,7 @@ function updateEnemies(dt) {
 // ========== Death & Drops ==========
 function onEnemyDeath(enemy) {
   const p = GameState.player;
-  
+
   // Track statistics
   if (p.statistics) {
     p.statistics.totalKills++;
@@ -2901,30 +2966,30 @@ function onEnemyDeath(enemy) {
       p.statistics.bossesDefeated++;
     }
   }
-  
+
   p.exp += enemy.expValue;
   if (p.statistics) {
     p.statistics.totalExpGained += enemy.expValue;
   }
-  
+
   let coins = Math.floor(
-    enemy.dropProfile.coinBase * 
-    (1 + p.world * 0.5) * 
+    enemy.dropProfile.coinBase *
+    (1 + p.world * 0.5) *
     GameState.rng.randRange(0.8, 1.2) *
     (1 + p.luck / 100)
   );
-  
+
   const coinsBoost = p.activeEffects.find(e => e.id === 'coins_boost_200');
   if (coinsBoost) coins *= coinsBoost.params.multiplier;
-  
+
   if (getSetCount('nightwing') >= 3) coins *= 1.5;
-  
+
   p.coins += Math.floor(coins);
   if (p.statistics) {
     p.statistics.totalCoinsEarned += Math.floor(coins);
   }
   showFloatingChange(coins, 'coins');
-  
+
   if (enemy.type === 'elite' && GameState.rng.rand() < enemy.dropProfile.gemChancePct / 100) {
     const gemAmount = 1 + Math.floor(p.world / 5);
     p.gems += gemAmount;
@@ -2941,10 +3006,10 @@ function onEnemyDeath(enemy) {
     }
     showFloatingChange(gemAmount, 'gems');
   }
-  
+
   const baseChance = CONFIG.BASE_EQUIP_DROP_CHANCE_PCT[enemy.type] || 0;
   const finalChance = (baseChance / 100) * (1 + p.luck / 100);
-  
+
   if (GameState.rng.rand() < finalChance) {
     const rarity = rollRarity();
     const slots = ['helmet', 'chestplate', 'leggings', 'boots', 'ring', 'weapon'];
@@ -2955,16 +3020,16 @@ function onEnemyDeath(enemy) {
       p.statistics.itemsFound++;
     }
   }
-  
+
   GameState.worldProgress.enemiesKilledThisWorld++;
   if (enemy.type === 'elite' || enemy.type === 'boss') {
     GameState.worldProgress.elitesKilledThisWorld++;
   }
-  
+
   showDrop(enemy.position, '💰');
-  
+
   handleSetBonusOnKill(enemy);
-  
+
   checkLevelUp();
   updateWorldProgress();
 }
@@ -2972,7 +3037,7 @@ function onEnemyDeath(enemy) {
 function checkLevelUp() {
   const p = GameState.player;
   const expNeeded = 100 * Math.pow(1.5, p.level - 1);
-  
+
   while (p.exp >= expNeeded) {
     p.exp -= expNeeded;
     p.level++;
@@ -2988,15 +3053,15 @@ function checkLevelUp() {
 // ========== Wave Spawning ==========
 function spawnWave() {
   if (GameState.suspendWaves) return;
-  
+
   const p = GameState.player;
   const count = Math.max(CONFIG.MIN_WAVE_ENEMIES, Math.min(
     CONFIG.MAX_WAVE_ENEMIES,
     CONFIG.MIN_WAVE_ENEMIES + p.world + Math.floor(p.level / 5)
   ));
-  
+
   const typeWeights = { small: 30, normal: 50, big: 15, elite: 5 };
-  
+
   for (let i = 0; i < count; i++) {
     const type = GameState.rng.weightedChoice(
       Object.keys(typeWeights),
@@ -3044,7 +3109,7 @@ function addToInventory(item) {
     showNotification('⚠️ Inventory full!', 'warning');
     return false;
   }
-  
+
   // Find first empty slot
   for (let i = 0; i < CONFIG.MAX_INVENTORY_SLOTS; i++) {
     if (GameState.player.inventory[i] == null) {
@@ -3053,7 +3118,7 @@ function addToInventory(item) {
       return true;
     }
   }
-  
+
   showNotification('⚠️ Inventory full!', 'warning');
   return false;
 }
@@ -3061,10 +3126,10 @@ function addToInventory(item) {
 function equipItem(itemId) {
   const item = findItem(itemId);
   if (!item || item.type !== 'equipment') return;
-  
+
   const slot = item.slot;
   const currentItem = GameState.player.equipment[slot];
-  
+
   // Find and remove the item from inventory (sparse array)
   for (let i = 0; i < CONFIG.MAX_INVENTORY_SLOTS; i++) {
     if (GameState.player.inventory[i] && GameState.player.inventory[i].id === itemId) {
@@ -3072,10 +3137,10 @@ function equipItem(itemId) {
       break;
     }
   }
-  
+
   // Equip the new item
   GameState.player.equipment[slot] = item;
-  
+
   // If there was an old equipped item, add it to first empty inventory slot
   if (currentItem) {
     for (let i = 0; i < CONFIG.MAX_INVENTORY_SLOTS; i++) {
@@ -3085,7 +3150,7 @@ function equipItem(itemId) {
       }
     }
   }
-  
+
   computeDerivedStats();
   renderInventory();
   renderPlayerStats();
@@ -3095,19 +3160,19 @@ function equipItem(itemId) {
 function unequipItem(slot) {
   const item = GameState.player.equipment[slot];
   if (!item) return;
-  
+
   cleanInventory();
   if (getInventoryCount() >= CONFIG.MAX_INVENTORY_SLOTS) {
     showNotification('⚠️ Inventory full!', 'warning');
     return;
   }
-  
+
   // Find first empty slot
   for (let i = 0; i < CONFIG.MAX_INVENTORY_SLOTS; i++) {
     if (GameState.player.inventory[i] == null) {
       GameState.player.inventory[i] = item;
       GameState.player.equipment[slot] = null;
-      
+
       computeDerivedStats();
       renderInventory();
       renderPlayerStats();
@@ -3120,10 +3185,10 @@ function unequipItem(slot) {
 function sellItem(itemId) {
   const item = findItem(itemId);
   if (!item) return;
-  
+
   GameState.player.coins += item.sellPrice;
   showFloatingChange(item.sellPrice, 'coins');
-  
+
   // Remove from sparse inventory
   for (let i = 0; i < CONFIG.MAX_INVENTORY_SLOTS; i++) {
     if (GameState.player.inventory[i] && GameState.player.inventory[i].id === itemId) {
@@ -3131,7 +3196,7 @@ function sellItem(itemId) {
       break;
     }
   }
-  
+
   // Also check if item is equipped and remove it from equipment slot
   if (item.type === 'equipment') {
     for (const slot in GameState.player.equipment) {
@@ -3143,7 +3208,7 @@ function sellItem(itemId) {
       }
     }
   }
-  
+
   renderInventory();
   hideTooltip();
   showNotification(`💰 Sold for ${item.sellPrice} coins`, 'success');
@@ -3231,7 +3296,7 @@ function upgradeItem(itemId) {
             slotEl = document.querySelector(`.inv-slot[data-index="${itemIndex}"]`);
           }
         }
-        
+
         // Re-show the tooltip to keep it visible
         if (slotEl) {
           showItemTooltip(item, slotEl, tooltipIsEquipped);
@@ -3246,20 +3311,20 @@ function upgradeItem(itemId) {
 function getUpgradeCost(item) {
   const baseCost = CONFIG.EQUIP_BASE_UPGRADE_COST[item.rarity];
   const coins = Math.floor(baseCost * Math.pow(1.06, item.level - 1));
-  
+
   const nextLevel = item.level + 1;
   let gems = 0;
   if (CONFIG.STAR_THRESHOLDS.includes(nextLevel)) {
     gems = CONFIG.STAR_GEM_COSTS[nextLevel.toString()] || 0;
   }
-  
+
   return { coins, gems };
 }
 
 function useConsumable(itemId) {
   const item = findItem(itemId);
   if (!item || item.type !== 'consumable') return;
-  
+
   // Remove from sparse inventory
   for (let i = 0; i < CONFIG.MAX_INVENTORY_SLOTS; i++) {
     if (GameState.player.inventory[i] && GameState.player.inventory[i].id === itemId) {
@@ -3267,7 +3332,7 @@ function useConsumable(itemId) {
       break;
     }
   }
-  
+
   const effect = {
     id: item.effectId,
     startedAtTs: Date.now(),
@@ -3275,7 +3340,7 @@ function useConsumable(itemId) {
     params: item.params
   };
   GameState.player.activeEffects.push(effect);
-  
+
   computeDerivedStats();
   renderInventory();
   hideTooltip();
@@ -3289,14 +3354,14 @@ function findItem(itemId) {
       return GameState.player.inventory[i];
     }
   }
-  
+
   // Search in equipment
   for (const slot in GameState.player.equipment) {
     if (GameState.player.equipment[slot]?.id === itemId) {
       return GameState.player.equipment[slot];
     }
   }
-  
+
   return null;
 }
 
@@ -3311,7 +3376,7 @@ function refreshShop() {
   const shop = GameState.shop;
   shop.offers.equipment = [];
   shop.offers.consumables = [];
-  
+
   const slots = ['helmet', 'chestplate', 'leggings', 'boots', 'ring', 'weapon'];
   const setIds = Object.keys(EQUIPMENT_SETS);
   for (let i = 0; i < 6; i++) {
@@ -3324,7 +3389,7 @@ function refreshShop() {
     shop.offers.equipment.push(item);
   }
 
-  
+
   CONSUMABLES.forEach(cons => {
     shop.offers.consumables.push({
       id: `cons_${GameState.itemIdCounter++}`,
@@ -3338,7 +3403,7 @@ function refreshShop() {
       slot: null
     });
   });
-  
+
   shop.lastRefreshTs = Date.now();
 }
 
@@ -3353,17 +3418,17 @@ function buyShopItem(itemId) {
     showNotification('⚠️ Item not found!', 'warning');
     return;
   }
-  
+
   const p = GameState.player;
   const cost = item.type === 'consumable' ? item.price : item.buyPrice;
   const currency = item.type === 'consumable' ? 'gems' : 'coins';
-  
+
   // Check if already sold out
   if (item.soldOut) {
     showNotification('⚠️ Item already sold!', 'warning');
     return;
   }
-  
+
   if (currency === 'coins' && p.coins < cost) {
     showNotification('⚠️ Not enough coins!', 'warning');
     return;
@@ -3372,13 +3437,13 @@ function buyShopItem(itemId) {
     showNotification('⚠️ Not enough gems!', 'warning');
     return;
   }
-  
+
   cleanInventory();  // Clean before checking
   if (getInventoryCount() >= CONFIG.MAX_INVENTORY_SLOTS) {
     showNotification('⚠️ Inventory full!', 'warning');
     return;
   }
-  
+
   if (currency === 'coins') {
     p.coins -= cost;
     showFloatingChange(-cost, 'coins');
@@ -3387,9 +3452,9 @@ function buyShopItem(itemId) {
     p.gems -= cost;
     showFloatingChange(-cost, 'gems');
   }
-  
+
   const itemCopy = { ...item, id: `item_${GameState.itemIdCounter++}` };
-  
+
   // Find first empty slot
   for (let i = 0; i < CONFIG.MAX_INVENTORY_SLOTS; i++) {
     if (p.inventory[i] == null) {
@@ -3397,15 +3462,15 @@ function buyShopItem(itemId) {
       break;
     }
   }
-  
+
   // Track purchase
   if (p.statistics) {
     p.statistics.itemsPurchased++;
   }
-  
+
   // Mark item as sold out
   item.soldOut = true;
-  
+
   showNotification(`🛒 Purchased: ${item.name}`, 'success');
   hideTooltip();
   renderShop();
@@ -3416,21 +3481,21 @@ function buyShopItem(itemId) {
 // ========== UI Rendering ==========
 function renderUI() {
   const p = GameState.player;
-  
+
   document.getElementById('coins').textContent = Math.floor(p.coins).toLocaleString();
   document.getElementById('gems').textContent = Math.floor(p.gems).toLocaleString();
   document.getElementById('level').textContent = `Lv ${p.level}`;
   document.getElementById('world').textContent = `World ${p.world}`;
-  
+
   const expNeeded = 100 * Math.pow(1.5, p.level - 1);
   const expPct = Math.min(100, (p.exp / expNeeded) * 100);
   document.getElementById('exp-fill').style.width = `${expPct}%`;
   document.getElementById('exp-text').textContent = `${Math.floor(p.exp)} / ${Math.floor(expNeeded)}`;
-  
+
   const hpPct = Math.max(0, (p.hp / p.maxHp) * 100);
   document.getElementById('player-hp-fill').style.width = `${hpPct}%`;
   document.getElementById('player-hp-text').textContent = `${Math.floor(p.hp)} / ${Math.floor(p.maxHp)}`;
-  
+
   renderEquipmentRing();
   updateActiveEffects();
   updateAttackRangeCircle();
@@ -3439,18 +3504,18 @@ function renderUI() {
 function renderEquipmentRing() {
   const ring = document.getElementById('equip-ring');
   ring.innerHTML = '';
-  
+
   const slots = ['helmet', 'weapon', 'chestplate', 'boots', 'leggings', 'ring'];
   const angleStep = (Math.PI * 2) / slots.length;
-  
+
   slots.forEach((slot, i) => {
     const item = GameState.player.equipment[slot];
     if (!item) return;
-    
+
     const angle = angleStep * i - Math.PI / 2;
     const x = Math.cos(angle) * CONFIG.EQUIP_RENDER_RADIUS_PX;
     const y = Math.sin(angle) * CONFIG.EQUIP_RENDER_RADIUS_PX;
-    
+
     const icon = document.createElement('div');
     icon.className = `equipped-icon rarity-${item.rarity}`;
     icon.textContent = SLOT_ICONS[slot];
@@ -3465,25 +3530,25 @@ function updateAttackRangeCircle() {
   const p = GameState.player;
   const weaponItem = p.equipment && p.equipment.weapon;
   const circle = document.getElementById('attack-range-circle');
-  
+
   if (!circle) return;
-  
+
   // Show attack range circle if player has a weapon equipped
   if (weaponItem) {
     circle.classList.add('visible');
-    
+
     // Get weapon range - use increased range for set weapons
     let range = CONFIG.ENGAGE_RADIUS_PX;
     if (weaponItem.setId) {
       // Set weapons have increased range (50% more)
       range = CONFIG.ENGAGE_RADIUS_PX * 1.5;
     }
-    
+
     // Set circle size (diameter = 2 * radius)
     const diameter = range * 2;
     circle.style.width = `${diameter}px`;
     circle.style.height = `${diameter}px`;
-    
+
     // Set circle color based on weapon rarity
     const rarityColors = {
       common: 'var(--color-common)',
@@ -3493,7 +3558,7 @@ function updateAttackRangeCircle() {
       legendary: 'var(--color-legendary)',
       mythic: 'var(--color-mythic)'
     };
-    
+
     const color = rarityColors[weaponItem.rarity] || '#888';
     circle.style.borderColor = color;
   } else {
@@ -3506,31 +3571,31 @@ function renderSetBonuses() {
   const p = GameState.player;
   const container = document.getElementById('set-bonuses-display');
   if (!container) return;
-  
+
   if (!p.activeSets || Object.keys(p.activeSets).length === 0) {
     container.innerHTML = '';
     container.style.display = 'none';
     return;
   }
-  
+
   container.style.display = 'block';
   let html = '<div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; margin: 12px 0; border: 2px solid var(--accent-gold);">';
   html += '<div style="font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--accent-gold); margin-bottom: 8px;">⚡ Set Bonuses</div>';
-  
+
   Object.keys(p.activeSets).forEach(setId => {
     const count = p.activeSets[setId];
     // Safety check: Skip if set doesn't exist in EQUIPMENT_SETS
     if (!EQUIPMENT_SETS[setId]) return;
     const setData = EQUIPMENT_SETS[setId];
     if (!setData) return;
-    
+
     html += `<div style="margin-bottom: 10px; padding: 8px; background: rgba(0,0,0,0.2); border-radius: 4px;">`;
     html += `<div style="font-weight: 700; color: var(--accent-gold); margin-bottom: 4px;">${setData.name} (${count}/6)</div>`;
-    
+
     [2, 3, 4, 6].forEach(tier => {
       const bonus = setData.bonuses[tier];
       if (!bonus) return;
-      
+
       const active = count >= tier;
       const color = active ? 'var(--text-primary)' : 'var(--text-dim)';
       const weight = active ? '600' : '400';
@@ -3538,10 +3603,10 @@ function renderSetBonuses() {
       html += `<span style="color: ${active ? '#4fc3f7' : 'var(--text-dim)'};">${tier}:</span> ${bonus.desc}`;
       html += `</div>`;
     });
-    
+
     html += `</div>`;
   });
-  
+
   html += '</div>';
   container.innerHTML = html;
 }
@@ -3549,11 +3614,11 @@ function renderSetBonuses() {
 function renderInventory() {
   const p = GameState.player;
   cleanInventory();  // Clean inventory before rendering
-  
+
   Object.keys(p.equipment).forEach(slot => {
     const slotEl = document.getElementById(`equip-${slot === 'ring' ? 'ring-slot' : slot}`);
     const item = p.equipment[slot];
-    
+
     if (item) {
       slotEl.innerHTML = `
         <span class="item-icon">${SLOT_ICONS[slot]}</span>
@@ -3570,11 +3635,11 @@ function renderInventory() {
       slotEl.draggable = false;
     }
   });
-  
+
   for (let i = 0; i < CONFIG.MAX_INVENTORY_SLOTS; i++) {
     const slotEl = document.querySelector(`.inv-slot[data-index="${i}"]`);
     const item = p.inventory[i];
-    
+
     if (item) {
       const icon = item.type === 'equipment' ? SLOT_ICONS[item.slot] : item.icon;
       slotEl.innerHTML = `
@@ -3592,16 +3657,16 @@ function renderInventory() {
       slotEl.draggable = false;
     }
   }
-  
+
   // Update inventory resources display (only if elements exist)
   const invCoinsEl = document.getElementById('inv-coins');
   const invGemsEl = document.getElementById('inv-gems');
   if (invCoinsEl) invCoinsEl.textContent = Math.floor(p.coins).toLocaleString();
   if (invGemsEl) invGemsEl.textContent = Math.floor(p.gems).toLocaleString();
-  
+
   // Update active effects display in inventory
   updateActiveEffects();
-  
+
   // Set bonuses are now shown in tooltips, no separate display needed
 }
 
@@ -3633,10 +3698,10 @@ document.addEventListener('dragend', (e) => {
 });
 
 document.addEventListener('dragover', (e) => {
-  const slot = e.target.classList.contains('inv-slot') || e.target.classList.contains('equip-slot') 
-    ? e.target 
+  const slot = e.target.classList.contains('inv-slot') || e.target.classList.contains('equip-slot')
+    ? e.target
     : e.target.closest('.inv-slot') || e.target.closest('.equip-slot');
-  
+
   if (slot) {
     e.preventDefault();
     slot.classList.add('drag-over');
@@ -3645,9 +3710,9 @@ document.addEventListener('dragover', (e) => {
 
 document.addEventListener('dragleave', (e) => {
   const slot = e.target.classList.contains('inv-slot') || e.target.classList.contains('equip-slot')
-    ? e.target 
+    ? e.target
     : e.target.closest('.inv-slot') || e.target.closest('.equip-slot');
-  
+
   if (slot) {
     slot.classList.remove('drag-over');
   }
@@ -3656,22 +3721,22 @@ document.addEventListener('dragleave', (e) => {
 document.addEventListener('drop', (e) => {
   e.preventDefault();
   const targetSlot = e.target.classList.contains('inv-slot') || e.target.classList.contains('equip-slot')
-    ? e.target 
+    ? e.target
     : e.target.closest('.inv-slot') || e.target.closest('.equip-slot');
-  
+
   if (!targetSlot) return;
-  
+
   targetSlot.classList.remove('drag-over');
   const p = GameState.player;
-  
+
   // Case 1: Dragging from inventory to inventory (swap/reorder)
   if (draggedSlotIndex !== null && targetSlot.classList.contains('inv-slot')) {
     const targetIndex = parseInt(targetSlot.dataset.index);
-    
+
     if (draggedSlotIndex !== targetIndex) {
       const draggedItem = p.inventory[draggedSlotIndex];
       const targetItem = p.inventory[targetIndex];
-      
+
       // Only proceed if there is actually an item to drag
       if (draggedItem) {
         // Swap the items (or move to empty slot)
@@ -3679,7 +3744,7 @@ document.addEventListener('drop', (e) => {
           // Perform the swap
           p.inventory[draggedSlotIndex] = targetItem;  // Put target item (or undefined) at source
           p.inventory[targetIndex] = draggedItem;      // Put dragged item at target
-          
+
           // Clean up undefined at source if target was empty
           if (!targetItem) {
             delete p.inventory[draggedSlotIndex];
@@ -3690,7 +3755,7 @@ document.addEventListener('drop', (e) => {
           delete p.inventory[draggedSlotIndex];
         }
       }
-      
+
       renderInventory();
       hideTooltip();
     }
@@ -3699,20 +3764,20 @@ document.addEventListener('drop', (e) => {
   else if (draggedSlotIndex !== null && targetSlot.classList.contains('equip-slot')) {
     const item = p.inventory[draggedSlotIndex];
     const targetEquipSlot = targetSlot.dataset.slot;
-    
+
     if (item && item.type === 'equipment' && item.slot === targetEquipSlot) {
       // Remove item from sparse inventory
       delete p.inventory[draggedSlotIndex];
-      
+
       // Swap: unequip current item to inventory, equip new item
       const oldEquipped = p.equipment[targetEquipSlot];
       p.equipment[targetEquipSlot] = item;
-      
+
       // If there was an old equipped item, put it at the same inventory slot
       if (oldEquipped) {
         p.inventory[draggedSlotIndex] = oldEquipped;
       }
-      
+
       computeDerivedStats();
       renderInventory();
       renderPlayerStats();
@@ -3723,11 +3788,11 @@ document.addEventListener('drop', (e) => {
   else if (draggedEquipSlot !== null && targetSlot.classList.contains('inv-slot')) {
     const targetIndex = parseInt(targetSlot.dataset.index);
     const equippedItem = p.equipment[draggedEquipSlot];
-    
+
     if (equippedItem) {
       cleanInventory();
       const invItem = p.inventory[targetIndex];
-      
+
       if (!invItem) {
         // Simple unequip to empty slot - check if there is space
         if (getInventoryCount() < CONFIG.MAX_INVENTORY_SLOTS) {
@@ -3755,7 +3820,7 @@ document.addEventListener('drop', (e) => {
         hideTooltip();
         return;
       }
-      
+
       computeDerivedStats();
       renderInventory();
       renderPlayerStats();
@@ -3765,16 +3830,16 @@ document.addEventListener('drop', (e) => {
   // Case 4: Dragging from equipment to equipment (swap slots)
   else if (draggedEquipSlot !== null && targetSlot.classList.contains('equip-slot')) {
     const targetEquipSlot = targetSlot.dataset.slot;
-    
+
     if (draggedEquipSlot !== targetEquipSlot) {
       const item1 = p.equipment[draggedEquipSlot];
       const item2 = p.equipment[targetEquipSlot];
-      
+
       // Only swap if both items match their target slots
       if (item1 && item1.slot === targetEquipSlot && (!item2 || item2.slot === draggedEquipSlot)) {
         p.equipment[draggedEquipSlot] = item2;
         p.equipment[targetEquipSlot] = item1;
-        
+
         computeDerivedStats();
         renderInventory();
         renderPlayerStats();
@@ -3788,7 +3853,7 @@ function renderPlayerStats() {
   const stats = GameState.player.currentStats;
   const bonuses = GameState.player.statBonuses || { atkBonus: 0, hpBonus: 0, spdBonus: 0, dmgBonus: 0 };
   const playerStats = GameState.player.statistics;
-  
+
   // Helper function to format stat with bonus
   const formatStatWithBonus = (value, bonus) => {
     if (bonus > 0) {
@@ -3796,7 +3861,7 @@ function renderPlayerStats() {
     }
     return Math.floor(value).toString();
   };
-  
+
   // Update inventory stats (combat only)
   document.getElementById('stat-atk').innerHTML = formatStatWithBonus(stats.finalATK, bonuses.atkBonus);
   document.getElementById('stat-hp').innerHTML = formatStatWithBonus(stats.finalHP, bonuses.hpBonus);
@@ -3804,7 +3869,7 @@ function renderPlayerStats() {
   document.getElementById('stat-dmg').innerHTML = formatStatWithBonus(stats.finalDMGPct, bonuses.dmgBonus) + '%';
   document.getElementById('stat-crit-rate').textContent = `${Math.floor(stats.finalCritRate)}%`;
   document.getElementById('stat-crit-dmg').textContent = `${Math.floor(stats.finalCritDmg)}%`;
-  
+
   // Update stats overlay - combat stats
   const atkDetail = document.getElementById('stat-atk-detail');
   const hpDetail = document.getElementById('stat-hp-detail');
@@ -3812,14 +3877,14 @@ function renderPlayerStats() {
   const dmgDetail = document.getElementById('stat-dmg-detail');
   const critRateDetail = document.getElementById('stat-crit-rate-detail');
   const critDmgDetail = document.getElementById('stat-crit-dmg-detail');
-  
+
   if (atkDetail) atkDetail.innerHTML = formatStatWithBonus(stats.finalATK, bonuses.atkBonus);
   if (hpDetail) hpDetail.innerHTML = formatStatWithBonus(stats.finalHP, bonuses.hpBonus);
   if (spdDetail) spdDetail.innerHTML = formatStatWithBonus(stats.finalSPD, bonuses.spdBonus);
   if (dmgDetail) dmgDetail.innerHTML = formatStatWithBonus(stats.finalDMGPct, bonuses.dmgBonus) + '%';
   if (critRateDetail) critRateDetail.textContent = `${Math.floor(stats.finalCritRate)}%`;
   if (critDmgDetail) critDmgDetail.textContent = `${Math.floor(stats.finalCritDmg)}%`;
-  
+
   // Update player statistics
   if (playerStats) {
     const totalKillsEl = document.getElementById('stat-total-kills');
@@ -3835,7 +3900,7 @@ function renderPlayerStats() {
     const itemsFoundEl = document.getElementById('stat-items-found');
     const itemsBoughtEl = document.getElementById('stat-items-bought');
     const playtimeEl = document.getElementById('stat-playtime');
-    
+
     if (totalKillsEl) totalKillsEl.textContent = playerStats.totalKills.toLocaleString();
     if (bossesEl) bossesEl.textContent = playerStats.bossesDefeated.toLocaleString();
     if (worldsEl) worldsEl.textContent = playerStats.worldsCompleted.toLocaleString();
@@ -3848,7 +3913,7 @@ function renderPlayerStats() {
     if (expGainedEl) expGainedEl.textContent = Math.floor(playerStats.totalExpGained).toLocaleString();
     if (itemsFoundEl) itemsFoundEl.textContent = playerStats.itemsFound.toLocaleString();
     if (itemsBoughtEl) itemsBoughtEl.textContent = playerStats.itemsPurchased.toLocaleString();
-    
+
     // Calculate and display play time
     if (playtimeEl) {
       const currentSession = (Date.now() - playerStats.sessionStartTime) / 1000;
@@ -3863,13 +3928,13 @@ function renderPlayerStats() {
 function renderShop() {
   const shop = GameState.shop;
   const p = GameState.player;
-  
+
   // Update coins and gems display
   const shopCoinsEl = document.getElementById('shop-coins');
   const shopGemsEl = document.getElementById('shop-gems');
   if (shopCoinsEl) shopCoinsEl.textContent = Math.floor(p.coins).toLocaleString();
   if (shopGemsEl) shopGemsEl.textContent = Math.floor(p.gems).toLocaleString();
-  
+
   const equipGrid = document.getElementById('shop-equipment-grid');
   equipGrid.innerHTML = '';
   shop.offers.equipment.forEach(item => {
@@ -3886,7 +3951,7 @@ function renderShop() {
     }
     equipGrid.appendChild(div);
   });
-  
+
   const consGrid = document.getElementById('shop-consumables-grid');
   consGrid.innerHTML = '';
   shop.offers.consumables.forEach(item => {
@@ -3908,7 +3973,7 @@ function renderShop() {
 function renderEnemies() {
   const layer = document.getElementById('enemy-layer');
   const existing = new Set(Array.from(layer.children).map(el => el.dataset.enemyId));
-  
+
   GameState.enemies.forEach(enemy => {
     let el = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
     if (!el) {
@@ -3924,15 +3989,15 @@ function renderEnemies() {
       // Set initial position for newly created enemies
       el.style.transform = `translate(${enemy.position.x}px, ${enemy.position.y}px)`;
     }
-    
+
     // Don't update transform here - smooth per-frame renderer handles all position updates
-    
+
     const hpPct = Math.max(0, (enemy.hp / enemy.maxHp) * 100);
     el.querySelector('.enemy-hp-fill').style.width = `${hpPct}%`;
-    
+
     existing.delete(enemy.id);
   });
-  
+
   existing.forEach(id => {
     const el = document.querySelector(`[data-enemy-id="${id}"]`);
     if (el) el.remove();
@@ -3951,7 +4016,7 @@ function getElementColor(el) {
   };
   return map[el] || '#ffffff';
 }
-function showElementDamage(damage, elementType, enemyEl, isCrit) {
+function showElementDamage(damage, elementType, enemyEl, isCrit, customColor = null) {
   if (!enemyEl) return;
   const stage = document.getElementById('stage');
   if (!stage) return;
@@ -3965,7 +4030,7 @@ function showElementDamage(damage, elementType, enemyEl, isCrit) {
   dmgEl.textContent = isCrit ? `${damage}!` : `${damage}`;
   dmgEl.style.left = `${rect.left - stageRect.left + rect.width / 2}px`;
   dmgEl.style.top = `${rect.top - stageRect.top - 30}px`;
-  dmgEl.style.color = getElementColor(elementType);
+  dmgEl.style.color = customColor || getElementColor(elementType);
   dmgEl.style.fontWeight = 'bold';
   dmgEl.style.fontSize = '18px';
   dmgEl.style.textShadow = '0 1px 0 rgba(0,0,0,0.6)';
@@ -3998,7 +4063,14 @@ function applyDamageToEnemy(enemy, dmg, ctx = {}) {
   // floating damage display: color by element (special-case aether & wind etc)
   const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
   if (enemyEl) {
-    showElementDamage(Math.floor(dmg), ctx.type || 'physical', enemyEl, !!ctx.crit);
+    // Use yellow for coin damage, red for HP loss damage
+    let customColor = null;
+    if (ctx.source && (ctx.source.includes('coin') || ctx.source === 'rich_mans_blow' || ctx.source === 'wealth_rain')) {
+      customColor = '#ffd700'; // Yellow for coins
+    } else if (ctx.source && ctx.source.includes('hp_loss')) {
+      customColor = '#ff3b3b'; // Red for HP loss
+    }
+    showElementDamage(Math.floor(dmg), ctx.type || 'physical', enemyEl, !!ctx.crit, customColor);
   }
 
   if (enemy.hp <= 0) {
@@ -4207,7 +4279,13 @@ function processEnemyStatusTicks(deltaMs) {
         // compute number of ticks passed
         const ticks = Math.floor(elapsed / (s.tickInterval || 1000));
         for (let i=0;i<ticks;i++){
-          applyDamageToEnemy(enemy, Math.floor(s.tickDamage || 0), { type: 'fire', source: 'dot', setId: s.sourceSet || null });
+          // 3-piece: Burn - DoT scales by +8% of player ATK per tick
+          let tickDmg = Math.floor(s.tickDamage || 0);
+          if (getSetCount('emberkin') >= 3 && s.sourceSet === 'emberkin') {
+            const atkScaling = Math.floor((GameState.player.currentStats?.finalATK || 0) * 0.08);
+            tickDmg += atkScaling;
+          }
+          applyDamageToEnemy(enemy, tickDmg, { type: 'fire', source: 'dot', setId: s.sourceSet || null });
         }
         s._lastTickAt = (s._lastTickAt || s.appliedAt || now) + ticks * (s.tickInterval || 1000);
       }
@@ -4398,11 +4476,11 @@ function createStarProjectile(options) {
 function spawnAegisCircle(centerX, centerY, index, totalCircles, player) {
   const stage = document.getElementById('stage');
   if (!stage) return;
-  
+
   const radius = 60;
   const angleOffset = (index / totalCircles) * Math.PI * 2;
   const rotationSpeed = 2000; // ms per rotation
-  
+
   const circle = document.createElement('div');
   circle.className = 'aegis-circle';
   Object.assign(circle.style, {
@@ -4418,26 +4496,26 @@ function spawnAegisCircle(centerX, centerY, index, totalCircles, player) {
     top: `${centerY}px`,
     transform: 'translate(-50%, -50%)'
   });
-  
+
   stage.appendChild(circle);
-  
+
   const startTime = Date.now();
   const duration = 3000; // circles last 3 seconds
-  
+
   const animate = () => {
     const elapsed = Date.now() - startTime;
     if (elapsed > duration) {
       circle.remove();
       return;
     }
-    
+
     const angle = angleOffset + (elapsed / rotationSpeed) * Math.PI * 2;
     const x = centerX + Math.cos(angle) * radius;
     const y = centerY + Math.sin(angle) * radius;
-    
+
     circle.style.left = `${x}px`;
     circle.style.top = `${y}px`;
-    
+
     // Check for enemy collisions
     const circleDmg = Math.floor((player.currentStats?.finalATK || player.ATK) * 0.10);
     GameState.enemies.forEach(enemy => {
@@ -4448,10 +4526,10 @@ function spawnAegisCircle(centerX, centerY, index, totalCircles, player) {
         applyDamageToEnemy(enemy, circleDmg, { type: 'aether', source: 'aegis_circle', setId: 'aegis' });
       }
     });
-    
+
     requestAnimationFrame(animate);
   };
-  
+
   animate();
 }
 
@@ -4459,7 +4537,7 @@ function spawnAegisCircle(centerX, centerY, index, totalCircles, player) {
 function createFireZone(centerX, centerY, burnTick, duration, player) {
   const stage = document.getElementById('stage');
   if (!stage) return;
-  
+
   const zone = document.createElement('div');
   zone.className = 'fire-zone';
   Object.assign(zone.style, {
@@ -4477,38 +4555,36 @@ function createFireZone(centerX, centerY, burnTick, duration, player) {
     transform: 'translate(-50%, -50%)',
     animation: 'fire-pulse 1s infinite'
   });
-  
+
   stage.appendChild(zone);
-  
-  // Apply burn DoT to enemies in zone every second
-  const tickInterval = setInterval(() => {
-    GameState.enemies.forEach(enemy => {
-      const enemyX = enemy.position?.x || enemy.x || 0;
-      const enemyY = enemy.position?.y || enemy.y || 0;
-      const dist = Math.sqrt((centerX - enemyX)**2 + (centerY - enemyY)**2);
-      if (dist < 60) { // zone radius
-        applyStatus(enemy, 'burn', { 
-          tickDamage: burnTick, 
-          tickInterval: 1000, 
-          duration: 5000, 
-          appliedAt: Date.now(), 
-          sourceSet: 'emberkin' 
-        });
-      }
-    });
-  }, 1000);
-  
+
+  // Track zone for damage ticks (applied in updateSetBonusesPeriodic like Bloodbath)
+  const zoneData = {
+    x: centerX,
+    y: centerY,
+    radius: 60,
+    baseDamage: burnTick,
+    startTime: Date.now(),
+    duration: 10000, // Zone lasts 10 seconds
+    burnDuration: 5000, // Each enemy burns for 5 seconds after entering
+    element: zone,
+    affectedEnemies: new Map() // enemyId -> { enteredAt, lastTickAt }
+  };
+
+  if (!player.emberkinFireZones) player.emberkinFireZones = [];
+  player.emberkinFireZones.push(zoneData);
+
   // Remove zone after duration
   setTimeout(() => {
-    clearInterval(tickInterval);
-    zone.remove();
+    if (zone.parentNode) zone.remove();
+    player.emberkinFireZones = player.emberkinFireZones.filter(z => z !== zoneData);
   }, duration);
 }
 
-function spawnAegisHoveringBall(targetEnemy, ballDmg, duration, player) {
+function spawnAegisHoveringBall(targetEnemy, ballDmg, duration, player, has3Piece, has6Piece) {
   const stage = document.getElementById('stage');
   if (!stage) return;
-  
+
   const ball = document.createElement('div');
   Object.assign(ball.style, {
     position: 'absolute',
@@ -4521,26 +4597,40 @@ function spawnAegisHoveringBall(targetEnemy, ballDmg, duration, player) {
     pointerEvents: 'none',
     zIndex: 50
   });
-  
+
   stage.appendChild(ball);
-  
+
   let currentEnemy = targetEnemy;
   const startTime = Date.now();
   const hitInterval = 500; // Hit every 0.5 seconds
-  
+  let enemyDied = false;
+  let deathPosition = null;
+
   const updateBall = setInterval(() => {
     const elapsed = Date.now() - startTime;
-    
+
     // Check if ball should expire
     if (elapsed >= duration) {
       clearInterval(updateBall);
       ball.remove();
       return;
     }
-    
+
     // Check if current enemy is still alive
     if (!GameState.enemies.find(e => e.id === currentEnemy.id)) {
-      // Enemy died, find a random new enemy
+      if (!enemyDied && has6Piece) {
+        // Enemy just died - trigger 6-piece effect
+        enemyDied = true;
+        deathPosition = { x: currentEnemy.position?.x || currentEnemy.x || 0, y: currentEnemy.position?.y || currentEnemy.y || 0 };
+        clearInterval(updateBall);
+        ball.remove();
+
+        // Spawn 2 balls that spin around the dead enemy for 3 seconds
+        spawnAegis6PieceSpinBalls(deathPosition.x, deathPosition.y, player);
+        return;
+      }
+
+      // Enemy died, find a random new enemy (if not 6-piece or already handled)
       const availableEnemies = GameState.enemies.filter(e => e.hp > 0);
       if (availableEnemies.length === 0) {
         clearInterval(updateBall);
@@ -4549,7 +4639,7 @@ function spawnAegisHoveringBall(targetEnemy, ballDmg, duration, player) {
       }
       currentEnemy = availableEnemies[Math.floor(Math.random() * availableEnemies.length)];
     }
-    
+
     // Position ball to hover around current enemy
     const enemyEl = document.querySelector(`[data-enemy-id="${currentEnemy.id}"]`);
     if (enemyEl) {
@@ -4559,12 +4649,12 @@ function spawnAegisHoveringBall(targetEnemy, ballDmg, duration, player) {
       const radius = 40;
       const offsetX = Math.cos(angle) * radius;
       const offsetY = Math.sin(angle) * radius;
-      
+
       ball.style.left = `${rect.left - stageRect.left + rect.width/2 + offsetX}px`;
       ball.style.top = `${rect.top - stageRect.top + rect.height/2 + offsetY}px`;
     }
   }, 50);
-  
+
   // Deal damage every hitInterval
   const damageInterval = setInterval(() => {
     const elapsed = Date.now() - startTime;
@@ -4572,19 +4662,122 @@ function spawnAegisHoveringBall(targetEnemy, ballDmg, duration, player) {
       clearInterval(damageInterval);
       return;
     }
-    
+
     // Check if current enemy still exists
     const enemy = GameState.enemies.find(e => e.id === currentEnemy.id);
     if (enemy) {
       applyDamageToEnemy(enemy, ballDmg, { type: 'aether', source: 'weapon_ball', setId: 'aegis' });
+
+      // 3-piece: Myth - 20% chance to spawn another ball (lasts 3 seconds)
+      if (has3Piece && Math.random() < 0.20) {
+        const mythBallDmg = Math.floor(ballDmg);
+        setTimeout(() => {
+          spawnAegisHoveringBall(enemy, mythBallDmg, 3000, player, false, false);
+        }, 100);
+      }
+    } else {
+      clearInterval(damageInterval);
     }
   }, hitInterval);
+}
+
+function spawnAegis6PieceSpinBalls(deathX, deathY, player) {
+  const stage = document.getElementById('stage');
+  if (!stage) return;
+
+  const balls = [];
+  const spinDuration = 3000;
+  const startTime = Date.now();
+
+  // Create 2 balls
+  for (let i = 0; i < 2; i++) {
+    const ball = document.createElement('div');
+    Object.assign(ball.style, {
+      position: 'absolute',
+      width: '28px',
+      height: '28px',
+      borderRadius: '50%',
+      background: 'radial-gradient(circle, rgba(186,85,211,1), rgba(138,43,226,0.7))',
+      border: '2px solid rgba(147,112,219,1)',
+      boxShadow: '0 0 20px rgba(147,112,219,1)',
+      pointerEvents: 'none',
+      zIndex: 52
+    });
+    stage.appendChild(ball);
+    balls.push(ball);
+  }
+
+  const stageRect = stage.getBoundingClientRect();
+
+  // Spin balls around death position
+  const spinInterval = setInterval(() => {
+    const elapsed = Date.now() - startTime;
+
+    if (elapsed >= spinDuration) {
+      clearInterval(spinInterval);
+
+      // Launch balls to random enemies and explode
+      balls.forEach((ball, index) => {
+        setTimeout(() => {
+          const availableEnemies = GameState.enemies.filter(e => e.hp > 0);
+          if (availableEnemies.length > 0) {
+            const targetEnemy = availableEnemies[Math.floor(Math.random() * availableEnemies.length)];
+            const targetX = targetEnemy.position?.x || targetEnemy.x || 0;
+            const targetY = targetEnemy.position?.y || targetEnemy.y || 0;
+
+            // Animate ball moving to target
+            ball.style.transition = 'all 0.5s ease-out';
+            ball.style.left = `${targetX}px`;
+            ball.style.top = `${targetY}px`;
+
+            setTimeout(() => {
+              // Explode and deal 200% aether damage
+              const explosionDmg = Math.floor((player.currentStats?.finalATK || player.ATK) * 2.00);
+              applyDamageToEnemy(targetEnemy, explosionDmg, { type: 'aether', source: 'aegis_6piece_explosion', setId: 'aegis' });
+
+              // Visual explosion
+              const enemyEl = document.querySelector(`[data-enemy-id="${targetEnemy.id}"]`);
+              if (enemyEl) {
+                const rect = enemyEl.getBoundingClientRect();
+                spawnShockwave(rect.left + rect.width/2, rect.top + rect.height/2, 80, '#9370db', 400);
+              }
+
+              ball.remove();
+            }, 500);
+          } else {
+            ball.remove();
+          }
+        }, index * 100);
+      });
+      return;
+    }
+
+    // Spin balls around death position
+    balls.forEach((ball, index) => {
+      const angle = (elapsed / 1000) * Math.PI * 2 + (index * Math.PI); // Opposite sides
+      const radius = 50;
+      const offsetX = Math.cos(angle) * radius;
+      const offsetY = Math.sin(angle) * radius;
+
+      ball.style.left = `${deathX + offsetX}px`;
+      ball.style.top = `${deathY + offsetY}px`;
+
+      // Deal 80% damage every 500ms while spinning
+      if (elapsed % 500 < 50) {
+        const spinDmg = Math.floor((player.currentStats?.finalATK || player.ATK) * 0.80);
+        const nearbyEnemies = findEnemiesInRadius(deathX + offsetX, deathY + offsetY, 40);
+        nearbyEnemies.forEach(e => {
+          applyDamageToEnemy(e, spinDmg, { type: 'aether', source: 'aegis_6piece_spin', setId: 'aegis' });
+        });
+      }
+    });
+  }, 50);
 }
 
 function createCryoZone(centerX, centerY, aoeDmg, duration, player) {
   const stage = document.getElementById('stage');
   if (!stage) return;
-  
+
   const zone = document.createElement('div');
   zone.className = 'cryo-zone';
   Object.assign(zone.style, {
@@ -4602,36 +4795,50 @@ function createCryoZone(centerX, centerY, aoeDmg, duration, player) {
     transform: 'translate(-50%, -50%)',
     animation: 'fire-pulse 1.5s infinite'
   });
-  
+
   stage.appendChild(zone);
-  
-  // Track which enemies have been frozen
-  const frozenEnemies = new Set();
-  
+
+  // Track which enemies are in the zone and apply freeze + DoT
+  const affectedEnemies = new Map(); // enemyId -> { frozenAt, lastTickAt }
+
   // Check for enemies in zone every 100ms
   const checkInterval = setInterval(() => {
     GameState.enemies.forEach(enemy => {
       const enemyX = enemy.position?.x || enemy.x || 0;
       const enemyY = enemy.position?.y || enemy.y || 0;
       const dist = Math.sqrt((centerX - enemyX)**2 + (centerY - enemyY)**2);
-      
-      if (dist < 70 && !frozenEnemies.has(enemy.id)) { // zone radius
-        frozenEnemies.add(enemy.id);
-        // Freeze enemy for 3 seconds and deal 10% cryo damage
-        applyDamageToEnemy(enemy, aoeDmg, { type: 'cryo', source: 'weapon_zone', setId: 'glacier' });
-        applyStatus(enemy, 'freeze', { duration: 3000, appliedAt: Date.now() });
-        
-        const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
-        if (enemyEl) {
-          enemyEl.style.filter = 'brightness(1.5) saturate(0.3) hue-rotate(180deg)';
-          setTimeout(() => {
-            if (enemyEl) enemyEl.style.filter = '';
-          }, 3000);
+
+      if (dist < 70) { // zone radius
+        const now = Date.now();
+
+        // If enemy just entered zone, freeze them for 3 seconds
+        if (!affectedEnemies.has(enemy.id)) {
+          affectedEnemies.set(enemy.id, { frozenAt: now, lastTickAt: now });
+
+          // Actually freeze the enemy (set frozen flag and stop movement)
+          enemy.frozen = true;
+          enemy.frozenTimer = 3.0; // 3 second freeze
+          enemy.frozenAt = now;
+          enemy.originalSpeed = enemy.speed;
+          enemy.speed = 0;
+
+          // Apply freeze visual (handled by updateEnemies now)
+          const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
+          if (enemyEl) {
+            enemyEl.style.filter = 'brightness(1.5) saturate(0.3) hue-rotate(180deg)';
+          }
+        }
+
+        // Deal damage every tick (1 second) for 3 seconds
+        const enemyData = affectedEnemies.get(enemy.id);
+        if (enemyData && now - enemyData.lastTickAt >= 1000 && now - enemyData.frozenAt < 3000) {
+          applyDamageToEnemy(enemy, aoeDmg, { type: 'cryo', source: 'weapon_zone', setId: 'glacier' });
+          enemyData.lastTickAt = now;
         }
       }
     });
   }, 100);
-  
+
   // Remove zone after duration
   setTimeout(() => {
     clearInterval(checkInterval);
@@ -4658,26 +4865,26 @@ const WEAPON_HANDLERS = {
       });
     }
     applyDamageToEnemy(enemy, windDmg, { type: element, source: 'weapon', setId: 'skywarden' });
-    
+
     // Randomly pushes that enemy and 2 nearby enemies back and deal 50% wind damage to them
     const pushbackRadius = 150;
     const enemyX = enemy.position?.x || enemy.x || 0;
     const enemyY = enemy.position?.y || enemy.y || 0;
     const playerX = playerEl ? (playerEl.getBoundingClientRect().left + playerEl.getBoundingClientRect().width/2) : 0;
     const playerY = playerEl ? (playerEl.getBoundingClientRect().top + playerEl.getBoundingClientRect().height/2) : 0;
-    
+
     // Find 2 nearby enemies (excluding the main target)
     const nearbyEnemies = findEnemiesInRadius(enemyX, enemyY, pushbackRadius).filter(e => e.id !== enemy.id);
     const shuffled = nearbyEnemies.sort(() => 0.5 - Math.random());
     const pushTargets = [enemy, ...shuffled.slice(0, 2)]; // Main target + 2 nearby
     const pushDmg = Math.floor((p.currentStats?.finalATK || p.ATK || 0) * 0.50);
-    
+
     pushTargets.forEach(target => {
       // Apply 50% wind damage to all 3 targets
       if (target.id !== enemy.id) {
         applyDamageToEnemy(target, pushDmg, { type: element, source: 'weapon_pushback', setId: 'skywarden' });
       }
-      
+
       // Push enemy away from player
       const dx = (target.position?.x || target.x || 0) - playerX;
       const dy = (target.position?.y || target.y || 0) - playerY;
@@ -4686,25 +4893,38 @@ const WEAPON_HANDLERS = {
       target.position.x += (dx / dist) * pushDistance;
       target.position.y += (dy / dist) * pushDistance;
     });
-    
+
     // After enemy dies to wind damage, create AOE explosion (150% wind damage to surrounding enemies)
     if (enemy.hp <= 0) {
-      const explosionDmg = Math.floor((p.currentStats?.finalATK || p.ATK || 0) * 1.50);
+      const explosionDmg = Math.floor((p.currentStats?.finalATK || p.ATK || 0) * 0.50);
       const explosionRadius = 120;
-      
+
       if (enemyEl) {
         const eR = enemyEl.getBoundingClientRect();
         const centerX = eR.left + eR.width/2;
         const centerY = eR.top + eR.height/2;
-        
-        // Create expanding shockwave similar to cryo but with wind color
-        spawnShockwave(centerX, centerY, 90, getElementColor(element), 400);
+
+        // Create expanding wind shockwave explosion
+        spawnShockwave(centerX, centerY, 120, getElementColor(element), 500);
+
+        // Add a second smaller shockwave for depth
+        setTimeout(() => {
+          spawnShockwave(centerX, centerY, 80, getElementColor(element), 300);
+        }, 100);
       }
-      
+
       const nearbyEnemiesExplosion = findEnemiesInRadius(enemyX, enemyY, explosionRadius);
       nearbyEnemiesExplosion.forEach(e => {
         if (e.id !== enemy.id) {
           applyDamageToEnemy(e, explosionDmg, { type: element, source: 'weapon_explosion', setId: 'skywarden' });
+
+          // Push enemies away from explosion center
+          const dx = (e.position?.x || e.x || 0) - enemyX;
+          const dy = (e.position?.y || e.y || 0) - enemyY;
+          const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+          const pushDistance = 80;
+          e.position.x += (dx / dist) * pushDistance;
+          e.position.y += (dy / dist) * pushDistance;
         }
       });
     }
@@ -4714,7 +4934,6 @@ const WEAPON_HANDLERS = {
   stormbreaker: (p, enemy, weapon) => {
     const element = 'lightning';
     const main = Math.floor((p.currentStats?.finalATK || p.ATK) * 1.20);
-    // create arc from player to enemy
     const playerEl = document.getElementById('player-container');
     const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
     let px = 0, py = 0, ex = 0, ey = 0;
@@ -4725,22 +4944,114 @@ const WEAPON_HANDLERS = {
       ex = er.left + er.width/2; ey = er.top + er.height/2;
       createLightningArc(px, py, ex, ey, getElementColor(element), 220);
     } else {
-      // fallback simple projectile if DOM missing
       createProjectile({ fromX: px, fromY: py, toX: ex, toY: ey, color: getElementColor(element), size: 10, travelMs: 200 });
     }
     applyDamageToEnemy(enemy, main, { type: element, source: 'weapon', setId: 'stormbreaker' });
 
-    // chaining: 50% chance for 2nd hit (75% damage), 25% chance for 3rd hit (50% damage)
-    const chainRadius = 180;
+    const has3Piece = getSetCount('stormbreaker') >= 3;
+    const has6Piece = getSetCount('stormbreaker') >= 6;
+    const chainRadius = 200;
     const centerX = enemy.position?.x || enemy.x || 0;
     const centerY = enemy.position?.y || enemy.y || 0;
-    const usedIds = new Set([enemy.id]);
-    let prevEnemy = enemy;
-    
-    // First chain: 50% chance, 75% damage
-    if (Math.random() < 0.50) {
-      const candidates = findEnemiesInRadius(centerX, centerY, chainRadius).filter(e => !usedIds.has(e.id));
-      if (candidates.length > 0) {
+
+    if (has6Piece) {
+      // Multishot: Create 3 lightning arcs to that enemy and 2 random enemies not nearby each other, 120% damage each
+      const allEnemies = GameState.enemies.filter(e => e.id !== enemy.id && e.hp > 0);
+      const multishotTargets = [];
+      const usedIds = new Set([enemy.id]);
+
+      // Select first random enemy
+      if (allEnemies.length > 0) {
+        const first = allEnemies[Math.floor(Math.random() * allEnemies.length)];
+        multishotTargets.push(first);
+        usedIds.add(first.id);
+
+        // Select second random enemy NOT nearby the first one
+        const firstX = first.position?.x || first.x || 0;
+        const firstY = first.position?.y || first.y || 0;
+        const minDistance = 200; // Minimum distance to be considered "not nearby"
+
+        const farEnemies = allEnemies.filter(e => {
+          if (usedIds.has(e.id)) return false;
+          const ex = e.position?.x || e.x || 0;
+          const ey = e.position?.y || e.y || 0;
+          const dist = Math.sqrt((ex - firstX)**2 + (ey - firstY)**2);
+          return dist >= minDistance;
+        });
+
+        if (farEnemies.length > 0) {
+          const second = farEnemies[Math.floor(Math.random() * farEnemies.length)];
+          multishotTargets.push(second);
+          usedIds.add(second.id);
+        } else if (allEnemies.length > 1) {
+          // If no far enemies, just pick another random one
+          const remaining = allEnemies.filter(e => !usedIds.has(e.id));
+          if (remaining.length > 0) {
+            const second = remaining[Math.floor(Math.random() * remaining.length)];
+            multishotTargets.push(second);
+            usedIds.add(second.id);
+          }
+        }
+      }
+
+      // Fire lightning arcs to the multishot targets
+      multishotTargets.forEach((target, index) => {
+        setTimeout(() => {
+          const targetEl = document.querySelector(`[data-enemy-id="${target.id}"]`);
+          if (playerEl && targetEl) {
+            const pr = playerEl.getBoundingClientRect();
+            const tr = targetEl.getBoundingClientRect();
+            createLightningArc(pr.left + pr.width/2, pr.top + pr.height/2,
+                             tr.left + tr.width/2, tr.top + tr.height/2,
+                             getElementColor(element), 220);
+          }
+          const multishotDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 1.20);
+          applyDamageToEnemy(target, multishotDmg, { type: element, source:'multishot', setId:'stormbreaker' });
+        }, (index + 1) * 100);
+      });
+
+      // Then continue with guaranteed chains from 3-piece (from the multishot targets)
+      if (multishotTargets.length > 0) {
+        setTimeout(() => {
+          const lastTarget = multishotTargets[multishotTargets.length - 1];
+          const chainFrom = lastTarget;
+          const chainFromPos = { x: chainFrom.position?.x || chainFrom.x || 0, y: chainFrom.position?.y || chainFrom.y || 0 };
+
+          // At least 1 more guaranteed chain (total 4 hits including main + 2 multishot + 1 chain)
+          const chainCandidates = findEnemiesInRadius(chainFromPos.x, chainFromPos.y, chainRadius).filter(e => !usedIds.has(e.id));
+          if (chainCandidates.length > 0) {
+            chainCandidates.sort((a,b) => {
+              const ax = (a.position?.x||a.x||0)-chainFromPos.x, ay = (a.position?.y||a.y||0)-chainFromPos.y;
+              const bx = (b.position?.x||b.x||0)-chainFromPos.x, by = (b.position?.y||b.y||0)-chainFromPos.y;
+              return (ax*ax+ay*ay) - (bx*bx+by*by);
+            });
+            const chainTarget = chainCandidates[0];
+            const chainTargetEl = document.querySelector(`[data-enemy-id="${chainTarget.id}"]`);
+            const chainFromEl = document.querySelector(`[data-enemy-id="${chainFrom.id}"]`);
+
+            if (chainFromEl && chainTargetEl) {
+              const fr = chainFromEl.getBoundingClientRect();
+              const tr = chainTargetEl.getBoundingClientRect();
+              createLightningArc(fr.left + fr.width/2, fr.top + fr.height/2,
+                               tr.left + tr.width/2, tr.top + tr.height/2,
+                               getElementColor(element), 200);
+              const chainDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 1.20);
+              applyDamageToEnemy(chainTarget, chainDmg, { type: element, source:'multishot_chain', setId:'stormbreaker' });
+            }
+          }
+        }, 400);
+      }
+    } else if (has3Piece) {
+      // Lightning Surge: Guaranteed 2+ hits, 75% damage, 50% for 4th, 25% for 5th
+      const usedIds = new Set([enemy.id]);
+      let prevEnemy = enemy;
+      const surgeDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.75);
+
+      // Guaranteed 2 hits
+      for (let i = 0; i < 2; i++) {
+        const candidates = findEnemiesInRadius(centerX, centerY, chainRadius).filter(e => !usedIds.has(e.id));
+        if (candidates.length === 0) break;
+
         candidates.sort((a,b) => {
           const ax = (a.position?.x||a.x||0)-centerX, ay = (a.position?.y||a.y||0)-centerY;
           const bx = (b.position?.x||b.x||0)-centerX, by = (b.position?.y||b.y||0)-centerY;
@@ -4749,46 +5060,128 @@ const WEAPON_HANDLERS = {
         const target = candidates[0];
         const targetEl = document.querySelector(`[data-enemy-id="${target.id}"]`);
         const prevEl = document.querySelector(`[data-enemy-id="${prevEnemy.id}"]`);
-        let fromX = centerX, fromY = centerY, toX = target.position?.x||target.x||0, toY = target.position?.y||target.y||0;
-        if (prevEl) {
-          const r = prevEl.getBoundingClientRect(); fromX = r.left + r.width/2; fromY = r.top + r.height/2;
+
+        if (prevEl && targetEl) {
+          const pr = prevEl.getBoundingClientRect();
+          const tr = targetEl.getBoundingClientRect();
+          setTimeout(() => {
+            createLightningArc(pr.left + pr.width/2, pr.top + pr.height/2,
+                             tr.left + tr.width/2, tr.top + tr.height/2,
+                             getElementColor(element), 200);
+            applyDamageToEnemy(target, surgeDmg, { type: element, source:'lightning_surge', setId:'stormbreaker' });
+          }, (i + 1) * 150);
         }
-        if (targetEl) { const rr = targetEl.getBoundingClientRect(); toX = rr.left + rr.width/2; toY = rr.top + rr.height/2; }
-        createLightningArc(fromX, fromY, toX, toY, getElementColor(element), 200);
-        const chainDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.75);
-        applyDamageToEnemy(target, chainDmg, { type: element, source:'weapon_chain', setId:'stormbreaker' });
+
         usedIds.add(target.id);
         prevEnemy = target;
-        
-        // Second chain: 25% chance, 50% damage
-        if (Math.random() < 0.25) {
-          const centerX2 = target.position?.x || target.x || 0;
-          const centerY2 = target.position?.y || target.y || 0;
-          const candidates2 = findEnemiesInRadius(centerX2, centerY2, chainRadius).filter(e => !usedIds.has(e.id));
-          if (candidates2.length > 0) {
-            candidates2.sort((a,b) => {
-              const ax = (a.position?.x||a.x||0)-centerX2, ay = (a.position?.y||a.y||0)-centerY2;
-              const bx = (b.position?.x||b.x||0)-centerX2, by = (b.position?.y||b.y||0)-centerY2;
-              return (ax*ax+ay*ay) - (bx*bx+by*by);
-            });
-            const target2 = candidates2[0];
-            const target2El = document.querySelector(`[data-enemy-id="${target2.id}"]`);
-            const prev2El = document.querySelector(`[data-enemy-id="${prevEnemy.id}"]`);
-            let fromX2 = centerX2, fromY2 = centerY2, toX2 = target2.position?.x||target2.x||0, toY2 = target2.position?.y||target2.y||0;
-            if (prev2El) {
-              const r = prev2El.getBoundingClientRect(); fromX2 = r.left + r.width/2; fromY2 = r.top + r.height/2;
+      }
+
+      // 50% chance for 4th enemy
+      if (Math.random() < 0.50) {
+        const candidates = findEnemiesInRadius(centerX, centerY, chainRadius).filter(e => !usedIds.has(e.id));
+        if (candidates.length > 0) {
+          candidates.sort((a,b) => {
+            const ax = (a.position?.x||a.x||0)-centerX, ay = (a.position?.y||a.y||0)-centerY;
+            const bx = (b.position?.x||b.x||0)-centerX, by = (b.position?.y||b.y||0)-centerY;
+            return (ax*ax+ay*ay) - (bx*bx+by*by);
+          });
+          const target = candidates[0];
+          const targetEl = document.querySelector(`[data-enemy-id="${target.id}"]`);
+          const prevEl = document.querySelector(`[data-enemy-id="${prevEnemy.id}"]`);
+          if (prevEl && targetEl) {
+            const pr = prevEl.getBoundingClientRect();
+            const tr = targetEl.getBoundingClientRect();
+            setTimeout(() => {
+              createLightningArc(pr.left + pr.width/2, pr.top + pr.height/2,
+                               tr.left + tr.width/2, tr.top + tr.height/2,
+                               getElementColor(element), 200);
+              applyDamageToEnemy(target, surgeDmg, { type: element, source:'lightning_surge', setId:'stormbreaker' });
+            }, 450);
+          }
+          usedIds.add(target.id);
+          prevEnemy = target;
+
+          // 25% chance for 5th enemy
+          if (Math.random() < 0.25) {
+            const candidates2 = findEnemiesInRadius(centerX, centerY, chainRadius).filter(e => !usedIds.has(e.id));
+            if (candidates2.length > 0) {
+              candidates2.sort((a,b) => {
+                const ax = (a.position?.x||a.x||0)-centerX, ay = (a.position?.y||a.y||0)-centerY;
+                const bx = (b.position?.x||b.x||0)-centerX, by = (b.position?.y||b.y||0)-centerY;
+                return (ax*ax+ay*ay) - (bx*bx+by*by);
+              });
+              const target2 = candidates2[0];
+              const target2El = document.querySelector(`[data-enemy-id="${target2.id}"]`);
+              const prevEl2 = document.querySelector(`[data-enemy-id="${prevEnemy.id}"]`);
+              if (prevEl2 && target2El) {
+                const pr = prevEl2.getBoundingClientRect();
+                const tr = target2El.getBoundingClientRect();
+                setTimeout(() => {
+                  createLightningArc(pr.left + pr.width/2, pr.top + pr.height/2,
+                                   tr.left + tr.width/2, tr.top + tr.height/2,
+                                   getElementColor(element), 200);
+                  applyDamageToEnemy(target2, surgeDmg, { type: element, source:'lightning_surge', setId:'stormbreaker' });
+                }, 600);
+              }
             }
-            if (target2El) { const rr = target2El.getBoundingClientRect(); toX2 = rr.left + rr.width/2; toY2 = rr.top + rr.height/2; }
-            createLightningArc(fromX2, fromY2, toX2, toY2, getElementColor(element), 230);
-            const chainDmg2 = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.50);
-            applyDamageToEnemy(target2, chainDmg2, { type: element, source:'weapon_chain', setId:'stormbreaker' });
+          }
+        }
+      }
+    } else {
+      // Original chaining: 50% for 2nd (75%), 25% for 3rd (50%)
+      const usedIds = new Set([enemy.id]);
+      let prevEnemy = enemy;
+
+      if (Math.random() < 0.50) {
+        const candidates = findEnemiesInRadius(centerX, centerY, chainRadius).filter(e => !usedIds.has(e.id));
+        if (candidates.length > 0) {
+          candidates.sort((a,b) => {
+            const ax = (a.position?.x||a.x||0)-centerX, ay = (a.position?.y||a.y||0)-centerY;
+            const bx = (b.position?.x||b.x||0)-centerX, by = (b.position?.y||b.y||0)-centerY;
+            return (ax*ax+ay*ay) - (bx*bx+by*by);
+          });
+          const target = candidates[0];
+          const targetEl = document.querySelector(`[data-enemy-id="${target.id}"]`);
+          const prevEl = document.querySelector(`[data-enemy-id="${prevEnemy.id}"]`);
+          let fromX = centerX, fromY = centerY, toX = target.position?.x||target.x||0, toY = target.position?.y||target.y||0;
+          if (prevEl) {
+            const r = prevEl.getBoundingClientRect(); fromX = r.left + r.width/2; fromY = r.top + r.height/2;
+          }
+          if (targetEl) { const rr = targetEl.getBoundingClientRect(); toX = rr.left + rr.width/2; toY = rr.top + rr.height/2; }
+          createLightningArc(fromX, fromY, toX, toY, getElementColor(element), 200);
+          const chainDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.75);
+          applyDamageToEnemy(target, chainDmg, { type: element, source:'weapon_chain', setId:'stormbreaker' });
+          usedIds.add(target.id);
+          prevEnemy = target;
+
+          if (Math.random() < 0.25) {
+            const centerX2 = target.position?.x || target.x || 0;
+            const centerY2 = target.position?.y || target.y || 0;
+            const candidates2 = findEnemiesInRadius(centerX2, centerY2, chainRadius).filter(e => !usedIds.has(e.id));
+            if (candidates2.length > 0) {
+              candidates2.sort((a,b) => {
+                const ax = (a.position?.x||a.x||0)-centerX2, ay = (a.position?.y||a.y||0)-centerY2;
+                const bx = (b.position?.x||b.x||0)-centerX2, by = (b.position?.y||b.y||0)-centerY2;
+                return (ax*ax+ay*ay) - (bx*bx+by*by);
+              });
+              const target2 = candidates2[0];
+              const target2El = document.querySelector(`[data-enemy-id="${target2.id}"]`);
+              const prev2El = document.querySelector(`[data-enemy-id="${prevEnemy.id}"]`);
+              let fromX2 = centerX2, fromY2 = centerY2, toX2 = target2.position?.x||target2.x||0, toY2 = target2.position?.y||target2.y||0;
+              if (prev2El) {
+                const r = prev2El.getBoundingClientRect(); fromX2 = r.left + r.width/2; fromY2 = r.top + r.height/2;
+              }
+              if (target2El) { const rr = target2El.getBoundingClientRect(); toX2 = rr.left + rr.width/2; toY2 = rr.top + rr.height/2; }
+              createLightningArc(fromX2, fromY2, toX2, toY2, getElementColor(element), 230);
+              const chainDmg2 = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.50);
+              applyDamageToEnemy(target2, chainDmg2, { type: element, source:'weapon_chain', setId:'stormbreaker' });
+            }
           }
         }
       }
     }
   },
 
-  // Bastion - Titan Warhammer with AoE damage
   bastion: (p, enemy, weapon) => {
     const element = 'physical';
     const atkComponent = (p.currentStats?.finalATK || p.ATK) * 1.20;
@@ -4799,14 +5192,14 @@ const WEAPON_HANDLERS = {
     const cy = enemyEl ? (enemyEl.getBoundingClientRect().top + enemyEl.getBoundingClientRect().height/2) : (enemy.y||0);
     spawnShockwave(cx, cy, 48, getElementColor('physical'), 360);
     applyDamageToEnemy(enemy, total, { type: element, source:'weapon', setId:'bastion' });
-    
+
     // AoE damage: 80% physical damage equal to 20% player HP
     const aoeHpComponent = (getPlayerHP(p) || 0) * 0.20;
     const aoeDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.80 + aoeHpComponent);
     const aoeRadius = 100;
     const enemyX = enemy.position?.x || enemy.x || 0;
     const enemyY = enemy.position?.y || enemy.y || 0;
-    
+
     const nearbyEnemies = findEnemiesInRadius(enemyX, enemyY, aoeRadius);
     nearbyEnemies.forEach(e => {
       if (e.id !== enemy.id) {
@@ -4820,7 +5213,7 @@ const WEAPON_HANDLERS = {
     const element = 'physical';
     const atkComp = (p.currentStats?.finalATK || p.ATK) * 1.20;
     const mainDmg = Math.floor(atkComp);
-    
+
     // Main attack visual and damage
     const playerEl = document.getElementById('player-container');
     const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
@@ -4830,26 +5223,26 @@ const WEAPON_HANDLERS = {
       createProjectile({ fromX:pR.left+pR.width/2, fromY:pR.top+pR.height/2, toX:eR.left+eR.width/2, toY:eR.top+eR.height/2, color: getElementColor('physical'), size:10, travelMs:220 });
     }
     applyDamageToEnemy(enemy, mainDmg, { type: element, source:'weapon', setId:'nightwing' });
-    
+
     // After hit, spawn 2 bouncing coins that bounce 3 times each
     const coins = (p.coins || 0);
     const coinDmg = Math.floor(coins * 0.0077);
-    
+
     for (let coinNum = 0; coinNum < 2; coinNum++) {
       let currentEnemy = enemy;
       const usedIds = new Set([enemy.id]);
-      
+
       for (let bounce = 0; bounce < 3; bounce++) {
         setTimeout(() => {
           const candidates = GameState.enemies.filter(e => !usedIds.has(e.id));
           if (candidates.length === 0) return;
-          
+
           const nextEnemy = candidates[Math.floor(Math.random() * candidates.length)];
           usedIds.add(nextEnemy.id);
-          
+
           const fromEl = document.querySelector(`[data-enemy-id="${currentEnemy.id}"]`);
           const toEl = document.querySelector(`[data-enemy-id="${nextEnemy.id}"]`);
-          
+
           if (fromEl && toEl) {
             const fromR = fromEl.getBoundingClientRect();
             const toR = toEl.getBoundingClientRect();
@@ -4863,11 +5256,11 @@ const WEAPON_HANDLERS = {
               travelMs: 200,
               onArrive: () => {
                 applyDamageToEnemy(nextEnemy, coinDmg, { type: element, source: 'weapon_coin', setId: 'nightwing' });
-                showElementDamage(coinDmg, 'physical', toEl, false);
+                showElementDamage(coinDmg, 'physical', toEl, false, '#ffd700');
               }
             });
           }
-          
+
           currentEnemy = nextEnemy;
         }, bounce * 250 + coinNum * 100);
       }
@@ -4878,90 +5271,215 @@ const WEAPON_HANDLERS = {
   shade: (p, enemy, weapon) => {
     const element = 'physical';
     const small = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.50);
-    
+
     // Lose 2% max HP, but if player has lower than 2% max HP, set HP to 1
     const hpMax = p.maxHp || p.HP_max || 1;
     const currentHP = getPlayerHP(p);
     const twoPercentHP = Math.floor(hpMax * 0.02);
-    
+
     let hpLost = twoPercentHP;
     let newHP = currentHP - hpLost;
-    
+
     // If current HP is lower than 2% max HP or would go below 1, set to 1
     if (currentHP <= twoPercentHP || newHP < 1) {
       hpLost = Math.max(0, currentHP - 1);
       newHP = 1;
     }
-    
+
     setPlayerHP(p, newHP);
-    
+
     // Track HP loss for Overflow stacks
     if (!p.lossAccumulator) p.lossAccumulator = 0;
     p.lossAccumulator += hpLost;
-    
+
     // Deal 200% physical damage + 200% of HP lost
-    const execDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 2.00 + 2 * hpLost);
-    
+    // 3-piece: Bloodbath - increase damage dealt by HP lost by 200% (so 200% becomes 400% total)
+    let hpLostMultiplier = 2.00;
+    if (getSetCount('shade') >= 3) {
+      hpLostMultiplier = 4.00; // 200% base + 200% bonus = 400%
+    }
+    const execDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 2.00 + hpLostMultiplier * hpLost);
+
     // Red execute VFX
     const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
     if (enemyEl) {
-      createProjectile({ 
+      createProjectile({
         fromX: enemyEl.getBoundingClientRect().left + enemyEl.getBoundingClientRect().width/2 + 120,
         fromY: enemyEl.getBoundingClientRect().top + enemyEl.getBoundingClientRect().height/2 - 40,
         toX: enemyEl.getBoundingClientRect().left + enemyEl.getBoundingClientRect().width/2,
         toY: enemyEl.getBoundingClientRect().top + enemyEl.getBoundingClientRect().height/2,
         color: '#ff3b3b', size: 26, travelMs: 180,
         onArrive: ()=> spawnShockwave(
-          enemyEl.getBoundingClientRect().left + enemyEl.getBoundingClientRect().width/2, 
-          enemyEl.getBoundingClientRect().top + enemyEl.getBoundingClientRect().height/2, 
+          enemyEl.getBoundingClientRect().left + enemyEl.getBoundingClientRect().width/2,
+          enemyEl.getBoundingClientRect().top + enemyEl.getBoundingClientRect().height/2,
           44, '#ff3b3b', 300
         )
       });
     }
-    
-    applyDamageToEnemy(enemy, execDmg, { type: element, source:'weapon', setId:'shade' });
-    
+
+    applyDamageToEnemy(enemy, execDmg, { type: element, source:'weapon_hp_loss', setId:'shade' });
+
+    // 3-piece: Bloodbath - create rain area for 5 seconds dealing 300% of HP lost every tick
+    if (getSetCount('shade') >= 3) {
+      const rainDmg = Math.floor(hpLost * 3.00);
+      const enemyX = enemy.position?.x || enemy.x || 0;
+      const enemyY = enemy.position?.y || enemy.y || 0;
+
+      // Create visual rain zone
+      const stage = document.getElementById('stage');
+      if (stage) {
+        const rainZone = document.createElement('div');
+        rainZone.style.cssText = `position:absolute;left:${enemyX}px;top:${enemyY}px;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,rgba(255,59,59,0.4),rgba(139,0,0,0.2));border:2px solid #8b0000;transform:translate(-50%,-50%);pointer-events:none;z-index:40;`;
+        document.getElementById('enemy-layer').appendChild(rainZone);
+
+        // Add rain particles
+        const particleInterval = setInterval(() => {
+          if (!rainZone.parentNode) {
+            clearInterval(particleInterval);
+            return;
+          }
+
+          for (let i = 0; i < 3; i++) {
+            const particle = document.createElement('div');
+            const offsetX = (Math.random() - 0.5) * 80;
+            const offsetY = (Math.random() - 0.5) * 80;
+            particle.style.cssText = `position:absolute;left:${enemyX + offsetX}px;top:${enemyY + offsetY - 60}px;width:2px;height:12px;background:linear-gradient(180deg,rgba(255,59,59,0.8),rgba(139,0,0,0.4));transform:translate(-50%,0);pointer-events:none;z-index:41;transition:all 0.6s linear;opacity:1;`;
+            document.getElementById('enemy-layer').appendChild(particle);
+
+            setTimeout(() => {
+              particle.style.top = `${enemyY + offsetY + 40}px`;
+              particle.style.opacity = '0';
+            }, 10);
+
+            setTimeout(() => particle.remove(), 650);
+          }
+        }, 150);
+
+        setTimeout(() => clearInterval(particleInterval), 5000);
+
+        // Track zone for damage ticks
+        const zoneData = {
+          x: enemyX,
+          y: enemyY,
+          radius: 50,
+          damage: rainDmg,
+          startTime: Date.now(),
+          duration: 5000,
+          element: rainZone
+        };
+
+        if (!p.shadeRainZones) p.shadeRainZones = [];
+        p.shadeRainZones.push(zoneData);
+
+        setTimeout(() => {
+          if (rainZone.parentNode) rainZone.remove();
+          p.shadeRainZones = p.shadeRainZones.filter(z => z !== zoneData);
+        }, 5000);
+      }
+    }
+
     // If enemy dies, restore 5% max HP
     if (enemy.hp <= 0) {
       const healAmount = Math.floor(hpMax * 0.05);
       const newHPAfterHeal = Math.min(hpMax, getPlayerHP(p) + healAmount);
       setPlayerHP(p, newHPAfterHeal);
-      
+
       // Track healing for Overflow stacks
       if (!p.healAccumulator) p.healAccumulator = 0;
       p.healAccumulator += healAmount;
-      
+
       // Show heal visual
       showFloatingChange(healAmount, 'heal');
+    }
+
+    // 6-piece: Overflow - if player <50% HP, heal to full and create explosion
+    if (getSetCount('shade') >= 6) {
+      const currentHP = getPlayerHP(p);
+      const halfHP = hpMax * 0.50;
+
+      if (currentHP < halfHP) {
+        setPlayerHP(p, hpMax);
+        showFloatingChange(hpMax - currentHP, 'heal');
+
+        // Create giant red explosion
+        const stage = document.getElementById('stage');
+        const playerEl = document.getElementById('player-container');
+        if (playerEl && stage) {
+          const rect = playerEl.getBoundingClientRect();
+          const stageRect = stage.getBoundingClientRect();
+          const explosionDmg = Math.floor((p.lossAccumulator || 0) * 5.00);
+
+          // Create giant red explosion with shockwave
+          const centerX = rect.left + rect.width/2;
+          const centerY = rect.top + rect.height/2;
+
+          spawnShockwave(centerX, centerY, 200, '#ff0000', 600);
+
+          // Add explosion particles radiating outward
+          for (let i = 0; i < 30; i++) {
+            const angle = (i / 30) * Math.PI * 2;
+            const distance = 200;
+            const particleX = centerX + Math.cos(angle) * distance;
+            const particleY = centerY + Math.sin(angle) * distance;
+
+            const particle = document.createElement('div');
+            particle.style.cssText = `position:absolute;left:${centerX - stageRect.left}px;top:${centerY - stageRect.top}px;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle,rgba(255,59,59,1),rgba(139,0,0,0.6));transform:translate(-50%,-50%);pointer-events:none;z-index:65;transition:all 0.6s ease-out;opacity:1;box-shadow:0 0 12px rgba(255,59,59,0.8);`;
+            stage.appendChild(particle);
+
+            setTimeout(() => {
+              particle.style.left = `${particleX - stageRect.left}px`;
+              particle.style.top = `${particleY - stageRect.top}px`;
+              particle.style.opacity = '0';
+              particle.style.width = '4px';
+              particle.style.height = '4px';
+            }, 10);
+
+            setTimeout(() => particle.remove(), 650);
+          }
+
+          const playerX = stage.clientWidth / 2;
+          const playerY = stage.clientHeight / 2;
+
+          GameState.enemies.forEach(e => {
+            const dx = playerX - (e.position?.x || e.x || 0);
+            const dy = playerY - (e.position?.y || e.y || 0);
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist <= 200) {
+              applyDamageToEnemy(e, explosionDmg, { type: 'physical', source: 'overflow_explosion', setId: 'shade' });
+            }
+          });
+
+          showNotification('💀 Overflow! Full heal + massive explosion!', 'legendary');
+        }
+      }
     }
   },
 
   // Aegis Scepter - launches a ball that hovers around enemy dealing continuous damage
   aegis: (p, enemy, weapon) => {
     const element = 'aether';
+    const has3Piece = getSetCount('aegis') >= 3;
+    const has6Piece = getSetCount('aegis') >= 6;
+
+    // Base ball: 120% damage, 2 second duration
     const dmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 1.20);
-    
     applyDamageToEnemy(enemy, dmg, { type: element, source:'weapon', setId:'aegis' });
-    
-    // Launch a ball that continuously hovers around the enemy
-    // Ball deals 120% aether damage each hit
-    // If enemy dies, ball launches to random enemy
-    // Ball lasts for 5 seconds
+
+    // Launch ball that hovers and deals damage
     const ballDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 1.20);
-    spawnAegisHoveringBall(enemy, ballDmg, 5000, p);
+    spawnAegisHoveringBall(enemy, ballDmg, 2000, p, has3Piece, has6Piece);
   },
 
-  // Glacier - cryo rod: deal damage and freeze, create cryo AOE on death that freezes
   glacier: (p, enemy, weapon) => {
     const element = 'cryo';
     const cryoDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 1.20);
     applyDamageToEnemy(enemy, cryoDmg, { type: element, source:'weapon', setId:'glacier' });
-    
+
     const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
     if (enemyEl) {
       spawnShockwave(enemyEl.getBoundingClientRect().left + enemyEl.getBoundingClientRect().width/2, enemyEl.getBoundingClientRect().top + enemyEl.getBoundingClientRect().height/2, 28, getElementColor(element), 260);
     }
-    
+
     // Freeze enemy for 2 seconds - if enemy is already frozen before, they can't be frozen again for 10 seconds
     const now = Date.now();
     if (!enemy.freezeCooldownUntil || now >= enemy.freezeCooldownUntil) {
@@ -4970,18 +5488,18 @@ const WEAPON_HANDLERS = {
       enemy.frozenAt = now;
       enemy.originalSpeed = enemy.speed;
       enemy.speed = 0; // Stop movement while frozen
-      
+
       // Set cooldown: after unfrozen, can't freeze again for 10 seconds
       enemy.freezeCooldownUntil = now + 12000; // 2s freeze + 10s cooldown
     }
-    
+
     // After enemy is dead, create a cryo AOE that freezes enemies
     if (enemy.hp <= 0) {
       const enemyX = enemy.position?.x || enemy.x || 0;
       const enemyY = enemy.position?.y || enemy.y || 0;
-      const aoeDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.20);
-      
-      // Create cryo AOE zone that freezes enemies for 3 seconds and deals 20% cryo damage every tick
+      const aoeDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.10);
+
+      // Create cryo AOE zone that freezes enemies for 3 seconds and deals 10% cryo damage every tick
       createCryoZone(enemyX, enemyY, aoeDmg, 5000, p);
     }
   },
@@ -4991,20 +5509,20 @@ const WEAPON_HANDLERS = {
     const element = 'fire';
     const instant = Math.floor((p.currentStats?.finalATK || p.ATK) * 1.20);
     const burnTick = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.20);
-    
+
     applyDamageToEnemy(enemy, instant, { type: element, source:'weapon', setId:'emberkin' });
-    
+
     const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
     if (enemyEl) {
-      createProjectile({ 
+      createProjectile({
         fromX: enemyEl.getBoundingClientRect().left + enemyEl.getBoundingClientRect().width/2 + 80,
         fromY: enemyEl.getBoundingClientRect().top + enemyEl.getBoundingClientRect().height/2 - 20,
         toX: enemyEl.getBoundingClientRect().left + enemyEl.getBoundingClientRect().width/2,
         toY: enemyEl.getBoundingClientRect().top + enemyEl.getBoundingClientRect().height/2,
-        color: getElementColor(element), size: 18, travelMs: 200 
+        color: getElementColor(element), size: 18, travelMs: 200
       });
     }
-    
+
     // Create fire AoE zone that lasts 10 seconds
     // Enemies entering or within the AOE take 20% fire damage every tick for 5 seconds
     const enemyX = enemy.position?.x || enemy.x || 0;
@@ -5018,23 +5536,74 @@ const WEAPON_HANDLERS = {
     const main = Math.floor((p.currentStats?.finalATK || p.ATK) * 1.20);
     applyDamageToEnemy(enemy, main, { type: element, source:'weapon', setId:'zephyr' });
 
-    const nStars = 4; // Always 4 stars as per documentation
+    // 4-piece: +2 stars (6 total)
+    let nStars = 4;
+    if (getSetCount('zephyr') >= 4) nStars = 6;
+
     const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
     const fromX = enemyEl ? (enemyEl.getBoundingClientRect().left + enemyEl.getBoundingClientRect().width/2) : (enemy.x||0);
     const fromY = enemyEl ? (enemyEl.getBoundingClientRect().top + enemyEl.getBoundingClientRect().height/2) : (enemy.y||0);
 
+    const starDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.50);
+
     for (let i=0;i<nStars;i++){
-      // target random nearby enemy or direction
       const candidates = GameState.enemies.filter(e => e.id !== enemy.id);
       const randTarget = candidates.length ? candidates[Math.floor(Math.random()*candidates.length)] : null;
       const toX = randTarget ? (randTarget.position?.x||randTarget.x||0) : (fromX + (Math.random()*240 - 120));
       const toY = randTarget ? (randTarget.position?.y||randTarget.y||0) : (fromY + (Math.random()*240 - 120));
+
       createStarProjectile({
         fromX, fromY, toX, toY, color: getElementColor(element), size: 12, travelMs: 260,
         onArrive: ()=> {
-          // Each star deals 10% damage
           const hits = findEnemiesInRadius(toX, toY, 40);
-          hits.forEach(h => applyDamageToEnemy(h, Math.floor((p.currentStats?.finalATK || p.ATK) * 0.10), { type: element, source:'weapon_star', setId:'zephyr' }));
+          hits.forEach(h => {
+            applyDamageToEnemy(h, starDmg, { type: element, source:'weapon_star', setId:'zephyr' });
+
+            // 3-piece: Blow - explosion on each star collision
+            if (getSetCount('zephyr') >= 3) {
+              const explosionDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.50);
+              const nearbyEnemies = findEnemiesInRadius(toX, toY, 80);
+              nearbyEnemies.forEach(ne => {
+                if (ne.id !== h.id) {
+                  applyDamageToEnemy(ne, explosionDmg, { type: element, source:'zephyr_explosion', setId:'zephyr' });
+                }
+              });
+              const hitEl = document.querySelector(`[data-enemy-id="${h.id}"]`);
+              if (hitEl) {
+                const rect = hitEl.getBoundingClientRect();
+                spawnShockwave(rect.left + rect.width/2, rect.top + rect.height/2, 60, getElementColor(element), 300);
+              }
+            }
+          });
+
+          // 6-piece: Bounce to another random enemy
+          if (getSetCount('zephyr') >= 6 && hits.length > 0) {
+            const bounceCandidates = GameState.enemies.filter(e => !hits.some(h => h.id === e.id));
+            if (bounceCandidates.length > 0) {
+              const bounceTarget = bounceCandidates[Math.floor(Math.random() * bounceCandidates.length)];
+              const bounceToX = bounceTarget.position?.x || bounceTarget.x || 0;
+              const bounceToY = bounceTarget.position?.y || bounceTarget.y || 0;
+
+              setTimeout(() => {
+                createStarProjectile({
+                  fromX: toX, fromY: toY, toX: bounceToX, toY: bounceToY,
+                  color: getElementColor(element), size: 12, travelMs: 260,
+                  onArrive: () => {
+                    applyDamageToEnemy(bounceTarget, starDmg, { type: element, source:'weapon_star_bounce', setId:'zephyr' });
+                    if (getSetCount('zephyr') >= 3) {
+                      const explosionDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.50);
+                      const nearbyEnemies = findEnemiesInRadius(bounceToX, bounceToY, 80);
+                      nearbyEnemies.forEach(ne => {
+                        if (ne.id !== bounceTarget.id) {
+                          applyDamageToEnemy(ne, explosionDmg, { type: element, source:'zephyr_explosion', setId:'zephyr' });
+                        }
+                      });
+                    }
+                  }
+                });
+              }, 100);
+            }
+          }
         }
       });
     }
@@ -5110,13 +5679,13 @@ function attackEnemy(enemy) {
 
 function showFloatingDamage(damage, isCrit, element) {
   if (!element) return;
-  
+
   const stage = document.getElementById('stage');
   if (!stage) return;
-  
+
   const rect = element.getBoundingClientRect();
   const stageRect = stage.getBoundingClientRect();
-  
+
   const dmgEl = document.createElement('div');
   dmgEl.className = 'drop-item';
   dmgEl.textContent = isCrit ? `${damage}! ⚡` : damage;
@@ -5125,7 +5694,7 @@ function showFloatingDamage(damage, isCrit, element) {
   dmgEl.style.color = isCrit ? '#ff0' : '#ffa500';
   dmgEl.style.fontWeight = 'bold';
   dmgEl.style.fontSize = '18px';
-  
+
   const dropLayer = document.getElementById('drop-layer');
   if (dropLayer) {
     dropLayer.appendChild(dmgEl);
@@ -5168,10 +5737,10 @@ function buildItemTooltipHtml(item, isEquipped) {
       const setData = EQUIPMENT_SETS[item.setId];
       const p = GameState.player;
       const setCount = (p.activeSets && p.activeSets[item.setId]) || 0;
-      
+
       html += `<div style="padding: 10px; margin: 8px 0; background: rgba(212,175,55,0.15); border: 2px solid var(--accent-gold); border-radius: 6px;">`;
       html += `<div style="color: var(--accent-gold); font-weight: 700; margin-bottom: 6px; font-size: 13px;">${setData.icon} ${setData.name} Set (${setCount}/6)</div>`;
-      
+
       // Show weapon ability if this is a weapon
       if (item.slot === 'weapon' && setData.weaponName && setData.weaponDesc) {
         html += `<div style="padding: 6px; margin: 6px 0; background: rgba(0,0,0,0.3); border-left: 3px solid var(--accent-gold); font-size: 10px;">`;
@@ -5179,7 +5748,7 @@ function buildItemTooltipHtml(item, isEquipped) {
         html += `<div style="color: var(--text-secondary); line-height: 1.4;">${setData.weaponDesc}</div>`;
         html += `</div>`;
       }
-      
+
       // Show set bonuses
       html += `<div style="margin-top: 8px; font-size: 10px;">`;
       [2, 3, 4, 6].forEach(tier => {
@@ -5255,10 +5824,10 @@ function buildShopItemTooltipHtml(item) {
       const setData = EQUIPMENT_SETS[item.setId];
       const p = GameState.player;
       const setCount = (p.activeSets && p.activeSets[item.setId]) || 0;
-      
+
       html += `<div style="padding: 10px; margin: 8px 0; background: rgba(212,175,55,0.15); border: 2px solid var(--accent-gold); border-radius: 6px;">`;
       html += `<div style="color: var(--accent-gold); font-weight: 700; margin-bottom: 6px; font-size: 13px;">${setData.icon} ${setData.name} Set (${setCount}/6)</div>`;
-      
+
       // Show weapon ability if this is a weapon
       if (item.slot === 'weapon' && setData.weaponName && setData.weaponDesc) {
         html += `<div style="padding: 6px; margin: 6px 0; background: rgba(0,0,0,0.3); border-left: 3px solid var(--accent-gold); font-size: 10px;">`;
@@ -5266,7 +5835,7 @@ function buildShopItemTooltipHtml(item) {
         html += `<div style="color: var(--text-secondary); line-height: 1.4;">${setData.weaponDesc}</div>`;
         html += `</div>`;
       }
-      
+
       // Show set bonuses
       html += `<div style="margin-top: 8px; font-size: 10px;">`;
       [2, 3, 4, 6].forEach(tier => {
@@ -5283,7 +5852,7 @@ function buildShopItemTooltipHtml(item) {
       });
       html += `</div></div>`;
     }
-    
+
     item.affixes.forEach(affix => {
       const suffix = (affix.name.includes('%') || affix.name.includes('Crit')) ? '%' : '';
       if (affix.locked) {
@@ -5316,30 +5885,30 @@ function buildShopItemTooltipHtml(item) {
 
 function showShopItemTooltip(item, targetEl) {
   const tooltip = document.getElementById('inventory-tooltip');
-  
+
   // Set content first
   tooltip.innerHTML = buildShopItemTooltipHtml(item);
-  
+
   // Temporarily position offscreen to measure without showing
   const originalLeft = tooltip.style.left;
   const originalTop = tooltip.style.top;
   tooltip.style.left = '-9999px';
   tooltip.style.top = '-9999px';
   tooltip.setAttribute('aria-hidden', 'false');
-  
+
   // Force a reflow to get dimensions
   tooltip.offsetHeight;
-  
+
   const tooltipRect = tooltip.getBoundingClientRect();
   const rect = targetEl.getBoundingClientRect();
 
   // Calculate position
   const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
   const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
-  
+
   let left = rect.right + 8;
   let top = rect.top;
-  
+
   if (left + tooltipRect.width > vw - 8) {
     left = rect.left - tooltipRect.width - 8;
   }
@@ -5356,7 +5925,7 @@ function showShopItemTooltip(item, targetEl) {
 function hideTooltip() {
   const tooltip = document.getElementById('inventory-tooltip');
   tooltip.setAttribute('aria-hidden', 'true');
-  
+
   // Clear any active effect tooltip timer
   if (GameState.effectTooltipTimer) {
     clearInterval(GameState.effectTooltipTimer);
@@ -5366,22 +5935,22 @@ function hideTooltip() {
 
 function showEffectTooltip(effect, targetEl) {
   const tooltip = document.getElementById('inventory-tooltip');
-  
+
   // Clear any existing effect tooltip timer
   if (GameState.effectTooltipTimer) {
     clearInterval(GameState.effectTooltipTimer);
     GameState.effectTooltipTimer = null;
   }
-  
+
   // Map effect IDs to readable info
   const effectData = {
     'exp_boost_200': { name: 'EXP Boost x3', description: 'Experience gain multiplied by 3', icon: '📚' },
     'dmg_boost_200': { name: 'Damage Boost x3', description: 'Damage output multiplied by 3', icon: '⚡' },
     'coins_boost_200': { name: 'Coins Boost x3', description: 'Coin drops multiplied by 3', icon: '💰' }
   };
-  
+
   const data = effectData[effect.id] || { name: effect.id, description: 'Active effect', icon: '✨' };
-  
+
   // Function to update the timer display
   const updateTimer = () => {
     const now = Date.now();
@@ -5389,25 +5958,25 @@ function showEffectTooltip(effect, targetEl) {
     const remaining = Math.max(0, effect.durationSec - elapsed);
     const minutes = Math.floor(remaining / 60);
     const seconds = Math.floor(remaining % 60);
-    
+
     const timerEl = tooltip.querySelector('.effect-tooltip-timer');
     if (timerEl) {
       timerEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
     }
-    
+
     // Close tooltip if effect expired
     if (remaining <= 0) {
       hideTooltip();
     }
   };
-  
+
   // Initial render
   const now = Date.now();
   const elapsed = (now - effect.startedAtTs) / 1000;
   const remaining = Math.max(0, effect.durationSec - elapsed);
   const minutes = Math.floor(remaining / 60);
   const seconds = Math.floor(remaining % 60);
-  
+
   tooltip.innerHTML = `
     <div class="tooltip-header-row">
       <div class="tooltip-header-left">
@@ -5423,27 +5992,27 @@ function showEffectTooltip(effect, targetEl) {
       <div style="margin-top: 8px;">${data.description}</div>
     </div>
   `;
-  
+
   // Start updating the timer every second
   GameState.effectTooltipTimer = setInterval(updateTimer, 1000);
-  
+
   // Temporarily position offscreen to measure
   tooltip.style.left = '-9999px';
   tooltip.style.top = '-9999px';
   tooltip.setAttribute('aria-hidden', 'false');
-  
+
   // Force reflow
   tooltip.offsetHeight;
-  
+
   const tooltipRect = tooltip.getBoundingClientRect();
   const rect = targetEl.getBoundingClientRect();
-  
+
   const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
   const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
-  
+
   let left = rect.right + 8;
   let top = rect.top;
-  
+
   if (left + tooltipRect.width > vw - 8) {
     left = rect.left - tooltipRect.width - 8;
   }
@@ -5451,7 +6020,7 @@ function showEffectTooltip(effect, targetEl) {
     top = vh - tooltipRect.height - 8;
   }
   if (top < 8) top = 8;
-  
+
   tooltip.style.left = `${left}px`;
   tooltip.style.top = `${top}px`;
 }
@@ -5490,23 +6059,23 @@ function showItemTooltip(item, targetEl, isEquipped) {
 function updateWorldProgress() {
   const wp = GameState.worldProgress;
   const p = GameState.player;
-  
+
   wp.requiredEnemies = 25 * p.world;
   wp.requiredElites = Math.max(1, Math.floor(p.world / 2));
   wp.requiredLevel = Math.min(2 + p.world * 1, 100);
-  
+
   const enemiesMet = wp.enemiesKilledThisWorld >= wp.requiredEnemies;
   const elitesMet = wp.elitesKilledThisWorld >= wp.requiredElites;
   const levelMet = p.level >= wp.requiredLevel;
-  
+
   document.getElementById('req-enemies-text').textContent = `${wp.enemiesKilledThisWorld} / ${wp.requiredEnemies}`;
   document.getElementById('req-elites-text').textContent = `${wp.elitesKilledThisWorld} / ${wp.requiredElites}`;
   document.getElementById('req-level-text').textContent = `${p.level} / ${wp.requiredLevel}`;
-  
+
   document.getElementById('req-enemies').className = enemiesMet ? 'requirement met' : 'requirement not-met';
   document.getElementById('req-elites').className = elitesMet ? 'requirement met' : 'requirement not-met';
   document.getElementById('req-level').className = levelMet ? 'requirement met' : 'requirement not-met';
-  
+
     const allMet = enemiesMet && elitesMet && levelMet;
     document.getElementById('btn-challenge-boss').disabled = !allMet;
 
@@ -5524,31 +6093,31 @@ function updateWorldProgress() {
 
 function challengeBoss() {
   if (GameState.suspendWaves) return;
-  
+
   GameState.suspendWaves = true;
   GameState.inBossChallenge = true;
   GameState.enemies = [];
-  
+
   const boss = createEnemy('boss', GameState.player.world);
   GameState.enemies.push(boss);
-  
+
   showNotification('🐉 Boss Battle!', 'danger');
   document.getElementById('boss-requirements').className = 'panel';
 }
 
 function onBossDefeated() {
   GameState.player.world++;
-  
+
   // Track world completion
   if (GameState.player.statistics) {
     GameState.player.statistics.worldsCompleted++;
   }
-  
+
   GameState.worldProgress.enemiesKilledThisWorld = 0;
   GameState.worldProgress.elitesKilledThisWorld = 0;
   GameState.suspendWaves = false;
   GameState.inBossChallenge = false;
-  
+
   showNotification(`🎉 Boss defeated! Welcome to World ${GameState.player.world}!`, 'legendary');
   updateWorldProgress();
 }
@@ -5560,11 +6129,11 @@ function updateActiveEffects() {
     const elapsed = (now - effect.startedAtTs) / 1000;
     return elapsed < effect.durationSec;
   });
-  
+
   // Render in inventory
   const iconsContainer = document.getElementById('active-effects-icons');
   if (!iconsContainer) return;
-  
+
   if (GameState.player.activeEffects.length === 0) {
     iconsContainer.innerHTML = '<div class="no-effects-message">No active effects</div>';
   } else {
@@ -5574,14 +6143,14 @@ function updateActiveEffects() {
       'dmg_boost_200': { icon: '⚡', name: 'Damage Boost x3', description: 'Damage output multiplied by 3' },
       'coins_boost_200': { icon: '💰', name: 'Coins Boost x3', description: 'Coin drops multiplied by 3' }
     };
-    
+
     iconsContainer.innerHTML = GameState.player.activeEffects.map((effect, index) => {
       const elapsed = (now - effect.startedAtTs) / 1000;
       const remaining = Math.max(0, effect.durationSec - elapsed);
       const minutes = Math.floor(remaining / 60);
       const seconds = Math.floor(remaining % 60);
       const data = effectData[effect.id] || { icon: '✨', name: effect.id, description: 'Active effect' };
-      
+
       return `
         <div class="effect-icon" data-effect-index="${index}" title="${data.name}">
           <div class="effect-icon-image">${data.icon}</div>
@@ -5589,7 +6158,7 @@ function updateActiveEffects() {
         </div>
       `;
     }).join('');
-    
+
     // Add click handlers for tooltips and hover handlers for bounce animation
     iconsContainer.querySelectorAll('.effect-icon').forEach(iconEl => {
       // Bounce animation on hover (once per hover)
@@ -5604,7 +6173,7 @@ function updateActiveEffects() {
           }, 300);
         }
       });
-      
+
       // Tooltip on click
       iconEl.addEventListener('click', (e) => {
         const effectIndex = parseInt(e.currentTarget.getAttribute('data-effect-index'));
@@ -5615,7 +6184,7 @@ function updateActiveEffects() {
       });
     });
   }
-  
+
   // Update coins and gems display in inventory
   const invCoinsEl = document.getElementById('inv-coins');
   const invGemsEl = document.getElementById('inv-gems');
@@ -5631,7 +6200,7 @@ function saveGame() {
     GameState.player.statistics.totalPlayTime += currentSession;
     GameState.player.statistics.sessionStartTime = Date.now(); // Reset session timer
   }
-  
+
   const saveData = {
     saveVersion: 1,
     timestamp: Date.now(),
@@ -5639,7 +6208,7 @@ function saveGame() {
     shop: GameState.shop,
     worldProgress: GameState.worldProgress
   };
-  
+
   localStorage.setItem(CONFIG.SAVE_KEY, JSON.stringify(saveData));
   GameState.lastSaveTime = Date.now();
 }
@@ -5647,18 +6216,18 @@ function saveGame() {
 function loadGame() {
   const saved = localStorage.getItem(CONFIG.SAVE_KEY);
   if (!saved) return false;
-  
+
   try {
     const data = JSON.parse(saved);
     GameState.player = data.player;
     GameState.shop = data.shop;
     GameState.worldProgress = data.worldProgress;
-    
+
     // Ensure inventory is properly initialized as sparse array
     if (!GameState.player.inventory) {
       GameState.player.inventory = [];
     }
-    
+
     // Initialize statistics if missing (for backward compatibility)
     if (!GameState.player.statistics) {
       GameState.player.statistics = {
@@ -5681,14 +6250,14 @@ function loadGame() {
       // Reset session start time for loaded game
       GameState.player.statistics.sessionStartTime = Date.now();
     }
-    
+
     // Clean up invalid equipment data before computing stats
     try {
       cleanupInvalidEquipment();
     } catch (cleanupError) {
       console.error('Error during equipment cleanup:', cleanupError);
     }
-    
+
     computeDerivedStats();
     return true;
   } catch (e) {
@@ -5702,19 +6271,19 @@ function loadGame() {
 function cleanupInvalidEquipment() {
   const p = GameState.player;
   if (!p || !p.equipment) return;
-  
+
   // Check each equipment slot
   Object.keys(p.equipment).forEach(slot => {
     const item = p.equipment[slot];
     if (!item) return;
-    
+
     // Ensure item has required properties
     if (!item.name) {
       console.warn(`Equipment in slot ${slot} has no name, removing:`, item);
       p.equipment[slot] = null;
       return;
     }
-    
+
     // If item has a setId, validate it exists
     if (item.setId) {
       const setData = EQUIPMENT_SETS[item.setId];
@@ -5724,19 +6293,19 @@ function cleanupInvalidEquipment() {
       }
     }
   });
-  
+
   // Check inventory
   if (p.inventory) {
     for (let i = 0; i < CONFIG.MAX_INVENTORY_SLOTS; i++) {
       const item = p.inventory[i];
       if (!item) continue;
-      
+
       if (!item.name) {
         console.warn(`Inventory item at index ${i} has no name, removing:`, item);
         delete p.inventory[i];
         continue;
       }
-      
+
       if (item.setId) {
         const setData = EQUIPMENT_SETS[item.setId];
         if (!setData) {
@@ -5746,7 +6315,7 @@ function cleanupInvalidEquipment() {
       }
     }
   }
-  
+
   // Check shop offers
   if (GameState.shop && GameState.shop.offers && GameState.shop.offers.equipment) {
     GameState.shop.offers.equipment = GameState.shop.offers.equipment.filter(item => {
@@ -5761,7 +6330,7 @@ function cleanupInvalidEquipment() {
       return true;
     });
   }
-  
+
   // Rebuild activeSets from scratch
   const setCounts = {};
   Object.keys(p.equipment || {}).forEach(slot => {
@@ -5805,7 +6374,7 @@ function showFloatingChange(amount, kind) {
 
   const id = (kind === 'gems') ? 'gems' : 'coins';
   let el = document.getElementById(id);
-  
+
   // If inventory is open, also show floating change on inventory resources
   const invOverlay = document.getElementById('inventory-overlay');
   if (invOverlay && invOverlay.getAttribute('aria-hidden') === 'false') {
@@ -5815,7 +6384,7 @@ function showFloatingChange(amount, kind) {
       createFloatingChange(invEl, amount);
     }
   }
-  
+
   if (!el) {
     console.warn('showFloatingChange: target element not found #' + id);
     return;
@@ -5886,7 +6455,7 @@ function createFloatingChange(el, amount) {
 function openOverlay(id) {
   const overlay = document.getElementById(id);
   overlay.setAttribute('aria-hidden', 'false');
-  
+
   if (id === 'inventory-overlay') renderInventory();
   if (id === 'shop-overlay') renderShop();
 }
@@ -5923,22 +6492,33 @@ function initializeSetBonusTracking() {
 function updateSetBonusesPeriodic(dt) {
   const p = GameState.player;
   initializeSetBonusTracking();
-  
+
   // BASTION 3-PIECE: Shock Roar every 2 seconds
   if (getSetCount('bastion') >= 3) {
     p.setBonusTracking.bastion.shockRoarTimer += dt;
-    if (p.setBonusTracking.bastion.shockRoarTimer >= 2.0) {
+    if (p.setBonusTracking.bastion.shockRoarTimer >= 1.5) {
       p.setBonusTracking.bastion.shockRoarTimer = 0;
       const stage = document.getElementById('stage');
       const playerX = stage.clientWidth / 2;
       const playerY = stage.clientHeight / 2;
+
+      // 6-piece: Metal Fierce increases area and changes color
+      const has6Piece = getSetCount('bastion') >= 6;
+      const isLowHP = getPlayerHP(p) < (p.maxHp || p.HP_max || 1) * 0.50;
+
+      let shockRadius = 150;
+      if (has6Piece && isLowHP) {
+        shockRadius = 250; // Increased area
+      }
+
+      const shockColor = (has6Piece && isLowHP) ? '#ffcccc' : '#d4af37'; // Light red when Metal Fierce active
+      const shockDamage = Math.floor((p.maxHp || 0) * 0.5 * 1.80);
+
       const playerEl = document.getElementById('player-container');
       if (playerEl) {
         const rect = playerEl.getBoundingClientRect();
-        spawnShockwave(rect.left + rect.width/2, rect.top + rect.height/2, 80, '#d4af37', 400);
+        spawnShockwave(rect.left + rect.width/2, rect.top + rect.height/2, shockRadius, shockColor, 300);
       }
-      const shockRadius = 100;
-      const shockDamage = Math.floor((p.maxHp || 0) * 0.20 * 0.80);
       GameState.enemies.forEach(enemy => {
         const dx = playerX - enemy.position.x;
         const dy = playerY - enemy.position.y;
@@ -5949,7 +6529,7 @@ function updateSetBonusesPeriodic(dt) {
       });
     }
   }
-  
+
   // NIGHTWING 6-PIECE: Wealth stack decay
   if (getSetCount('nightwing') >= 6) {
     p.setBonusTracking.nightwing.wealthStackExpiry = p.setBonusTracking.nightwing.wealthStackExpiry.filter(expiry => {
@@ -5961,7 +6541,7 @@ function updateSetBonusesPeriodic(dt) {
       return true;
     });
   }
-  
+
   // SHADE 6-PIECE: Bloodthirst stack decay
   if (getSetCount('shade') >= 6) {
     p.setBonusTracking.shade.bloodthirstStackExpiry = p.setBonusTracking.shade.bloodthirstStackExpiry.filter(expiry => {
@@ -5973,23 +6553,116 @@ function updateSetBonusesPeriodic(dt) {
       return true;
     });
   }
-  
+
+    // SHADE 3-PIECE: Bloodbath rain zone damage ticks
+  if (getSetCount('shade') >= 3 && p.shadeRainZones) {
+    p.shadeRainZones.forEach(zone => {
+      if (Date.now() - zone.startTime <= zone.duration) {
+        GameState.enemies.forEach(enemy => {
+          const dx = zone.x - (enemy.position?.x || enemy.x || 0);
+          const dy = zone.y - (enemy.position?.y || enemy.y || 0);
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist <= zone.radius) {
+            applyDamageToEnemy(enemy, Math.floor(zone.damage), { type: 'physical', source: 'bloodbath_rain', setId: 'shade', isDoT: true });
+          }
+        });
+      }
+    });
+  }
+
+  // EMBERKIN: Fire zone damage ticks (same mechanics as Bloodbath)
+  if (p.emberkinFireZones) {
+    p.emberkinFireZones.forEach(zone => {
+      const now = Date.now();
+      if (now - zone.startTime <= zone.duration) {
+        GameState.enemies.forEach(enemy => {
+          const enemyX = enemy.position?.x || enemy.x || 0;
+          const enemyY = enemy.position?.y || enemy.y || 0;
+          const dist = Math.sqrt((zone.x - enemyX)**2 + (zone.y - enemyY)**2);
+
+          if (dist <= zone.radius) {
+            // Track when enemy entered zone
+            if (!zone.affectedEnemies.has(enemy.id)) {
+              zone.affectedEnemies.set(enemy.id, { enteredAt: now, lastTickAt: 0 });
+            }
+
+            const enemyData = zone.affectedEnemies.get(enemy.id);
+
+            // Deal damage every tick if within burn duration and enough time has passed
+            if (now - enemyData.enteredAt < zone.burnDuration && now - enemyData.lastTickAt >= 200) {
+              // Calculate burn damage with 3-piece bonus
+              let totalBurnDmg = zone.baseDamage;
+              if (getSetCount('emberkin') >= 3) {
+                totalBurnDmg += Math.floor((p.currentStats?.finalATK || p.ATK) * 0.08);
+              }
+
+              applyDamageToEnemy(enemy, Math.floor(totalBurnDmg), { type: 'fire', source: 'weapon_zone', setId: 'emberkin', isDoT: true });
+              enemyData.lastTickAt = now;
+            }
+          } else {
+            // Enemy left zone
+            zone.affectedEnemies.delete(enemy.id);
+          }
+        });
+
+        // Clean up old entries
+        for (const [enemyId, data] of zone.affectedEnemies.entries()) {
+          if (now - data.enteredAt >= zone.burnDuration) {
+            zone.affectedEnemies.delete(enemyId);
+          }
+        }
+      }
+    });
+  }
+
   // EMBERKIN 6-PIECE: Ignite AOE damage ticks
   if (getSetCount('emberkin') >= 6 && p.setBonusTracking.emberkin.igniteAOEs) {
     p.setBonusTracking.emberkin.igniteAOEs = p.setBonusTracking.emberkin.igniteAOEs.filter(aoe => {
-      if (Date.now() - aoe.startTime > aoe.duration) {
+      const elapsed = Date.now() - aoe.startTime;
+      if (elapsed > aoe.duration) {
         if (aoe.element && aoe.element.parentNode) aoe.element.remove();
         return false;
       }
+
+      const now = Date.now();
+
+      // Track which enemies are affected (similar to fire zones)
+      if (!aoe.affectedEnemies) {
+        aoe.affectedEnemies = new Map();
+      }
+
       GameState.enemies.forEach(enemy => {
-        const dx = aoe.x - enemy.position.x;
-        const dy = aoe.y - enemy.position.y;
+        const dx = aoe.x - (enemy.position?.x || enemy.x || 0);
+        const dy = aoe.y - (enemy.position?.y || enemy.y || 0);
         const distance = Math.sqrt(dx * dx + dy * dy);
+
         if (distance <= aoe.radius) {
-          const tickDmg = Math.floor((p.currentStats?.finalATK || 0) * 0.65);
-          applyDamageToEnemy(enemy, tickDmg, { type: 'fire', source: 'ignite_aoe', setId: 'emberkin', isDoT: true });
+          // Track when enemy entered zone
+          if (!aoe.affectedEnemies.has(enemy.id)) {
+            aoe.affectedEnemies.set(enemy.id, { enteredAt: now, lastTickAt: 0 });
+          }
+
+          const enemyData = aoe.affectedEnemies.get(enemy.id);
+
+          // Deal damage every 200ms (same tick rate as regular fire zones) for 10 seconds after entering
+          if (now - enemyData.enteredAt < 10000 && now - enemyData.lastTickAt >= 200) {
+            const tickDmg = Math.floor((p.currentStats?.finalATK || 0) * 0.65);
+            applyDamageToEnemy(enemy, tickDmg, { type: 'fire', source: 'ignite_aoe', setId: 'emberkin', isDoT: true });
+            enemyData.lastTickAt = now;
+          }
+        } else {
+          // Enemy left zone
+          aoe.affectedEnemies.delete(enemy.id);
         }
       });
+
+      // Clean up old entries
+      for (const [enemyId, data] of aoe.affectedEnemies.entries()) {
+        if (now - data.enteredAt >= 10000) {
+          aoe.affectedEnemies.delete(enemyId);
+        }
+      }
+
       return true;
     });
   }
@@ -5998,7 +6671,7 @@ function updateSetBonusesPeriodic(dt) {
 function handleSetBonusOnKill(enemy) {
   const p = GameState.player;
   initializeSetBonusTracking();
-  
+
   // NIGHTWING 6-PIECE: Wealth stacks
   if (getSetCount('nightwing') >= 6) {
     const coins = enemy.dropProfile?.coinBase || 0;
@@ -6010,8 +6683,100 @@ function handleSetBonusOnKill(enemy) {
       showNotification('💰 Wealth stack gained! (+20% DMG)', 'legendary');
       computeDerivedStats();
     }
+
+  // NIGHTWING 6-PIECE: Wealth Rain - track coin kills
+    if (getSetCount('nightwing') >= 6 && enemy.lastHit && enemy.lastHit.source && enemy.lastHit.source.includes('coin')) {
+      if (!p.nightwingCoinKills) p.nightwingCoinKills = 0;
+
+      // Don't count rain kills
+      if (enemy.lastHit.source !== 'wealth_rain') {
+        p.nightwingCoinKills++;
+
+        if (p.nightwingCoinKills >= 20) {
+          p.nightwingCoinKills = 0;
+
+          // Rain coins visually on full screen for 5 seconds
+          const rainDmg = Math.floor(p.coins * 0.0188);
+          const rainDuration = 5000;
+          const rainStartTime = Date.now();
+
+          // Create full-screen coin rain effect
+          const stage = document.getElementById('stage');
+          if (stage) {
+            const stageRect = stage.getBoundingClientRect();
+
+            const rainInterval = setInterval(() => {
+              if (Date.now() - rainStartTime >= rainDuration) {
+                clearInterval(rainInterval);
+                return;
+              }
+
+              // Create coins falling across the entire screen
+              for (let i = 0; i < 15; i++) {
+                const startX = Math.random() * stageRect.width;
+                const startY = -50;
+                const endY = stageRect.height + 50;
+
+                const particle = document.createElement('div');
+                particle.textContent = '💰';
+                particle.style.cssText = `position:absolute;left:${startX}px;top:${startY}px;font-size:20px;transform:translate(-50%,0);pointer-events:none;z-index:55;transition:all 1.2s linear;opacity:1;`;
+                stage.appendChild(particle);
+
+                setTimeout(() => {
+                  particle.style.top = `${endY}px`;
+                  particle.style.opacity = '0.3';
+                }, 10);
+
+                setTimeout(() => particle.remove(), 1250);
+              }
+
+              // Deal damage to all enemies on field
+              GameState.enemies.forEach(e => {
+                if (e.hp > 0) {
+                  applyDamageToEnemy(e, rainDmg, { type: 'physical', source: 'wealth_rain', setId: 'nightwing' });
+                }
+              });
+            }, 150); // Rain every 150ms for denser effect
+          }
+
+          showNotification('💰💰💰 Coin Rain! 💰💰💰', 'legendary');
+        }
+      }
+    }
+
+    // NIGHTWING 3-PIECE: Rich Man's Blow
+  if (getSetCount('nightwing') >= 3 && enemy.lastHit && enemy.lastHit.source === 'weapon_coin') {
+    const enemyX = enemy.position?.x || enemy.x || 0;
+    const enemyY = enemy.position?.y || enemy.y || 0;
+    const coinDmg = Math.floor(p.coins * 0.0099);
+
+    // Shoot 5 coins in star pattern
+    for (let i = 0; i < 5; i++) {
+      const angle = (i / 5) * Math.PI * 2;
+      const distance = 120;
+      const toX = enemyX + Math.cos(angle) * distance;
+      const toY = enemyY + Math.sin(angle) * distance;
+
+      setTimeout(() => {
+        const enemyElPos = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
+        const stage = document.getElementById('stage');
+        if (stage) {
+          createProjectile({
+            fromX: enemyX, fromY: enemyY, toX: toX, toY: toY,
+            color: '#ffd700', size: 12, travelMs: 250,
+            onArrive: () => {
+              const hits = findEnemiesInRadius(toX, toY, 50);
+              hits.forEach(hit => {
+                applyDamageToEnemy(hit, coinDmg, { type: 'physical', source: 'rich_mans_blow', setId: 'nightwing' });
+              });
+            }
+          });
+        }
+      }, i * 50);
+    }
   }
-  
+  }
+
   // EMBERKIN 6-PIECE: Ignite
   if (getSetCount('emberkin') >= 6 && enemy.lastHit && enemy.lastHit.type === 'fire') {
     p.setBonusTracking.emberkin.fireKillCount = (p.setBonusTracking.emberkin.fireKillCount || 0) + 1;
@@ -6020,49 +6785,158 @@ function handleSetBonusOnKill(enemy) {
       const stage = document.getElementById('stage');
       const w = stage.clientWidth;
       const h = stage.clientHeight;
+
+      // Create 3 giant red-pink fire zones around the player
       for (let i = 0; i < 3; i++) {
-        const x = Math.random() * w;
-        const y = Math.random() * h;
+        const angle = (i / 3) * Math.PI * 2;
+        const distance = 150 + Math.random() * 100;
+        const playerX = w / 2;
+        const playerY = h / 2;
+        const x = playerX + Math.cos(angle) * distance;
+        const y = playerY + Math.sin(angle) * distance;
+
         const fireAOE = document.createElement('div');
-        fireAOE.className = 'fire-aoe';
-        fireAOE.style.cssText = 'position:absolute;left:'+x+'px;top:'+y+'px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(255,100,100,0.6),rgba(255,50,0,0.3));border:2px solid #ff6347;box-shadow:0 0 30px rgba(255,100,0,0.8);transform:translate(-50%,-50%);pointer-events:none;z-index:40;';
+        fireAOE.className = 'fire-aoe-ignite';
+        fireAOE.style.cssText = 'position:absolute;left:'+x+'px;top:'+y+'px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(255,100,150,0.7),rgba(255,50,100,0.4),rgba(255,0,50,0.2));border:3px solid rgba(255,100,150,0.8);box-shadow:0 0 40px rgba(255,100,100,0.9), inset 0 0 30px rgba(255,50,100,0.5);transform:translate(-50%,-50%);pointer-events:none;z-index:40;animation:fire-pulse 1s infinite;';
         document.getElementById('enemy-layer').appendChild(fireAOE);
-        p.setBonusTracking.emberkin.igniteAOEs.push({ x: x, y: y, radius: 60, startTime: Date.now(), duration: 10000, element: fireAOE });
+        p.setBonusTracking.emberkin.igniteAOEs.push({ x: x, y: y, radius: 90, startTime: Date.now(), duration: 10000, element: fireAOE });
       }
-      showNotification('🔥 Ignite! Created 3 fire zones!', 'legendary');
+      showNotification('🔥 Ignite! Created 3 giant fire zones!', 'legendary');
     }
   }
-  
+
   // GLACIER 6-PIECE: Ice Storm
   if (getSetCount('glacier') >= 6 && enemy.lastHit && enemy.lastHit.type === 'cryo') {
-    const candidates = GameState.enemies.filter(e => e.hp > 0);
-    const toFreeze = candidates.sort(() => 0.5 - Math.random()).slice(0, 3);
-    toFreeze.forEach(e => {
-      applyStatusEffect(e, 'frozen', 3000);
-      const iceDmg = Math.floor((p.currentStats?.finalATK || 0) * 1.50);
-      applyDamageToEnemy(e, iceDmg, { type: 'cryo', source: 'ice_storm', setId: 'glacier' });
-    });
+    const now = Date.now();
+
+    // Check if cooldown has passed (30 seconds)
+    if (!p.glacierIceStormCooldown || now >= p.glacierIceStormCooldown) {
+      p.glacierIceStormCooldown = now + 30000; // 30 second cooldown
+
+      // Freeze ALL enemies on the field for 5 seconds
+      GameState.enemies.forEach(e => {
+        if (e.hp > 0) {
+          e.frozen = true;
+          e.frozenTimer = 5.0; // 5 second freeze
+          e.frozenAt = now;
+          e.originalSpeed = e.speed;
+          e.speed = 0;
+          // Don't set freezeCooldownUntil here as this is a special 6-piece effect
+
+          // Visual effect
+          const enemyEl = document.querySelector(`[data-enemy-id="${e.id}"]`);
+          if (enemyEl) {
+            const rect = enemyEl.getBoundingClientRect();
+            spawnShockwave(rect.left + rect.width/2, rect.top + rect.height/2, 50, getElementColor('cryo'), 400);
+            enemyEl.style.filter = 'brightness(1.5) saturate(0.3) hue-rotate(180deg)';
+            setTimeout(() => {
+              if (enemyEl) enemyEl.style.filter = '';
+            }, 5000);
+          }
+        }
+      });
+
+      showNotification('❄️ Ice Storm! All enemies frozen! ❄️', 'legendary');
+    }
   }
-  
-  // SKYWARDEN 3-PIECE & 6-PIECE
+
+  // SKYWARDEN 3-PIECE: Wind Storm - 3 explosions
   if (getSetCount('skywarden') >= 3 && enemy.lastHit && enemy.lastHit.type === 'wind') {
-    const tornadoEl = document.createElement('div');
-    tornadoEl.style.cssText = 'position:absolute;left:'+enemy.position.x+'px;top:'+enemy.position.y+'px;width:80px;height:80px;border-radius:50%;background:conic-gradient(from 0deg,transparent,rgba(152,251,152,0.6),transparent);transform:translate(-50%,-50%);animation:spin 0.5s linear;pointer-events:none;z-index:45;';
-    document.getElementById('enemy-layer').appendChild(tornadoEl);
-    setTimeout(() => tornadoEl.remove(), 500);
+    const enemyX = enemy.position?.x || enemy.x || 0;
+    const enemyY = enemy.position?.y || enemy.y || 0;
+
+    // Create 3 small explosions nearby
+    for (let i = 0; i < 3; i++) {
+      const angle = (i / 3) * Math.PI * 2;
+      const distance = 80;
+      const explX = enemyX + Math.cos(angle) * distance;
+      const explY = enemyY + Math.sin(angle) * distance;
+
+      setTimeout(() => {
+        const explDmg = Math.floor((p.currentStats?.finalATK || 0) * 0.50);
+        const nearbyEnemies = findEnemiesInRadius(explX, explY, 60);
+        nearbyEnemies.forEach(e => {
+          applyDamageToEnemy(e, explDmg, { type: 'wind', source: 'wind_storm', setId: 'skywarden' });
+        });
+
+        const tornadoEl = document.createElement('div');
+        tornadoEl.style.cssText = `position:absolute;left:${explX}px;top:${explY}px;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle, transparent 20%, rgba(152,251,152,0.5) 50%, rgba(152,251,152,0.8) 70%, transparent 100%);transform:translate(-50%,-50%);pointer-events:none;z-index:45;animation:spin 0.5s linear, wind-pulse 0.4s ease-out;`;
+        document.getElementById('enemy-layer').appendChild(tornadoEl);
+        setTimeout(() => tornadoEl.remove(), 500);
+      }, i * 150);
+    }
   }
+
+  // SKYWARDEN 6-PIECE: Aquila Tornado - every 20 wind kills
   if (getSetCount('skywarden') >= 6 && enemy.lastHit && enemy.lastHit.type === 'wind') {
-    const explRadius = 80;
-    const explDmg = Math.floor((p.currentStats?.finalATK || 0) * 0.50);
-    GameState.enemies.forEach(e => {
-      if (e.id === enemy.id) return;
-      const dx = enemy.position.x - e.position.x;
-      const dy = enemy.position.y - e.position.y;
-      const dist = Math.sqrt(dx*dx + dy*dy);
-      if (dist <= explRadius) {
-        applyDamageToEnemy(e, explDmg, { type: 'wind', source: 'wind_explosion', setId: 'skywarden' });
+    if (!p.skywardenWindKills) p.skywardenWindKills = 0;
+    p.skywardenWindKills++;
+
+    if (p.skywardenWindKills >= 20) {
+      p.skywardenWindKills = 0;
+
+      // Pick random enemy for tornado
+      const availableEnemies = GameState.enemies.filter(e => e.hp > 0);
+      if (availableEnemies.length > 0) {
+        const tornadoTarget = availableEnemies[Math.floor(Math.random() * availableEnemies.length)];
+        const tornadoX = tornadoTarget.position?.x || tornadoTarget.x || 0;
+        const tornadoY = tornadoTarget.position?.y || tornadoTarget.y || 0;
+
+        // Create giant tornado with improved visuals
+        const tornadoEl = document.createElement('div');
+        tornadoEl.style.cssText = `position:absolute;left:${tornadoX}px;top:${tornadoY}px;width:40px;height:40px;border-radius:50%;background:radial-gradient(circle, rgba(152,251,152,0.2) 0%, rgba(152,251,152,0.6) 40%, rgba(152,251,152,0.9) 70%, transparent 100%);box-shadow:0 0 30px rgba(152,251,152,0.8), inset 0 0 20px rgba(200,255,200,0.5);transform:translate(-50%,-50%);pointer-events:none;z-index:46;transition:all 1s ease-out;`;
+        document.getElementById('enemy-layer').appendChild(tornadoEl);
+
+        // Scale up tornado
+        setTimeout(() => {
+          tornadoEl.style.width = '200px';
+          tornadoEl.style.height = '200px';
+          tornadoEl.style.animation = 'spin 1s linear infinite, wind-pulse 2s ease-in-out infinite';
+        }, 50);
+
+        // Pull enemies and deal damage for 5 seconds
+        const tornadoStart = Date.now();
+        const tornadoDuration = 5000;
+        const pullRadius = 200;
+        const tornadoDmg = Math.floor((p.currentStats?.finalATK || 0) * 0.50);
+
+        const tornadoInterval = setInterval(() => {
+          const elapsed = Date.now() - tornadoStart;
+          if (elapsed >= tornadoDuration) {
+            clearInterval(tornadoInterval);
+
+            // Scale down and remove
+            tornadoEl.style.transition = 'all 0.5s ease-in';
+            tornadoEl.style.width = '0px';
+            tornadoEl.style.height = '0px';
+            tornadoEl.style.opacity = '0';
+            setTimeout(() => tornadoEl.remove(), 500);
+            return;
+          }
+
+          // Pull enemies towards tornado and damage them
+          GameState.enemies.forEach(e => {
+            const dx = tornadoX - (e.position?.x || e.x || 0);
+            const dy = tornadoY - (e.position?.y || e.y || 0);
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist <= pullRadius) {
+              // Pull towards center
+              const pullStrength = 0.15;
+              e.position.x += (dx / dist) * pullStrength * 20;
+              e.position.y += (dy / dist) * pullStrength * 20;
+
+              // Deal damage each tick
+              if (Math.random() < 0.5) { // 50% chance per tick to avoid spam
+                applyDamageToEnemy(e, tornadoDmg, { type: 'wind', source: 'aquila_tornado', setId: 'skywarden', isDoT: true });
+              }
+            }
+          });
+        }, 200); // Tick every 200ms
+
+        showNotification('🌪️ Aquila Tornado summoned!', 'legendary');
       }
-    });
+    }
   }
 }
 
@@ -6095,28 +6969,28 @@ function trackShadeHPChange(amount) {
 
 // ========== Game Loop ==========
 function gameTick() {
-  
+
   const dt = (CONFIG.TICK_INTERVAL_MS / 1000) * CONFIG.GAME_TIME_SCALE;
-  
+
   updateEnemies(dt);
-  
+
   // Process status effects (burn, slow, freeze, etc.)
   processEnemyStatusTicks(CONFIG.TICK_INTERVAL_MS);
-  
+
   // Update death system
   updateDeathSystem(dt);
-  
+
   // snapshot current positions for next frame's interpolation (AFTER update)
   if (GameState && GameState.enemies) GameState.enemies.forEach(e => { e.prevX = e.position.x; e.prevY = e.position.y; });
   GameState.lastPhysicsTs = performance.now();
-  
+
   updateSetBonusesPeriodic(dt);
-  
+
   GameState.autoAttackTimer += dt;
   const attackInterval = getAttackInterval();
   if (GameState.autoAttackTimer >= attackInterval) {
     GameState.autoAttackTimer -= attackInterval;
-    
+
     // Get player's auto-attack range (different from enemy engagement range)
     const weaponItem = GameState.player.equipment && GameState.player.equipment.weapon;
     let playerAttackRange = CONFIG.ENGAGE_RADIUS_PX;
@@ -6130,31 +7004,31 @@ function gameTick() {
         playerAttackRange = CONFIG.ENGAGE_RADIUS_PX * 1.25;
       }
     }
-    
+
     // Find closest enemy within player's attack range
     const stage = document.getElementById('stage');
     const playerX = stage.clientWidth / 2;
     const playerY = stage.clientHeight / 2;
-    
+
     let target = null;
     let minDistance = playerAttackRange;
-    
+
     GameState.enemies.forEach(enemy => {
       const dx = playerX - enemy.position.x;
       const dy = playerY - enemy.position.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
-      
+
       if (distance <= playerAttackRange && distance < minDistance) {
         minDistance = distance;
         target = enemy;
       }
     });
-    
+
     if (target) {
       attackEnemy(target);
     }
   }
-  
+
   if (!GameState.suspendWaves) {
     GameState.waveTimer += dt;
     if (GameState.waveTimer >= CONFIG.WAVE_INTERVAL_SEC) {
@@ -6162,11 +7036,11 @@ function gameTick() {
       spawnWave();
     }
   }
-  
+
   if (GameState.suspendWaves && GameState.enemies.length === 0 && !GameState.isDead) {
     onBossDefeated();
   }
-  
+
   if (Date.now() - GameState.lastSaveTime > CONFIG.SAVE_INTERVAL_MS) {
     saveGame();
   }
@@ -6176,14 +7050,14 @@ function uiTick() {
   renderUI();
   renderEnemies();
   renderPlayerStats();
-  
+
   const shop = GameState.shop;
   const timeUntilRefresh = CONFIG.SHOP_AUTO_REFRESH_SEC - Math.floor((Date.now() - shop.lastRefreshTs) / 1000);
   if (timeUntilRefresh <= 0) {
     refreshShop();
   }
   document.getElementById('shop-timer').textContent = `Auto refreshes in: ${Math.max(0, timeUntilRefresh)}s`;
-  
+
   const canManualRefresh = Date.now() >= shop.manualCooldownEndTs;
   const btn = document.getElementById('btn-manual-refresh');
   btn.disabled = !canManualRefresh;
@@ -6203,17 +7077,17 @@ const DevTools = {
       GameState.enemies.push(enemy);
     }
   },
-  
+
   grantCoins(amount) {
     GameState.player.coins += amount;
     showFloatingChange(amount, 'coins');
   },
-  
+
   grantGems(amount) {
     GameState.player.gems += amount;
     showFloatingChange(amount, 'gems');
   },
-  
+
   levelUp() {
     GameState.player.level++;
     GameState.player.baseStats.ATK += 10;
@@ -6222,14 +7096,14 @@ const DevTools = {
     computeDerivedStats();
     GameState.player.hp = GameState.player.maxHp;
   },
-  
+
   clearSave() {
     if (confirm('Clear all save data?')) {
       localStorage.removeItem(CONFIG.SAVE_KEY);
       location.reload();
     }
   },
-  
+
   grantSet(setId) {
     try {
       const p = GameState.player;
@@ -6238,21 +7112,21 @@ const DevTools = {
         showNotification('Error: Player not initialized', 'danger');
         return;
       }
-      
+
       const setData = EQUIPMENT_SETS[setId];
       if (!setData) {
         console.error('Set not found:', setId);
         showNotification(`Unknown set: ${setId}`, 'danger');
         return;
       }
-      
+
       console.log('Granting set:', setId, setData);
-      
+
       // Initialize equipment and inventory if needed
       if (!p.equipment) p.equipment = {};
       if (!p.inventory) p.inventory = {};
       if (!GameState.itemIdCounter) GameState.itemIdCounter = 1000;
-      
+
       // Clear current equipment and move to inventory if there's space
       Object.keys(p.equipment).forEach(slot => {
         const item = p.equipment[slot];
@@ -6273,25 +7147,25 @@ const DevTools = {
         }
         p.equipment[slot] = null;
       });
-      
+
       // Grant all items from the set at mythic rarity with max stats
       if (!setData.items) {
         console.error('Set has no items:', setId);
         showNotification('Error: Set has no items', 'danger');
         return;
       }
-      
+
       const mythicRanges = RARITY_RANGES.mythic;
-      
+
       Object.keys(setData.items).forEach(itemKey => {
         const itemTemplate = setData.items[itemKey];
         if (!itemTemplate) {
           console.error('Item template is undefined for key:', itemKey);
           return;
         }
-        
+
         const slot = itemTemplate.slot;
-        
+
         // Determine base attribute based on slot (matching generateEquipment)
         let baseAttrName;
         if (slot === 'helmet') baseAttrName = 'ATK';
@@ -6300,7 +7174,7 @@ const DevTools = {
         else if (slot === 'boots') baseAttrName = 'SPD';
         else if (slot === 'ring') baseAttrName = 'DMG%';
         else if (slot === 'weapon') baseAttrName = 'ATK';
-        
+
         // Create item with full structure matching generateEquipment
         const item = {
           id: `item_${GameState.itemIdCounter++}`,
@@ -6348,25 +7222,25 @@ const DevTools = {
           sellPrice: 0,
           createdAtWorld: p.world || 1
         };
-        
+
         // Set weapon properties if it's a weapon
         if (itemTemplate.isWeapon) {
           item.isWeapon = true;
           item.weaponMultiplier = itemTemplate.multiplier || 1.0;
         }
-        
+
         console.log('Equipping item:', item);
-        
+
         // Equip the item
         p.equipment[slot] = item;
       });
-      
+
       // Recompute stats
       computeDerivedStats();
       renderInventory();
       renderPlayerStats();
-      
-      showNotification(`✨ Granted full ${setData.name} set (Level 1, Max Stats)!`, 'success');
+
+      showNotification(`✨ Granted full ${setData.name} set!`, 'success');
     } catch (error) {
       console.error('Error in grantSet:', error);
       showNotification(`Error: ${error.message}`, 'danger');
@@ -6397,7 +7271,7 @@ function cleanupInvalidSetIds() {
 function init() {
   try {
     GameState.rng = new RNG(CONFIG.AUTO_ATTACK_SEED);
-    
+
     const loaded = loadGame();
     if (!loaded) {
       GameState.player = createPlayer();
@@ -6405,23 +7279,23 @@ function init() {
       GameState.worldProgress = createWorldProgress();
       refreshShop();
     }
-    
+
     // Clean up any invalid setIds from old save data
     cleanupInvalidSetIds();
-    
+
     computeDerivedStats();
     renderUI();
     renderInventory();
     renderPlayerStats();
     renderShop();
     updateWorldProgress();
-    
+
     setInterval(gameTick, CONFIG.TICK_INTERVAL_MS);
     setInterval(uiTick, CONFIG.UI_UPDATE_MS);
     if (CONFIG.DEV_MODE) {
       setInterval(updateDebugPanel, 500);
     }
-    
+
     spawnWave();
   } catch (error) {
     console.error('Fatal error during initialization:', error);
@@ -6443,7 +7317,7 @@ document.addEventListener('keydown', (e) => {
     const panel = document.getElementById('debug-panel');
     panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
   }
-  
+
   if (e.key === 'Escape') {
     hideTooltip();
     document.querySelectorAll('.overlay').forEach(overlay => {
@@ -6498,10 +7372,10 @@ document.addEventListener('click', (e) => {
     }
     return;
   }
-  
+
   // Close tooltip when clicking outside
-  if (!e.target.closest('.inv-slot') && 
-      !e.target.closest('.equip-slot') && 
+  if (!e.target.closest('.inv-slot') &&
+      !e.target.closest('.equip-slot') &&
       !e.target.closest('.shop-item') &&
       !e.target.closest('.effect-icon') &&
       !e.target.closest('.tooltip')) {
@@ -6514,7 +7388,7 @@ document.addEventListener('contextmenu', (e) => {
     e.preventDefault();
   }
 });
-  
+
 /* --- Smooth per-frame enemy renderer (added by assistant) --- */
 if (!window.GameState) window.GameState = window.GameState || {};
 if (!window.CONFIG) window.CONFIG = window.CONFIG || {};
