@@ -882,6 +882,54 @@
       transition: opacity 0.2s;
     }
 
+    /* Mobile tooltip adjustments */
+    @media (max-width: 768px) {
+      .tooltip {
+        max-width: 85vw;
+        padding: 8px;
+        font-size: 11px;
+        max-height: 70vh;
+        overflow-y: auto;
+      }
+
+      .tooltip-header {
+        font-size: 13px;
+      }
+
+      .tooltip-level {
+        font-size: 11px;
+      }
+
+      .base-stat-value {
+        font-size: 20px;
+      }
+
+      .base-stat-name {
+        font-size: 10px;
+      }
+
+      .tooltip-content {
+        font-size: 11px;
+        line-height: 1.4;
+      }
+
+      .tooltip-attr {
+        padding: 3px;
+        margin: 3px 0;
+      }
+
+      .tooltip-btn {
+        padding: 6px 8px;
+        font-size: 11px;
+        min-width: 60px;
+      }
+
+      .tooltip-actions {
+        margin-top: 8px;
+        gap: 4px;
+      }
+    }
+
     .tooltip[aria-hidden="false"] {
       opacity: 1;
       pointer-events: auto;
@@ -1603,6 +1651,7 @@
           <div id="exp-text">0 / 100</div>
         </div>
       </div>
+      <div id="challenge-timer" style="display:none; font-size:16px; font-weight:bold; color:#ffd700; padding:4px 12px; background:rgba(0,0,0,0.6); border-radius:8px;">⏱️ <span id="timer-text">1:00</span></div>
       <div id="world">World 1</div>
       <button id="btn-challenge-boss">Challenge Boss</button>
     </header>
@@ -1816,7 +1865,7 @@
       <div id="debug-info"></div>
       <button class="debug-btn" onclick="DevTools.spawnEnemies(10, 'normal')">Spawn 10 Normal</button>
       <button class="debug-btn" onclick="DevTools.spawnEnemies(5, 'elite')">Spawn 5 Elite</button>
-      <button class="debug-btn" onclick="DevTools.grantCoins(100000000)">+1m Coins</button>
+      <button class="debug-btn" onclick="DevTools.grantCoins(1000000)">+1m Coins</button>
       <button class="debug-btn" onclick="DevTools.grantGems(100)">+100 Gems</button>
       <button class="debug-btn" onclick="DevTools.levelUp()">Level Up</button>
       <button class="debug-btn" onclick="DevTools.clearSave()">Clear Save</button>
@@ -1855,7 +1904,7 @@ const CONFIG = {
   DEFAULT_CONSUMABLE_DURATION_S: 3600,
   TEST_CONSUMABLE_DURATION_S: 300,
   WAVE_INTERVAL_SEC: 10,
-  MIN_WAVE_ENEMIES: 10,
+  MIN_WAVE_ENEMIES: 5,
   MAX_WAVE_ENEMIES: 200,
   RARITY_PROB: { common:0.45, uncommon:0.35, rare:0.10, epic:0.05, legendary:0.03, mythic:0.02 },
   EQUIP_BASE_UPGRADE_COST: { common:50, uncommon:200, rare:1000, epic:5000, legendary:25000, mythic:100000 },
@@ -1863,8 +1912,8 @@ const CONFIG = {
   STAR_GEM_COSTS: { "10":0, "25":1, "50":3, "75":5, "100":10 },
   BASE_SHOP_PRICE: { common:500, uncommon:2000, rare:10000, epic:50000, legendary:200000, mythic:1000000 },
   ENEMY_BASE_COIN: { small:25, normal:50, big:150, elite:650, boss:7250 },
-  ENEMY_HP_SCALE: 1.25,
-  ENEMY_ATK_SCALE: 1.69,
+  ENEMY_HP_SCALE: 2.75,
+  ENEMY_ATK_SCALE: 1.5,
   ENEMY_RESIST_BONUS_PER_WORLD: 0.5,
   BASE_EQUIP_DROP_CHANCE_PCT: { normal:0.5, small:0.25, big:2, elite:10 },
   LUCK_EFFECT_MULTIPLIER: 1.0,
@@ -1882,11 +1931,11 @@ const EQUIPMENT_SETS = {
     weaponName: 'Aquila Longbow',
     weaponDesc: 'Deal 120% wind damage to an enemy, randomly pushes that enemy and 2 nearby enemies back a small distance, and deal 50% wind damage to them. After enemy dies to wind damage, creates an AOE wind explosion on the dead enemy area that deals 50% wind damage to surrounding enemies and push them back.',
     items: {
-      helmet: { slot: 'helmet', name: 'Skywarden Helmet', icon: '🪖' },
-      chestplate: { slot: 'chestplate', name: 'Skywarden Chestplate', icon: '🦺' },
-      leggings: { slot: 'leggings', name: 'Skywarden Leggings', icon: '👖' },
-      boots: { slot: 'boots', name: 'Skywarden Boots', icon: '🥾' },
-      ring: { slot: 'ring', name: 'Skywarden Ring', icon: '💍' },
+      helmet: { slot: 'helmet', name: 'Skywarden Helmet', icon: '🌀' },
+      chestplate: { slot: 'chestplate', name: 'Skywarden Chestplate', icon: '🌬️' },
+      leggings: { slot: 'leggings', name: 'Skywarden Leggings', icon: '🍃' },
+      boots: { slot: 'boots', name: 'Skywarden Boots', icon: '🪶' },
+      ring: { slot: 'ring', name: 'Skywarden Ring', icon: '💨' },
       weapon: { slot: 'weapon', name: 'Aquila Longbow', icon: '🏹', isWeapon: true, multiplier: 1.20 }
     },
     bonuses: {
@@ -1904,11 +1953,11 @@ const EQUIPMENT_SETS = {
     weaponName: 'Storm Pike',
     weaponDesc: 'Deal 120% lightning damage to an enemy, there is a 50% chance to hit a nearby enemy, dealing 75% lightning damage to that enemy, then there is a 25% chance to hit another nearby enemy, dealing 50% lightning damage to that enemy.',
     items: {
-      helmet: { slot: 'helmet', name: 'Stormbreaker Helmet', icon: '🪖' },
-      chestplate: { slot: 'chestplate', name: 'Stormbreaker Chestplate', icon: '🦺' },
-      leggings: { slot: 'leggings', name: 'Stormbreaker Leggings', icon: '👖' },
-      boots: { slot: 'boots', name: 'Stormbreaker Boots', icon: '🥾' },
-      ring: { slot: 'ring', name: 'Stormbreaker Ring', icon: '💍' },
+      helmet: { slot: 'helmet', name: 'Stormbreaker Helmet', icon: '⚡' },
+      chestplate: { slot: 'chestplate', name: 'Stormbreaker Chestplate', icon: '🌩️' },
+      leggings: { slot: 'leggings', name: 'Stormbreaker Leggings', icon: '⛈️' },
+      boots: { slot: 'boots', name: 'Stormbreaker Boots', icon: '💫' },
+      ring: { slot: 'ring', name: 'Stormbreaker Ring', icon: '⚡' },
       weapon: { slot: 'weapon', name: 'Storm Pike', icon: '🔱', isWeapon: true, multiplier: 1.20 }
     },
     bonuses: {
@@ -1926,11 +1975,11 @@ const EQUIPMENT_SETS = {
     weaponName: 'Titan Warhammer',
     weaponDesc: 'Deal 120% physical damage equal to 30% player HP and 80% physical damage equal to 20% player HP in surrounding area.',
     items: {
-      helmet: { slot: 'helmet', name: 'Bastion Helmet', icon: '🪖' },
-      chestplate: { slot: 'chestplate', name: 'Bastion Chestplate', icon: '🦺' },
-      leggings: { slot: 'leggings', name: 'Bastion Leggings', icon: '👖' },
-      boots: { slot: 'boots', name: 'Bastion Boots', icon: '🥾' },
-      ring: { slot: 'ring', name: 'Bastion Ring', icon: '💍' },
+      helmet: { slot: 'helmet', name: 'Bastion Helmet', icon: '🛡️' },
+      chestplate: { slot: 'chestplate', name: 'Bastion Chestplate', icon: '🪨' },
+      leggings: { slot: 'leggings', name: 'Bastion Leggings', icon: '⛰️' },
+      boots: { slot: 'boots', name: 'Bastion Boots', icon: '🗿' },
+      ring: { slot: 'ring', name: 'Bastion Ring', icon: '⚙️' },
       weapon: { slot: 'weapon', name: 'Titan Warhammer', icon: '🔨', isWeapon: true, multiplier: 1.20 }
     },
     bonuses: {
@@ -1948,11 +1997,11 @@ const EQUIPMENT_SETS = {
     weaponName: "Raven's Volley",
     weaponDesc: 'Deal 120% physical damage equal to 20% of players ATK, after hit an enemy, bounce 2 coins randomly 3 times, dealing 0.77% physical damage of players total coins (this damage appears yellow).',
     items: {
-      helmet: { slot: 'helmet', name: 'Nightwing Helmet', icon: '🪖' },
-      chestplate: { slot: 'chestplate', name: 'Nightwing Chestplate', icon: '🦺' },
-      leggings: { slot: 'leggings', name: 'Nightwing Leggings', icon: '👖' },
-      boots: { slot: 'boots', name: 'Nightwing Boots', icon: '🥾' },
-      ring: { slot: 'ring', name: 'Nightwing Ring', icon: '💍' },
+      helmet: { slot: 'helmet', name: 'Nightwing Helmet', icon: '🦇' },
+      chestplate: { slot: 'chestplate', name: 'Nightwing Chestplate', icon: '🌙' },
+      leggings: { slot: 'leggings', name: 'Nightwing Leggings', icon: '🌑' },
+      boots: { slot: 'boots', name: 'Nightwing Boots', icon: '🪙' },
+      ring: { slot: 'ring', name: 'Nightwing Ring', icon: '💰' },
       weapon: { slot: 'weapon', name: "Raven's Volley", icon: '🏹', isWeapon: true, multiplier: 1.20 }
     },
     bonuses: {
@@ -1970,11 +2019,11 @@ const EQUIPMENT_SETS = {
     weaponName: 'Wraith Scythe',
     weaponDesc: 'Deal 50% physical damage to an enemy, lose 2% max HP, and deals extra 200% physical damage + 200% of HP lost to an enemy (this damage appears red), if an enemy dies, restores 5% max HP. If the player has lower than 2% max HP, set the player\'s HP to 1.',
     items: {
-      helmet: { slot: 'helmet', name: 'Shade Helmet', icon: '🪖' },
-      chestplate: { slot: 'chestplate', name: 'Shade Chestplate', icon: '🦺' },
-      leggings: { slot: 'leggings', name: 'Shade Leggings', icon: '👖' },
-      boots: { slot: 'boots', name: 'Shade Boots', icon: '🥾' },
-      ring: { slot: 'ring', name: 'Shade Ring', icon: '💍' },
+      helmet: { slot: 'helmet', name: 'Shade Helmet', icon: '💀' },
+      chestplate: { slot: 'chestplate', name: 'Shade Chestplate', icon: '🩸' },
+      leggings: { slot: 'leggings', name: 'Shade Leggings', icon: '☠️' },
+      boots: { slot: 'boots', name: 'Shade Boots', icon: '🦴' },
+      ring: { slot: 'ring', name: 'Shade Ring', icon: '🖤' },
       weapon: { slot: 'weapon', name: 'Wraith Scythe', icon: '⚔️', isWeapon: true, multiplier: 0.50 }
     },
     bonuses: {
@@ -1992,11 +2041,11 @@ const EQUIPMENT_SETS = {
     weaponName: 'Aether Scepter',
     weaponDesc: 'Launches a ball that continuously hover around the enemy, dealing 120% aether damage each enemy hit, if the enemy is dead, the ball launches to a random enemy, dealing 120% aether damage each hit, the ball lasts for 5 seconds.',
     items: {
-      helmet: { slot: 'helmet', name: 'Aegis Helmet', icon: '🪖' },
-      chestplate: { slot: 'chestplate', name: 'Aegis Chestplate', icon: '🦺' },
-      leggings: { slot: 'leggings', name: 'Aegis Leggings', icon: '👖' },
-      boots: { slot: 'boots', name: 'Aegis Boots', icon: '🥾' },
-      ring: { slot: 'ring', name: 'Aegis Ring', icon: '💍' },
+      helmet: { slot: 'helmet', name: 'Aegis Helmet', icon: '✨' },
+      chestplate: { slot: 'chestplate', name: 'Aegis Chestplate', icon: '🔮' },
+      leggings: { slot: 'leggings', name: 'Aegis Leggings', icon: '💫' },
+      boots: { slot: 'boots', name: 'Aegis Boots', icon: '⭐' },
+      ring: { slot: 'ring', name: 'Aegis Ring', icon: '💠' },
       weapon: { slot: 'weapon', name: 'Aether Scepter', icon: '🪄', isWeapon: true, multiplier: 1.20 }
     },
     bonuses: {
@@ -2014,11 +2063,11 @@ const EQUIPMENT_SETS = {
     weaponName: 'Cryo Rod',
     weaponDesc: 'Immediately freezes the enemy for 2 seconds and deal 120% cryo damage to an enemy, if an enemy is already frozen before, they cant be frozen again for 10 seconds, after the enemy is dead, create a cryo AOE that any enemy moved or within the area will be freezed for 3 seconds, dealing 20% cryo damage every tick for 3 seconds.',
     items: {
-      helmet: { slot: 'helmet', name: 'Glacier Helmet', icon: '🪖' },
-      chestplate: { slot: 'chestplate', name: 'Glacier Chestplate', icon: '🦺' },
-      leggings: { slot: 'leggings', name: 'Glacier Leggings', icon: '👖' },
-      boots: { slot: 'boots', name: 'Glacier Boots', icon: '🥾' },
-      ring: { slot: 'ring', name: 'Glacier Ring', icon: '💍' },
+      helmet: { slot: 'helmet', name: 'Glacier Helmet', icon: '❄️' },
+      chestplate: { slot: 'chestplate', name: 'Glacier Chestplate', icon: '🧊' },
+      leggings: { slot: 'leggings', name: 'Glacier Leggings', icon: '💎' },
+      boots: { slot: 'boots', name: 'Glacier Boots', icon: '🌨️' },
+      ring: { slot: 'ring', name: 'Glacier Ring', icon: '💠' },
       weapon: { slot: 'weapon', name: 'Cryo Rod', icon: '🪄', isWeapon: true, multiplier: 1.20 }
     },
     bonuses: {
@@ -2036,11 +2085,11 @@ const EQUIPMENT_SETS = {
     weaponName: 'Inferno Blade',
     weaponDesc: 'Deals 120% fire damage, create a fire AOE for 10 seconds, enemy entering or within the fire AOE will immediately take fire damage over time equal to 20% fire damage every tick for 5 seconds.',
     items: {
-      helmet: { slot: 'helmet', name: 'Emberkin Helmet', icon: '🪖' },
-      chestplate: { slot: 'chestplate', name: 'Emberkin Chestplate', icon: '🦺' },
-      leggings: { slot: 'leggings', name: 'Emberkin Leggings', icon: '👖' },
-      boots: { slot: 'boots', name: 'Emberkin Boots', icon: '🥾' },
-      ring: { slot: 'ring', name: 'Emberkin Ring', icon: '💍' },
+      helmet: { slot: 'helmet', name: 'Emberkin Helmet', icon: '🔥' },
+      chestplate: { slot: 'chestplate', name: 'Emberkin Chestplate', icon: '🌋' },
+      leggings: { slot: 'leggings', name: 'Emberkin Leggings', icon: '💥' },
+      boots: { slot: 'boots', name: 'Emberkin Boots', icon: '🔆' },
+      ring: { slot: 'ring', name: 'Emberkin Ring', icon: '🌟' },
       weapon: { slot: 'weapon', name: 'Inferno Blade', icon: '⚔️', isWeapon: true, multiplier: 1.20 }
     },
     bonuses: {
@@ -2134,7 +2183,19 @@ const GameState = {
   isInvincible: false,
   invincibilityTimer: 0,
   canAttack: true,
-  inBossChallenge: false
+  inBossChallenge: false,
+  
+  // Dynamic challenge system
+  currentChallenge: null,
+  challengeProgress: {
+    enemiesKilled: 0,
+    elitesKilled: 0,
+    wavesCompleted: 0,
+    bossKilled: false,
+    died: false,
+    startTime: 0,
+    timeLimit: 60
+  }
 };
 
 // ========== Data Models ==========
@@ -2410,6 +2471,9 @@ function handlePlayerDeath() {
   GameState.isDead = true;
   GameState.canAttack = false;
   GameState.player.hp = 0;
+
+  // Track challenge death
+  trackDeath();
 
   // Track death
   if (GameState.player.statistics) {
@@ -2820,16 +2884,21 @@ function rollRarity() {
 }
 
 // ========== Enemy Creation ==========
-const ENEMY_BASE_HP = { small: 300, normal: 750, big: 1250, elite: 3000, boss: 10000 };
-const ENEMY_BASE_ATK = { small: 2, normal: 5, big: 12, elite: 20, boss: 50 };
-const ENEMY_BASE_RESIST = { small: 0, normal: 2, big: 5, elite: 15, boss: 30 };
-const ENEMY_ATTACK_INTERVAL = { small: 2.5, normal: 2.0, big: 1.6, elite: 1.2, boss: 1.0 };
-const ENEMY_BASE_EXP = { small: 5, normal: 10, big: 25, elite: 100, boss: 1000 };
+const ENEMY_BASE_HP = { small: 120, normal: 360, big: 600, elite: 1000, boss: 6000 };
+const ENEMY_BASE_ATK = { small: 1, normal: 3, big: 6, elite: 10, boss: 30 };
+const ENEMY_BASE_RESIST = { small: 0, normal: 2, big: 5, elite: 8, boss: 10 };
+const ENEMY_ATTACK_INTERVAL = { small: 3.0, normal: 3.5, big: 4.5, elite: 3.0, boss: 2.5 };
+const ENEMY_BASE_EXP = { small: 5, normal: 10, big: 25, elite: 50, boss: 100 };
 const ENEMY_ICONS = { small: '🐀', normal: '🧟', big: '👹', elite: '👿', boss: '🐉' };
 
 function createEnemy(type, world, position) {
-  const hp = Math.floor(ENEMY_BASE_HP[type] * Math.pow(CONFIG.ENEMY_HP_SCALE, world - 1));
-  const atk = Math.floor(ENEMY_BASE_ATK[type] * Math.pow(CONFIG.ENEMY_ATK_SCALE, world - 1));
+  // Progressive scaling - starts easier (2.5 HP scale, 1.15 ATK scale for worlds 1-3), 
+  // then gets much harder (uses config values 2.75 HP, 1.5 ATK)
+  const hpScale = world <= 3 ? 2.5 : CONFIG.ENEMY_HP_SCALE;
+  const atkScale = world <= 3 ? 1.15 : CONFIG.ENEMY_ATK_SCALE;
+  
+  const hp = Math.floor(ENEMY_BASE_HP[type] * Math.pow(hpScale, world - 1));
+  const atk = Math.floor(ENEMY_BASE_ATK[type] * Math.pow(atkScale, world - 1));
   const resist = ENEMY_BASE_RESIST[type] + (world - 1) * CONFIG.ENEMY_RESIST_BONUS_PER_WORLD;
 
   return {
@@ -2959,6 +3028,9 @@ function updateEnemies(dt) {
 function onEnemyDeath(enemy) {
   const p = GameState.player;
 
+  // Track challenge progress
+  trackChallengeProgress(enemy);
+
   // Track statistics
   if (p.statistics) {
     p.statistics.totalKills++;
@@ -3054,6 +3126,16 @@ function checkLevelUp() {
 function spawnWave() {
   if (GameState.suspendWaves) return;
 
+  // Limit max enemies on screen to 50
+  if (GameState.enemies.length >= 50) {
+    return;
+  }
+
+  // Track wave completion for survival challenge (previous wave completed if no enemies)
+  if (GameState.currentChallenge === 'SURVIVAL' && GameState.enemies.length === 0) {
+    trackWaveCompletion();
+  }
+
   const p = GameState.player;
   const count = Math.max(CONFIG.MIN_WAVE_ENEMIES, Math.min(
     CONFIG.MAX_WAVE_ENEMIES,
@@ -3062,7 +3144,10 @@ function spawnWave() {
 
   const typeWeights = { small: 30, normal: 50, big: 15, elite: 5 };
 
-  for (let i = 0; i < count; i++) {
+  // Only spawn enemies up to the 50 limit
+  const maxToSpawn = Math.min(count, 50 - GameState.enemies.length);
+
+  for (let i = 0; i < maxToSpawn; i++) {
     const type = GameState.rng.weightedChoice(
       Object.keys(typeWeights),
       Object.values(typeWeights)
@@ -3518,7 +3603,8 @@ function renderEquipmentRing() {
 
     const icon = document.createElement('div');
     icon.className = `equipped-icon rarity-${item.rarity}`;
-    icon.textContent = SLOT_ICONS[slot];
+    // Use item.icon if available (for set items), otherwise fall back to SLOT_ICONS
+    icon.textContent = item.icon || SLOT_ICONS[slot];
     icon.style.left = `${80 + x}px`;
     icon.style.top = `${80 + y}px`;
     icon.style.transform = 'translate(-50%, -50%)';
@@ -3621,7 +3707,7 @@ function renderInventory() {
 
     if (item) {
       slotEl.innerHTML = `
-        <span class="item-icon">${SLOT_ICONS[slot]}</span>
+        <span class="item-icon">${item.icon || SLOT_ICONS[slot]}</span>
         <span class="item-level">L${item.level}</span>
         ${item.stars > 0 ? `<span class="item-stars">${'⭐'.repeat(item.stars)}</span>` : ''}
       `;
@@ -3641,7 +3727,7 @@ function renderInventory() {
     const item = p.inventory[i];
 
     if (item) {
-      const icon = item.type === 'equipment' ? SLOT_ICONS[item.slot] : item.icon;
+      const icon = item.type === 'equipment' ? (item.icon || SLOT_ICONS[item.slot]) : item.icon;
       slotEl.innerHTML = `
         <span class="item-icon">${icon}</span>
         ${item.level ? `<span class="item-level">L${item.level}</span>` : ''}
@@ -3942,7 +4028,7 @@ function renderShop() {
     const isSoldOut = item.soldOut || false;
     div.className = `shop-item rarity-${item.rarity}${isSoldOut ? ' sold-out' : ''}`;
     div.innerHTML = `
-      <div class="shop-item-icon">${SLOT_ICONS[item.slot]}</div>
+      <div class="shop-item-icon">${item.icon || SLOT_ICONS[item.slot]}</div>
       <div class="shop-item-name text-${item.rarity}">${item.name}</div>
       <div class="shop-item-price">💰 ${item.buyPrice.toLocaleString()}</div>
     `;
@@ -4889,7 +4975,7 @@ const WEAPON_HANDLERS = {
       const dx = (target.position?.x || target.x || 0) - playerX;
       const dy = (target.position?.y || target.y || 0) - playerY;
       const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-      const pushDistance = 100;
+      const pushDistance = 20;
       target.position.x += (dx / dist) * pushDistance;
       target.position.y += (dy / dist) * pushDistance;
     });
@@ -5909,9 +5995,28 @@ function showShopItemTooltip(item, targetEl) {
   let left = rect.right + 8;
   let top = rect.top;
 
-  if (left + tooltipRect.width > vw - 8) {
-    left = rect.left - tooltipRect.width - 8;
+  // Better mobile handling - center tooltip if it doesn't fit
+  if (vw < 768) {
+    // On mobile, center the tooltip horizontally if it would go offscreen
+    if (tooltipRect.width > vw - 16) {
+      left = 8;
+    } else {
+      left = Math.max(8, Math.min(vw - tooltipRect.width - 8, rect.left));
+    }
+    // Position below the target element on mobile
+    top = rect.bottom + 8;
+  } else {
+    // Desktop behavior
+    if (left + tooltipRect.width > vw - 8) {
+      left = rect.left - tooltipRect.width - 8;
+    }
+    // If still offscreen on left, center it
+    if (left < 8) {
+      left = Math.max(8, (vw - tooltipRect.width) / 2);
+    }
   }
+  
+  // Vertical positioning - ensure it stays on screen
   if (top + tooltipRect.height > vh - 8) {
     top = vh - tooltipRect.height - 8;
   }
@@ -6013,9 +6118,23 @@ function showEffectTooltip(effect, targetEl) {
   let left = rect.right + 8;
   let top = rect.top;
 
-  if (left + tooltipRect.width > vw - 8) {
-    left = rect.left - tooltipRect.width - 8;
+  // Better mobile handling
+  if (vw < 768) {
+    if (tooltipRect.width > vw - 16) {
+      left = 8;
+    } else {
+      left = Math.max(8, Math.min(vw - tooltipRect.width - 8, rect.left));
+    }
+    top = rect.bottom + 8;
+  } else {
+    if (left + tooltipRect.width > vw - 8) {
+      left = rect.left - tooltipRect.width - 8;
+    }
+    if (left < 8) {
+      left = Math.max(8, (vw - tooltipRect.width) / 2);
+    }
   }
+  
   if (top + tooltipRect.height > vh - 8) {
     top = vh - tooltipRect.height - 8;
   }
@@ -6036,23 +6155,50 @@ function showItemTooltip(item, targetEl, isEquipped) {
   tooltip.dataset.currentItemId = item.id;
   tooltip.dataset.isEquipped = !!isEquipped;
 
+  // Temporarily show offscreen to measure
+  tooltip.style.left = '-9999px';
+  tooltip.style.top = '-9999px';
+  tooltip.setAttribute('aria-hidden', 'false');
+  
+  // Force reflow
+  tooltip.offsetHeight;
+
   // position tooltip near target
-  let left = rect.right + 8;
-  let top = rect.top;
-  // keep inside viewport
   const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
   const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
   const tooltipRect = tooltip.getBoundingClientRect();
-  if (left + tooltipRect.width > vw - 8) {
-    left = rect.left - tooltipRect.width - 8;
+  
+  let left = rect.right + 8;
+  let top = rect.top;
+
+  // Better mobile handling
+  if (vw < 768) {
+    // On mobile, center the tooltip horizontally if it would go offscreen
+    if (tooltipRect.width > vw - 16) {
+      left = 8;
+    } else {
+      left = Math.max(8, Math.min(vw - tooltipRect.width - 8, rect.left));
+    }
+    // Position below the target element on mobile
+    top = rect.bottom + 8;
+  } else {
+    // Desktop behavior
+    if (left + tooltipRect.width > vw - 8) {
+      left = rect.left - tooltipRect.width - 8;
+    }
+    // If still offscreen on left, center it
+    if (left < 8) {
+      left = Math.max(8, (vw - tooltipRect.width) / 2);
+    }
   }
+  
+  // Vertical positioning
   if (top + tooltipRect.height > vh - 8) {
     top = Math.max(8, vh - tooltipRect.height - 8);
   }
 
   tooltip.style.left = `${left}px`;
   tooltip.style.top = `${top}px`;
-  tooltip.setAttribute('aria-hidden', 'false');
 }
 
 // ========== World Progress & Boss ==========
@@ -6091,21 +6237,245 @@ function updateWorldProgress() {
 
 }
 
+// ========== Dynamic Challenge System ==========
+const CHALLENGE_TYPES = {
+  STANDARD: { name: 'Standard', desc: 'Defeat enemies and elites normally without dying' },
+  SPEED: { name: 'Speed Challenge', desc: 'Defeat 20 enemies within 60 seconds without dying', requiredEnemies: 20, timeLimit: 60 },
+  ELITE_HUNTER: { name: 'Elite Hunter', desc: 'Focus on defeating 5 elite/special enemies without dying', requiredElites: 5 },
+  SURVIVAL: { name: 'Survival', desc: 'Survive 3 waves of increasing difficulty without dying', requiredWaves: 3 },
+  PERFECT: { name: 'Perfect Challenge', desc: 'Defeat boss without dying' }
+};
+
+function selectRandomChallenge() {
+  const challenges = Object.keys(CHALLENGE_TYPES);
+  return challenges[Math.floor(Math.random() * challenges.length)];
+}
+
+function startChallenge(challengeType) {
+  GameState.currentChallenge = challengeType;
+  GameState.challengeProgress = {
+    enemiesKilled: 0,
+    elitesKilled: 0,
+    wavesCompleted: 0,
+    bossKilled: false,
+    died: false,
+    startTime: Date.now(),
+    timeLimit: CHALLENGE_TYPES[challengeType].timeLimit || 0
+  };
+  
+  // Show timer for speed challenge
+  if (challengeType === 'SPEED') {
+    document.getElementById('challenge-timer').style.display = 'block';
+    updateChallengeTimer();
+  }
+  
+  showNotification(`🎯 Challenge: ${CHALLENGE_TYPES[challengeType].name}`, 'info');
+}
+
+function updateChallengeTimer() {
+  if (GameState.currentChallenge !== 'SPEED') return;
+  
+  const elapsed = (Date.now() - GameState.challengeProgress.startTime) / 1000;
+  const remaining = Math.max(0, GameState.challengeProgress.timeLimit - elapsed);
+  const minutes = Math.floor(remaining / 60);
+  const seconds = Math.floor(remaining % 60);
+  
+  const timerEl = document.getElementById('timer-text');
+  if (timerEl) {
+    timerEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  }
+  
+  // Check if time ran out
+  if (remaining <= 0 && !verifyChallengeComplete()) {
+    failChallenge('Time ran out!');
+  }
+}
+
+function trackChallengeProgress(enemy) {
+  if (!GameState.currentChallenge) return;
+  
+  GameState.challengeProgress.enemiesKilled++;
+  if (enemy.type === 'elite') {
+    GameState.challengeProgress.elitesKilled++;
+  }
+  if (enemy.type === 'boss') {
+    GameState.challengeProgress.bossKilled = true;
+  }
+}
+
+function trackWaveCompletion() {
+  if (GameState.currentChallenge === 'SURVIVAL' && GameState.enemies.length === 0) {
+    GameState.challengeProgress.wavesCompleted++;
+    
+    // Check if there are more waves to complete
+    const requiredWaves = CHALLENGE_TYPES['SURVIVAL'].requiredWaves;
+    if (GameState.challengeProgress.wavesCompleted < requiredWaves) {
+      // Spawn next wave
+      const nextWave = GameState.challengeProgress.wavesCompleted + 1;
+      setTimeout(() => {
+        spawnSurvivalWave(nextWave);
+      }, 2000); // 2 second delay between waves
+    } else {
+      // All waves completed! End the challenge
+      showNotification('✅ All waves completed!', 'legendary');
+      // Will be verified when checked in gameTick
+    }
+  }
+}
+
+function trackDeath() {
+  if (GameState.currentChallenge) {
+    GameState.challengeProgress.died = true;
+    failChallenge('You died!');
+  }
+}
+
+function verifyChallengeComplete() {
+  if (!GameState.currentChallenge) return false;
+  
+  const challenge = CHALLENGE_TYPES[GameState.currentChallenge];
+  const progress = GameState.challengeProgress;
+  
+  // Check if died (all challenges fail on death)
+  if (progress.died) return false;
+  
+  switch (GameState.currentChallenge) {
+    case 'STANDARD':
+      // Just need to not die and defeat the boss normally
+      return progress.bossKilled;
+      
+    case 'SPEED':
+      // Must kill required enemies within time limit without dying
+      const elapsed = (Date.now() - progress.startTime) / 1000;
+      return progress.enemiesKilled >= challenge.requiredEnemies && elapsed <= challenge.timeLimit;
+      
+    case 'ELITE_HUNTER':
+      // Must defeat required number of elites without dying
+      return progress.elitesKilled >= challenge.requiredElites;
+      
+    case 'SURVIVAL':
+      // Must complete ALL required waves without dying
+      return progress.wavesCompleted >= challenge.requiredWaves;
+      
+    case 'PERFECT':
+      // Defeat boss without dying
+      return progress.bossKilled;
+      
+    default:
+      return false;
+  }
+}
+
+function completeChallenge() {
+  if (!GameState.currentChallenge) return;
+  
+  const challengeName = CHALLENGE_TYPES[GameState.currentChallenge].name;
+  showNotification(`✅ ${challengeName} Complete!`, 'legendary');
+  
+  // Hide timer if it was shown
+  document.getElementById('challenge-timer').style.display = 'none';
+  
+  // Reset challenge
+  GameState.currentChallenge = null;
+}
+
+function failChallenge(reason) {
+  if (!GameState.currentChallenge) return;
+  
+  showNotification(`❌ Challenge Failed: ${reason}`, 'danger');
+  
+  // Hide timer if it was shown
+  document.getElementById('challenge-timer').style.display = 'none';
+  
+  // Reset challenge
+  GameState.currentChallenge = null;
+}
+
 function challengeBoss() {
   if (GameState.suspendWaves) return;
+
+  // Start a random dynamic challenge
+  const challengeType = selectRandomChallenge();
+  startChallenge(challengeType);
 
   GameState.suspendWaves = true;
   GameState.inBossChallenge = true;
   GameState.enemies = [];
 
-  const boss = createEnemy('boss', GameState.player.world);
-  GameState.enemies.push(boss);
+  // Spawn enemies based on challenge type
+  switch (challengeType) {
+    case 'STANDARD':
+    case 'PERFECT':
+      // These challenges are boss battles
+      const boss = createEnemy('boss', GameState.player.world);
+      GameState.enemies.push(boss);
+      showNotification('🐉 Boss Battle!', 'danger');
+      break;
+      
+    case 'SPEED':
+      // Speed challenge: spawn 20+ normal enemies for a fast-paced battle
+      showNotification('⚡ Speed Challenge: Defeat 20 enemies in 60 seconds!', 'epic');
+      for (let i = 0; i < 25; i++) {
+        const enemy = createEnemy('normal', GameState.player.world);
+        GameState.enemies.push(enemy);
+      }
+      break;
+      
+    case 'ELITE_HUNTER':
+      // Elite Hunter: spawn 5 elite enemies and some normal enemies
+      showNotification('👑 Elite Hunter: Defeat 5 elite enemies!', 'legendary');
+      for (let i = 0; i < 5; i++) {
+        const elite = createEnemy('elite', GameState.player.world);
+        GameState.enemies.push(elite);
+      }
+      // Add some normal enemies for variety
+      for (let i = 0; i < 10; i++) {
+        const enemy = createEnemy('normal', GameState.player.world);
+        GameState.enemies.push(enemy);
+      }
+      break;
+      
+    case 'SURVIVAL':
+      // Survival: Start with first wave, will spawn more waves as they complete
+      showNotification('🛡️ Survival: Complete 3 waves without dying!', 'rare');
+      spawnSurvivalWave(1);
+      break;
+  }
 
-  showNotification('🐉 Boss Battle!', 'danger');
   document.getElementById('boss-requirements').className = 'panel';
 }
 
-function onBossDefeated() {
+function spawnSurvivalWave(waveNumber) {
+  if (!GameState.currentChallenge || GameState.currentChallenge !== 'SURVIVAL') return;
+  
+  // Clear existing enemies
+  GameState.enemies = [];
+  
+  // Spawn enemies based on wave number (increasing difficulty)
+  const normalCount = 10 + (waveNumber * 5);
+  const eliteCount = waveNumber;
+  
+  for (let i = 0; i < normalCount; i++) {
+    const enemy = createEnemy('normal', GameState.player.world);
+    GameState.enemies.push(enemy);
+  }
+  
+  for (let i = 0; i < eliteCount; i++) {
+    const elite = createEnemy('elite', GameState.player.world);
+    GameState.enemies.push(elite);
+  }
+  
+  showNotification(`🌊 Wave ${waveNumber}/3 - ${normalCount} enemies, ${eliteCount} elites`, 'info');
+}
+
+function onChallengeComplete() {
+  // Check if challenge was completed successfully
+  if (GameState.currentChallenge && verifyChallengeComplete()) {
+    completeChallenge();
+  } else if (GameState.currentChallenge) {
+    failChallenge('Challenge requirements not met');
+  }
+
   GameState.player.world++;
 
   // Track world completion
@@ -7037,8 +7407,14 @@ function gameTick() {
     }
   }
 
+  // Update challenge timer for speed challenge
+  if (GameState.currentChallenge === 'SPEED') {
+    updateChallengeTimer();
+  }
+
+  // Check if challenge is complete when all enemies defeated
   if (GameState.suspendWaves && GameState.enemies.length === 0 && !GameState.isDead) {
-    onBossDefeated();
+    onChallengeComplete();
   }
 
   if (Date.now() - GameState.lastSaveTime > CONFIG.SAVE_INTERVAL_MS) {
@@ -7050,6 +7426,11 @@ function uiTick() {
   renderUI();
   renderEnemies();
   renderPlayerStats();
+  
+  // Update challenge timer
+  if (GameState.currentChallenge === 'SPEED') {
+    updateChallengeTimer();
+  }
 
   const shop = GameState.shop;
   const timeUntilRefresh = CONFIG.SHOP_AUTO_REFRESH_SEC - Math.floor((Date.now() - shop.lastRefreshTs) / 1000);
