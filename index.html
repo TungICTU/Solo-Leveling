@@ -167,12 +167,12 @@
       transform: scale(0.95);
     }
 
-    /* Challenge Overlay - centered on screen */
+    /* Challenge Overlay - top center on screen */
     #challenge-overlay {
       position: fixed;
-      top: 50%;
+      top: 80px;
       left: 50%;
-      transform: translate(-50%, -50%);
+      transform: translateX(-50%);
       z-index: 600;
       pointer-events: none;
     }
@@ -181,30 +181,20 @@
       background: rgba(26, 20, 16, 0.95);
       border: 3px solid var(--accent-gold);
       border-radius: 12px;
-      padding: 24px 32px;
+      padding: 16px;
       text-align: center;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
       min-width: 300px;
     }
 
-    #challenge-name {
-      font-family: var(--font-display);
-      font-size: 28px;
-      font-weight: bold;
-      color: var(--accent-gold-bright);
-      margin-bottom: 12px;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-    }
-
     #challenge-description {
       font-size: 16px;
       color: var(--text-primary);
-      margin-bottom: 16px;
       line-height: 1.4;
     }
 
     #challenge-timer {
-      font-size: 32px;
+      font-size: 16px;
       font-weight: bold;
       font-family: var(--font-display);
       color: #ffd700;
@@ -1530,10 +1520,6 @@
         min-width: 250px;
       }
 
-      #challenge-name {
-        font-size: 22px;
-      }
-
       #challenge-description {
         font-size: 14px;
       }
@@ -1890,7 +1876,6 @@
     <!-- Challenge Overlay - Shows active challenge info centered on screen -->
     <div id="challenge-overlay" style="display:none;">
       <div id="challenge-content">
-        <h2 id="challenge-name">Challenge Name</h2>
         <p id="challenge-description">Challenge description</p>
         <div id="challenge-timer">⏱️ <span id="timer-text">1:00</span></div>
       </div>
@@ -1982,7 +1967,7 @@ const CONFIG = {
   STAR_GEM_COSTS: { "10":0, "25":1, "50":3, "75":5, "100":10 },
   BASE_SHOP_PRICE: { common:500, uncommon:2000, rare:10000, epic:50000, legendary:200000, mythic:1000000 },
   ENEMY_BASE_COIN: { small:25, normal:50, big:150, elite:650, boss:7250 },
-  ENEMY_HP_SCALE: 2.75,
+  ENEMY_HP_SCALE: 1.75,
   ENEMY_ATK_SCALE: 1.75,
   ENEMY_RESIST_BONUS_PER_WORLD: 0.5,
   BASE_EQUIP_DROP_CHANCE_PCT: { normal:0.5, small:0.25, big:2, elite:10 },
@@ -2520,6 +2505,31 @@ function computePlayerDamage() {
   return Math.floor(baseDamage);
 }
 
+// Helper function to roll for critical hit on any damage
+function rollCrit(baseDamage) {
+  const p = GameState.player;
+  const isCrit = GameState.rng.rand() < p.currentStats.finalCritRate / 100;
+  
+  if (isCrit) {
+    const critDamage = baseDamage * (1 + p.currentStats.finalCritDmg / 100);
+    
+    // Track critical hits
+    if (p.statistics) {
+      p.statistics.criticalHits++;
+    }
+    
+    return { damage: Math.floor(critDamage), crit: true };
+  }
+  
+  return { damage: Math.floor(baseDamage), crit: false };
+}
+
+// Wrapper function that applies damage with automatic crit calculation
+function applyCritDamage(enemy, baseDamage, ctx = {}) {
+  const { damage, crit } = rollCrit(baseDamage);
+  applyDamageToEnemy(enemy, damage, { ...ctx, crit });
+}
+
 function dealDamageToPlayer(amount) {
   // Don't take damage if dead or invincible
   if (GameState.isDead || GameState.isInvincible) return;
@@ -2720,7 +2730,13 @@ function createDamageBurst() {
 
 function dealRespawnDamage() {
   const playerDamage = computePlayerDamage();
-  const respawnDamage = Math.floor(playerDamage * 3); // 300% damage
+  const baseRespawnDamage = playerDamage * 3; // 300% damage
+  
+  // Get actual player position (center of stage)
+  const stage = document.getElementById('stage');
+  const playerX = stage.clientWidth / 2;
+  const playerY = stage.clientHeight / 2;
+  const pushDistance = 250; // Distance to push enemies away
 
   GameState.enemies.forEach(enemy => {
     // Visual feedback for each enemy
@@ -2736,12 +2752,26 @@ function dealRespawnDamage() {
       }, 200);
     }
 
-    // Deal damage
-    enemy.hp -= respawnDamage;
-
-    // Show damage number
-    if (enemyEl) {
-      showFloatingDamage(respawnDamage, false, enemyEl);
+    // Deal damage with crit chance
+    applyCritDamage(enemy, baseRespawnDamage, { type: 'physical', source: 'respawn' });
+    
+    // Push enemy away from player (radial knockback)
+    const dx = enemy.position.x - playerX;
+    const dy = enemy.position.y - playerY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    
+    if (dist > 0.1) { // Avoid division by very small numbers
+      // Normalize direction vector
+      const ndx = dx / dist;
+      const ndy = dy / dist;
+      
+      // Store previous position for smooth interpolation
+      enemy.prevX = enemy.position.x;
+      enemy.prevY = enemy.position.y;
+      
+      // Push enemy outward from player center
+      enemy.position.x = enemy.position.x + (ndx * pushDistance);
+      enemy.position.y = enemy.position.y + (ndy * pushDistance);
     }
   });
 
@@ -2958,7 +2988,7 @@ const ENEMY_ICONS = { small: '🐀', normal: '🧟', big: '👹', elite: '👿',
 
 function createEnemy(type, world, position) {
   // Progressive scaling - starts easier (2.5 HP scale, 1.25 ATK scale for worlds 1-3), 
-  // then gets much harder (uses config values 2.75 HP, 1.75 ATK)
+  // then gets much harder (uses config values 1.75 HP, 1.75 ATK)
   const hpScale = world <= 3 ? 2.5 : CONFIG.ENEMY_HP_SCALE;
   const atkScale = world <= 3 ? 1.25 : CONFIG.ENEMY_ATK_SCALE;
   
@@ -3023,7 +3053,7 @@ function updateEnemies(dt) {
         // 3-piece Glacier: Frozen Bomb - explosion after unfreezing
         if (getSetCount('glacier') >= 3) {
           const explosionDmg = Math.floor((GameState.player.currentStats?.finalATK || GameState.player.ATK) * 1.20);
-          applyDamageToEnemy(enemy, explosionDmg, { type: 'cryo', source: 'frozen_bomb', setId: 'glacier' });
+          applyCritDamage(enemy, explosionDmg, { type: 'cryo', source: 'frozen_bomb', setId: 'glacier'});
 
           const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
           if (enemyEl) {
@@ -4430,7 +4460,7 @@ function processEnemyStatusTicks(deltaMs) {
             const atkScaling = Math.floor((GameState.player.currentStats?.finalATK || 0) * 0.08);
             tickDmg += atkScaling;
           }
-          applyDamageToEnemy(enemy, tickDmg, { type: 'fire', source: 'dot', setId: s.sourceSet || null });
+          applyCritDamage(enemy, tickDmg, { type: 'fire', source: 'dot', setId: s.sourceSet || null});
         }
         s._lastTickAt = (s._lastTickAt || s.appliedAt || now) + ticks * (s.tickInterval || 1000);
       }
@@ -4668,7 +4698,7 @@ function spawnAegisCircle(centerX, centerY, index, totalCircles, player) {
       const enemyY = enemy.position?.y || enemy.y || 0;
       const dist = Math.sqrt((x - enemyX)**2 + (y - enemyY)**2);
       if (dist < 30) { // collision radius
-        applyDamageToEnemy(enemy, circleDmg, { type: 'aether', source: 'aegis_circle', setId: 'aegis' });
+        applyCritDamage(enemy, circleDmg, { type: 'aether', source: 'aegis_circle', setId: 'aegis'});
       }
     });
 
@@ -4811,7 +4841,7 @@ function spawnAegisHoveringBall(targetEnemy, ballDmg, duration, player, has3Piec
     // Check if current enemy still exists
     const enemy = GameState.enemies.find(e => e.id === currentEnemy.id);
     if (enemy) {
-      applyDamageToEnemy(enemy, ballDmg, { type: 'aether', source: 'weapon_ball', setId: 'aegis' });
+      applyCritDamage(enemy, ballDmg, { type: 'aether', source: 'weapon_ball', setId: 'aegis'});
 
       // 3-piece: Myth - 20% chance to spawn another ball (lasts 3 seconds)
       if (has3Piece && Math.random() < 0.20) {
@@ -4878,7 +4908,7 @@ function spawnAegis6PieceSpinBalls(deathX, deathY, player) {
             setTimeout(() => {
               // Explode and deal 200% aether damage
               const explosionDmg = Math.floor((player.currentStats?.finalATK || player.ATK) * 2.00);
-              applyDamageToEnemy(targetEnemy, explosionDmg, { type: 'aether', source: 'aegis_6piece_explosion', setId: 'aegis' });
+              applyCritDamage(targetEnemy, explosionDmg, { type: 'aether', source: 'aegis_6piece_explosion', setId: 'aegis'});
 
               // Visual explosion
               const enemyEl = document.querySelector(`[data-enemy-id="${targetEnemy.id}"]`);
@@ -4912,7 +4942,7 @@ function spawnAegis6PieceSpinBalls(deathX, deathY, player) {
         const spinDmg = Math.floor((player.currentStats?.finalATK || player.ATK) * 0.80);
         const nearbyEnemies = findEnemiesInRadius(deathX + offsetX, deathY + offsetY, 40);
         nearbyEnemies.forEach(e => {
-          applyDamageToEnemy(e, spinDmg, { type: 'aether', source: 'aegis_6piece_spin', setId: 'aegis' });
+          applyCritDamage(e, spinDmg, { type: 'aether', source: 'aegis_6piece_spin', setId: 'aegis'});
         });
       }
     });
@@ -4977,7 +5007,7 @@ function createCryoZone(centerX, centerY, aoeDmg, duration, player) {
         // Deal damage every tick (1 second) for 3 seconds
         const enemyData = affectedEnemies.get(enemy.id);
         if (enemyData && now - enemyData.lastTickAt >= 1000 && now - enemyData.frozenAt < 3000) {
-          applyDamageToEnemy(enemy, aoeDmg, { type: 'cryo', source: 'weapon_zone', setId: 'glacier' });
+          applyCritDamage(enemy, aoeDmg, { type: 'cryo', source: 'weapon_zone', setId: 'glacier'});
           enemyData.lastTickAt = now;
         }
       }
@@ -4995,7 +5025,9 @@ const WEAPON_HANDLERS = {
   // Aquila Longbow (Skywarden) - wind green, pushback, big explosion on kill
   skywarden: (p, enemy, weapon) => {
     const element = 'wind';
-    const windDmg = Math.floor((p.currentStats?.finalATK || p.ATK || 0) * 1.20);
+    const baseDmg = Math.floor((p.currentStats?.finalATK || p.ATK || 0) * 1.20);
+    const { damage: windDmg, crit: isCrit } = rollCrit(baseDmg);
+    
     // arrow projectile (green)
     const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
     const playerEl = document.getElementById('player-container');
@@ -5009,7 +5041,7 @@ const WEAPON_HANDLERS = {
         onArrive: ()=> spawnShockwave(toR.left + toR.width/2, toR.top + toR.height/2, 24, getElementColor(element), 180)
       });
     }
-    applyDamageToEnemy(enemy, windDmg, { type: element, source: 'weapon', setId: 'skywarden' });
+    applyDamageToEnemy(enemy, windDmg, { type: element, source: 'weapon', setId: 'skywarden', crit: isCrit });
 
     // Randomly pushes that enemy and 2 nearby enemies back and deal 50% wind damage to them
     const pushbackRadius = 150;
@@ -5022,12 +5054,13 @@ const WEAPON_HANDLERS = {
     const nearbyEnemies = findEnemiesInRadius(enemyX, enemyY, pushbackRadius).filter(e => e.id !== enemy.id);
     const shuffled = nearbyEnemies.sort(() => 0.5 - Math.random());
     const pushTargets = [enemy, ...shuffled.slice(0, 2)]; // Main target + 2 nearby
-    const pushDmg = Math.floor((p.currentStats?.finalATK || p.ATK || 0) * 0.50);
+    const basePushDmg = Math.floor((p.currentStats?.finalATK || p.ATK || 0) * 0.50);
 
     pushTargets.forEach(target => {
-      // Apply 50% wind damage to all 3 targets
+      // Apply 50% wind damage to all 3 targets (with individual crit rolls)
       if (target.id !== enemy.id) {
-        applyDamageToEnemy(target, pushDmg, { type: element, source: 'weapon_pushback', setId: 'skywarden' });
+        const { damage: pushDmg, crit: pushCrit } = rollCrit(basePushDmg);
+        applyDamageToEnemy(target, pushDmg, { type: element, source: 'weapon_pushback', setId: 'skywarden', crit: pushCrit });
       }
 
       // Push enemy away from player
@@ -5041,7 +5074,7 @@ const WEAPON_HANDLERS = {
 
     // After enemy dies to wind damage, create AOE explosion (150% wind damage to surrounding enemies)
     if (enemy.hp <= 0) {
-      const explosionDmg = Math.floor((p.currentStats?.finalATK || p.ATK || 0) * 0.50);
+      const baseExplosionDmg = Math.floor((p.currentStats?.finalATK || p.ATK || 0) * 0.50);
       const explosionRadius = 120;
 
       if (enemyEl) {
@@ -5061,7 +5094,8 @@ const WEAPON_HANDLERS = {
       const nearbyEnemiesExplosion = findEnemiesInRadius(enemyX, enemyY, explosionRadius);
       nearbyEnemiesExplosion.forEach(e => {
         if (e.id !== enemy.id) {
-          applyDamageToEnemy(e, explosionDmg, { type: element, source: 'weapon_explosion', setId: 'skywarden' });
+          const { damage: explosionDmg, crit: explCrit } = rollCrit(baseExplosionDmg);
+          applyDamageToEnemy(e, explosionDmg, { type: element, source: 'weapon_explosion', setId: 'skywarden', crit: explCrit });
 
           // Push enemies away from explosion center
           const dx = (e.position?.x || e.x || 0) - enemyX;
@@ -5091,7 +5125,7 @@ const WEAPON_HANDLERS = {
     } else {
       createProjectile({ fromX: px, fromY: py, toX: ex, toY: ey, color: getElementColor(element), size: 10, travelMs: 200 });
     }
-    applyDamageToEnemy(enemy, main, { type: element, source: 'weapon', setId: 'stormbreaker' });
+    applyCritDamage(enemy, main, { type: element, source: 'weapon', setId: 'stormbreaker'});
 
     const has3Piece = getSetCount('stormbreaker') >= 3;
     const has6Piece = getSetCount('stormbreaker') >= 6;
@@ -5151,7 +5185,7 @@ const WEAPON_HANDLERS = {
                              getElementColor(element), 220);
           }
           const multishotDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 1.20);
-          applyDamageToEnemy(target, multishotDmg, { type: element, source:'multishot', setId:'stormbreaker' });
+          applyCritDamage(target, multishotDmg, { type: element, source:'multishot', setId:'stormbreaker'});
         }, (index + 1) * 100);
       });
 
@@ -5181,7 +5215,7 @@ const WEAPON_HANDLERS = {
                                tr.left + tr.width/2, tr.top + tr.height/2,
                                getElementColor(element), 200);
               const chainDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 1.20);
-              applyDamageToEnemy(chainTarget, chainDmg, { type: element, source:'multishot_chain', setId:'stormbreaker' });
+              applyCritDamage(chainTarget, chainDmg, { type: element, source:'multishot_chain', setId:'stormbreaker'});
             }
           }
         }, 400);
@@ -5213,7 +5247,7 @@ const WEAPON_HANDLERS = {
             createLightningArc(pr.left + pr.width/2, pr.top + pr.height/2,
                              tr.left + tr.width/2, tr.top + tr.height/2,
                              getElementColor(element), 200);
-            applyDamageToEnemy(target, surgeDmg, { type: element, source:'lightning_surge', setId:'stormbreaker' });
+            applyCritDamage(target, surgeDmg, { type: element, source:'lightning_surge', setId:'stormbreaker'});
           }, (i + 1) * 150);
         }
 
@@ -5240,7 +5274,7 @@ const WEAPON_HANDLERS = {
               createLightningArc(pr.left + pr.width/2, pr.top + pr.height/2,
                                tr.left + tr.width/2, tr.top + tr.height/2,
                                getElementColor(element), 200);
-              applyDamageToEnemy(target, surgeDmg, { type: element, source:'lightning_surge', setId:'stormbreaker' });
+              applyCritDamage(target, surgeDmg, { type: element, source:'lightning_surge', setId:'stormbreaker'});
             }, 450);
           }
           usedIds.add(target.id);
@@ -5265,7 +5299,7 @@ const WEAPON_HANDLERS = {
                   createLightningArc(pr.left + pr.width/2, pr.top + pr.height/2,
                                    tr.left + tr.width/2, tr.top + tr.height/2,
                                    getElementColor(element), 200);
-                  applyDamageToEnemy(target2, surgeDmg, { type: element, source:'lightning_surge', setId:'stormbreaker' });
+                  applyCritDamage(target2, surgeDmg, { type: element, source:'lightning_surge', setId:'stormbreaker'});
                 }, 600);
               }
             }
@@ -5295,7 +5329,7 @@ const WEAPON_HANDLERS = {
           if (targetEl) { const rr = targetEl.getBoundingClientRect(); toX = rr.left + rr.width/2; toY = rr.top + rr.height/2; }
           createLightningArc(fromX, fromY, toX, toY, getElementColor(element), 200);
           const chainDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.75);
-          applyDamageToEnemy(target, chainDmg, { type: element, source:'weapon_chain', setId:'stormbreaker' });
+          applyCritDamage(target, chainDmg, { type: element, source:'weapon_chain', setId:'stormbreaker'});
           usedIds.add(target.id);
           prevEnemy = target;
 
@@ -5319,7 +5353,7 @@ const WEAPON_HANDLERS = {
               if (target2El) { const rr = target2El.getBoundingClientRect(); toX2 = rr.left + rr.width/2; toY2 = rr.top + rr.height/2; }
               createLightningArc(fromX2, fromY2, toX2, toY2, getElementColor(element), 230);
               const chainDmg2 = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.50);
-              applyDamageToEnemy(target2, chainDmg2, { type: element, source:'weapon_chain', setId:'stormbreaker' });
+              applyCritDamage(target2, chainDmg2, { type: element, source:'weapon_chain', setId:'stormbreaker'});
             }
           }
         }
@@ -5336,7 +5370,7 @@ const WEAPON_HANDLERS = {
     const cx = enemyEl ? (enemyEl.getBoundingClientRect().left + enemyEl.getBoundingClientRect().width/2) : (enemy.x||0);
     const cy = enemyEl ? (enemyEl.getBoundingClientRect().top + enemyEl.getBoundingClientRect().height/2) : (enemy.y||0);
     spawnShockwave(cx, cy, 48, getElementColor('physical'), 360);
-    applyDamageToEnemy(enemy, total, { type: element, source:'weapon', setId:'bastion' });
+    applyCritDamage(enemy, total, { type: element, source:'weapon', setId:'bastion'});
 
     // AoE damage: 80% physical damage equal to 20% player HP
     const aoeHpComponent = (getPlayerHP(p) || 0) * 0.20;
@@ -5348,7 +5382,7 @@ const WEAPON_HANDLERS = {
     const nearbyEnemies = findEnemiesInRadius(enemyX, enemyY, aoeRadius);
     nearbyEnemies.forEach(e => {
       if (e.id !== enemy.id) {
-        applyDamageToEnemy(e, aoeDmg, { type: element, source: 'weapon_aoe', setId: 'bastion' });
+        applyCritDamage(e, aoeDmg, { type: element, source: 'weapon_aoe', setId: 'bastion'});
       }
     });
   },
@@ -5367,7 +5401,7 @@ const WEAPON_HANDLERS = {
       const eR = enemyEl.getBoundingClientRect();
       createProjectile({ fromX:pR.left+pR.width/2, fromY:pR.top+pR.height/2, toX:eR.left+eR.width/2, toY:eR.top+eR.height/2, color: getElementColor('physical'), size:10, travelMs:220 });
     }
-    applyDamageToEnemy(enemy, mainDmg, { type: element, source:'weapon', setId:'nightwing' });
+    applyCritDamage(enemy, mainDmg, { type: element, source:'weapon', setId:'nightwing'});
 
     // After hit, spawn 2 bouncing coins that bounce 3 times each
     const coins = (p.coins || 0);
@@ -5400,7 +5434,7 @@ const WEAPON_HANDLERS = {
               size: 12,
               travelMs: 200,
               onArrive: () => {
-                applyDamageToEnemy(nextEnemy, coinDmg, { type: element, source: 'weapon_coin', setId: 'nightwing' });
+                applyCritDamage(nextEnemy, coinDmg, { type: element, source: 'weapon_coin', setId: 'nightwing'});
                 showElementDamage(coinDmg, 'physical', toEl, false, '#ffd700');
               }
             });
@@ -5462,7 +5496,7 @@ const WEAPON_HANDLERS = {
       });
     }
 
-    applyDamageToEnemy(enemy, execDmg, { type: element, source:'weapon_hp_loss', setId:'shade' });
+    applyCritDamage(enemy, execDmg, { type: element, source:'weapon_hp_loss', setId:'shade'});
 
     // 3-piece: Bloodbath - create rain area for 5 seconds dealing 300% of HP lost every tick
     if (getSetCount('shade') >= 3) {
@@ -5590,7 +5624,7 @@ const WEAPON_HANDLERS = {
             const dy = playerY - (e.position?.y || e.y || 0);
             const dist = Math.sqrt(dx * dx + dy * dy);
             if (dist <= 200) {
-              applyDamageToEnemy(e, explosionDmg, { type: 'physical', source: 'overflow_explosion', setId: 'shade' });
+              applyCritDamage(e, explosionDmg, { type: 'physical', source: 'overflow_explosion', setId: 'shade'});
             }
           });
 
@@ -5608,7 +5642,7 @@ const WEAPON_HANDLERS = {
 
     // Base ball: 120% damage, 2 second duration
     const dmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 1.20);
-    applyDamageToEnemy(enemy, dmg, { type: element, source:'weapon', setId:'aegis' });
+    applyCritDamage(enemy, dmg, { type: element, source:'weapon', setId:'aegis'});
 
     // Launch ball that hovers and deals damage
     const ballDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 1.20);
@@ -5618,7 +5652,7 @@ const WEAPON_HANDLERS = {
   glacier: (p, enemy, weapon) => {
     const element = 'cryo';
     const cryoDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 1.20);
-    applyDamageToEnemy(enemy, cryoDmg, { type: element, source:'weapon', setId:'glacier' });
+    applyCritDamage(enemy, cryoDmg, { type: element, source:'weapon', setId:'glacier'});
 
     const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
     if (enemyEl) {
@@ -5655,7 +5689,7 @@ const WEAPON_HANDLERS = {
     const instant = Math.floor((p.currentStats?.finalATK || p.ATK) * 1.20);
     const burnTick = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.20);
 
-    applyDamageToEnemy(enemy, instant, { type: element, source:'weapon', setId:'emberkin' });
+    applyCritDamage(enemy, instant, { type: element, source:'weapon', setId:'emberkin'});
 
     const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
     if (enemyEl) {
@@ -5679,7 +5713,7 @@ const WEAPON_HANDLERS = {
   zephyr: (p, enemy, weapon) => {
     const element = 'aether';
     const main = Math.floor((p.currentStats?.finalATK || p.ATK) * 1.20);
-    applyDamageToEnemy(enemy, main, { type: element, source:'weapon', setId:'zephyr' });
+    applyCritDamage(enemy, main, { type: element, source:'weapon', setId:'zephyr'});
 
     // 4-piece: +2 stars (6 total)
     let nStars = 4;
@@ -5702,7 +5736,7 @@ const WEAPON_HANDLERS = {
         onArrive: ()=> {
           const hits = findEnemiesInRadius(toX, toY, 40);
           hits.forEach(h => {
-            applyDamageToEnemy(h, starDmg, { type: element, source:'weapon_star', setId:'zephyr' });
+            applyCritDamage(h, starDmg, { type: element, source:'weapon_star', setId:'zephyr'});
 
             // 3-piece: Blow - explosion on each star collision
             if (getSetCount('zephyr') >= 3) {
@@ -5710,7 +5744,7 @@ const WEAPON_HANDLERS = {
               const nearbyEnemies = findEnemiesInRadius(toX, toY, 80);
               nearbyEnemies.forEach(ne => {
                 if (ne.id !== h.id) {
-                  applyDamageToEnemy(ne, explosionDmg, { type: element, source:'zephyr_explosion', setId:'zephyr' });
+                  applyCritDamage(ne, explosionDmg, { type: element, source:'zephyr_explosion', setId:'zephyr'});
                 }
               });
               const hitEl = document.querySelector(`[data-enemy-id="${h.id}"]`);
@@ -5734,13 +5768,13 @@ const WEAPON_HANDLERS = {
                   fromX: toX, fromY: toY, toX: bounceToX, toY: bounceToY,
                   color: getElementColor(element), size: 12, travelMs: 260,
                   onArrive: () => {
-                    applyDamageToEnemy(bounceTarget, starDmg, { type: element, source:'weapon_star_bounce', setId:'zephyr' });
+                    applyCritDamage(bounceTarget, starDmg, { type: element, source:'weapon_star_bounce', setId:'zephyr'});
                     if (getSetCount('zephyr') >= 3) {
                       const explosionDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.50);
                       const nearbyEnemies = findEnemiesInRadius(bounceToX, bounceToY, 80);
                       nearbyEnemies.forEach(ne => {
                         if (ne.id !== bounceTarget.id) {
-                          applyDamageToEnemy(ne, explosionDmg, { type: element, source:'zephyr_explosion', setId:'zephyr' });
+                          applyCritDamage(ne, explosionDmg, { type: element, source:'zephyr_explosion', setId:'zephyr'});
                         }
                       });
                     }
@@ -5808,7 +5842,7 @@ function attackEnemy(enemy) {
       const p = player;
       const weaponBase = Math.floor((p.currentStats?.finalATK || p.ATK) * (weaponItem.weaponMultiplier || 1.20));
       const el = weaponItem.element || (weaponItem.setId && (EQUIPMENT_SETS[weaponItem.setId]?.element || 'physical')) || 'physical';
-      applyDamageToEnemy(enemy, weaponBase, { type: el, source:'weapon', setId: weaponItem.setId||null });
+      applyCritDamage(enemy, weaponBase, { type: el, source:'weapon', setId: weaponItem.setId||null});
     }
   }
 
@@ -6301,11 +6335,10 @@ function updateWorldProgress() {
 
 // ========== Dynamic Challenge System ==========
 const CHALLENGE_TYPES = {
-  STANDARD: { name: 'Standard Challenge', desc: 'Defeat the boss without dying' },
-  SPEED: { name: 'Speed Challenge', desc: 'Defeat 20 enemies within 60 seconds without dying', requiredEnemies: 20, timeLimit: 60 },
-  ELITE_HUNTER: { name: 'Elite Hunter', desc: 'Defeat 5 elite enemies without dying', requiredElites: 5 },
-  SURVIVAL: { name: 'Survival Challenge', desc: 'Complete 3 waves of increasing difficulty without dying', requiredWaves: 3 },
-  PERFECT: { name: 'Perfect Challenge', desc: 'Defeat the boss without dying' }
+  BOSS: { name: 'BOSS Challenge', desc: 'Defeat the boss.' },
+  SPEED: { name: 'Speed Challenge', desc: 'Defeat 20 enemies within 60 seconds.', requiredEnemies: 20, timeLimit: 60 },
+  ELITE_HUNTER: { name: 'Elite Hunter', desc: 'Defeat 5 elites.', requiredElites: 5 },
+  SURVIVAL: { name: 'Survival Challenge', desc: 'Complete 3 waves of enemies.', requiredWaves: 3 },
 };
 
 function selectRandomChallenge() {
@@ -6328,21 +6361,26 @@ function startChallenge(challengeType) {
 }
 
 function updateChallengeTimer() {
-  if (GameState.currentChallenge !== 'SPEED') return;
-  
-  const elapsed = (Date.now() - GameState.challengeProgress.startTime) / 1000;
-  const remaining = Math.max(0, GameState.challengeProgress.timeLimit - elapsed);
-  const minutes = Math.floor(remaining / 60);
-  const seconds = Math.floor(remaining % 60);
-  
   const timerEl = document.getElementById('timer-text');
-  if (timerEl) {
-    timerEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-  }
+  if (!timerEl) return;
   
-  // Check if time ran out
-  if (remaining <= 0 && !verifyChallengeComplete()) {
-    failChallenge('Time ran out!');
+  if (GameState.currentChallenge === 'SPEED') {
+    const elapsed = (Date.now() - GameState.challengeProgress.startTime) / 1000;
+    const remaining = Math.max(0, GameState.challengeProgress.timeLimit - elapsed);
+    const minutes = Math.floor(remaining / 60);
+    const seconds = Math.floor(remaining % 60);
+    
+    timerEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    
+    // Check if time ran out
+    if (remaining <= 0 && !verifyChallengeComplete()) {
+      failChallenge('Time ran out!');
+    }
+  } else if (GameState.currentChallenge === 'SURVIVAL') {
+    // Show wave counter for survival challenge
+    const currentWave = GameState.challengeProgress.wavesCompleted + 1;
+    const totalWaves = CHALLENGE_TYPES['SURVIVAL'].requiredWaves;
+    timerEl.textContent = `Wave ${currentWave}/${totalWaves}`;
   }
 }
 
@@ -6417,7 +6455,7 @@ function verifyChallengeComplete() {
   if (progress.died) return false;
   
   switch (GameState.currentChallenge) {
-    case 'STANDARD':
+    case 'BOSS':
       // Just need to not die and defeat the boss normally
       return progress.bossKilled;
       
@@ -6433,10 +6471,6 @@ function verifyChallengeComplete() {
     case 'SURVIVAL':
       // Must complete ALL required waves without dying
       return progress.wavesCompleted >= challenge.requiredWaves;
-      
-    case 'PERFECT':
-      // Defeat boss without dying
-      return progress.bossKilled;
       
     default:
       return false;
@@ -6487,8 +6521,7 @@ function challengeWorld() {
 
   // Spawn enemies based on challenge type
   switch (challengeType) {
-    case 'STANDARD':
-    case 'PERFECT':
+    case 'BOSS':
       // These challenges are boss battles
       const boss = createEnemy('boss', GameState.player.world);
       boss.prevX = boss.position.x;
@@ -6534,14 +6567,13 @@ function challengeWorld() {
 
 function showChallengeOverlay(name, description, showTimer) {
   const overlay = document.getElementById('challenge-overlay');
-  const nameEl = document.getElementById('challenge-name');
   const descEl = document.getElementById('challenge-description');
   const timerEl = document.getElementById('challenge-timer');
 
-  nameEl.textContent = name;
   descEl.textContent = description;
   
-  if (showTimer) {
+  // Show timer for SPEED and SURVIVAL challenges
+  if (showTimer || GameState.currentChallenge === 'SURVIVAL') {
     timerEl.style.display = 'inline-block';
   } else {
     timerEl.style.display = 'none';
@@ -6583,11 +6615,8 @@ function spawnSurvivalWave(waveNumber) {
   
   console.log(`[SURVIVAL] Wave ${waveNumber} spawned with ${normalCount} normal + ${eliteCount} elite = ${GameState.enemies.length} total enemies`);
   
-  // Update challenge overlay description for current wave
-  const descEl = document.getElementById('challenge-description');
-  if (descEl) {
-    descEl.textContent = `Wave ${waveNumber}/3 - Defeat ${normalCount} enemies and ${eliteCount} elite(s)`;
-  }
+  // Update wave counter in timer element
+  updateChallengeTimer();
 }
 
 function onChallengeComplete() {
@@ -6610,7 +6639,7 @@ function onChallengeComplete() {
   GameState.suspendWaves = false;
   GameState.inBossChallenge = false;
 
-  showNotification(`🎉 Boss defeated! Welcome to World ${GameState.player.world}!`, 'legendary');
+  showNotification(`🎉 Welcome to World ${GameState.player.world}!`, 'legendary');
   updateWorldProgress();
 }
 
@@ -7016,7 +7045,7 @@ function updateSetBonusesPeriodic(dt) {
         const dy = playerY - enemy.position.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
         if (distance <= shockRadius) {
-          applyDamageToEnemy(enemy, shockDamage, { type: 'physical', source: 'shock_roar', setId: 'bastion' });
+          applyCritDamage(enemy, shockDamage, { type: 'physical', source: 'shock_roar', setId: 'bastion'});
         }
       });
     }
@@ -7139,7 +7168,7 @@ function updateSetBonusesPeriodic(dt) {
           // Deal damage every 200ms (same tick rate as regular fire zones) for 10 seconds after entering
           if (now - enemyData.enteredAt < 10000 && now - enemyData.lastTickAt >= 200) {
             const tickDmg = Math.floor((p.currentStats?.finalATK || 0) * 0.65);
-            applyDamageToEnemy(enemy, tickDmg, { type: 'fire', source: 'ignite_aoe', setId: 'emberkin', isDoT: true });
+            applyCritDamage(enemy, tickDmg, { type: 'fire', source: 'ignite_aoe', setId: 'emberkin', isDoT: true});
             enemyData.lastTickAt = now;
           }
         } else {
@@ -7225,7 +7254,7 @@ function handleSetBonusOnKill(enemy) {
               // Deal damage to all enemies on field
               GameState.enemies.forEach(e => {
                 if (e.hp > 0) {
-                  applyDamageToEnemy(e, rainDmg, { type: 'physical', source: 'wealth_rain', setId: 'nightwing' });
+                  applyCritDamage(e, rainDmg, { type: 'physical', source: 'wealth_rain', setId: 'nightwing'});
                 }
               });
             }, 150); // Rain every 150ms for denser effect
@@ -7259,7 +7288,7 @@ function handleSetBonusOnKill(enemy) {
             onArrive: () => {
               const hits = findEnemiesInRadius(toX, toY, 50);
               hits.forEach(hit => {
-                applyDamageToEnemy(hit, coinDmg, { type: 'physical', source: 'rich_mans_blow', setId: 'nightwing' });
+                applyCritDamage(hit, coinDmg, { type: 'physical', source: 'rich_mans_blow', setId: 'nightwing'});
               });
             }
           });
@@ -7348,7 +7377,7 @@ function handleSetBonusOnKill(enemy) {
         const explDmg = Math.floor((p.currentStats?.finalATK || 0) * 0.50);
         const nearbyEnemies = findEnemiesInRadius(explX, explY, 60);
         nearbyEnemies.forEach(e => {
-          applyDamageToEnemy(e, explDmg, { type: 'wind', source: 'wind_storm', setId: 'skywarden' });
+          applyCritDamage(e, explDmg, { type: 'wind', source: 'wind_storm', setId: 'skywarden'});
         });
 
         const tornadoEl = document.createElement('div');
@@ -7420,7 +7449,7 @@ function handleSetBonusOnKill(enemy) {
 
               // Deal damage each tick
               if (Math.random() < 0.5) { // 50% chance per tick to avoid spam
-                applyDamageToEnemy(e, tornadoDmg, { type: 'wind', source: 'aquila_tornado', setId: 'skywarden', isDoT: true });
+                applyCritDamage(e, tornadoDmg, { type: 'wind', source: 'aquila_tornado', setId: 'skywarden', isDoT: true});
               }
             }
           });
