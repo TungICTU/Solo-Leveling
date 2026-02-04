@@ -2795,7 +2795,53 @@ const SLOT_ICONS = {
   weapon: '⚔️'
 };
 
-const RARITY_RANGES = {
+// Base stat ranges (only for the main stat of equipment)
+const BASE_STAT_RANGES = {
+  common: {
+    HP: [10, 50], ATK: [10, 50], SPD: [2, 5], 'DMG%': [10, 25]
+  },
+  uncommon: {
+    HP: [600, 1000], ATK: [600, 1000], SPD: [45, 60], 'DMG%': [200, 250]
+  },
+  rare: {
+    HP: [6000, 6500], ATK: [6000, 6500], SPD: [120, 150], 'DMG%': [600, 650]
+  },
+  epic: {
+    HP: [15000, 18000], ATK: [15000, 18000], SPD: [300, 350], 'DMG%': [1200, 1500]
+  },
+  legendary: {
+    HP: [30000, 35000], ATK: [30000, 35000], SPD: [550, 600], 'DMG%': [3000, 3500]
+  },
+  mythic: {
+    HP: [50000, 55000], ATK: [50000, 55000], SPD: [1200, 1500], 'DMG%': [5500, 6000]
+  }
+};
+
+
+// Level 100 target values for base stats
+const BASE_STAT_LEVEL100 = {
+  common: {
+    HP: 500, ATK: 500, SPD: 30, 'DMG%': 150
+  },
+  uncommon: {
+    HP: 5000, ATK: 5000, SPD: 100, 'DMG%': 500
+  },
+  rare: {
+    HP: 10000, ATK: 10000, SPD: 250, 'DMG%': 1000
+  },
+  epic: {
+    HP: 25000, ATK: 25000, SPD: 500, 'DMG%': 2500
+  },
+  legendary: {
+    HP: 50000, ATK: 50000, SPD: 1000, 'DMG%': 5000
+  },
+  mythic: {
+    HP: 100000, ATK: 100000, SPD: 2500, 'DMG%': 10000
+  }
+};
+
+// Affix ranges (for additional attributes on equipment)
+const AFFIX_RANGES = {
   common: {
     HP: [10, 50], 'HP%': [2, 5], ATK: [10, 50], 'ATK%': [2, 5],
     SPD: [2, 5], 'DMG%': [5, 10], 'Crit Rate': [5, 10], 'Crit Damage': [10, 50]
@@ -2834,7 +2880,7 @@ const AFFIX_POOL = [
 ];
 
 function generateEquipment(slot, rarity, world, setId = null) {
-  const ranges = RARITY_RANGES[rarity];
+  // Use BASE_STAT_RANGES for base attributes and AFFIX_RANGES for affixes
 
   // If setId provided, generate set item
   if (setId && EQUIPMENT_SETS[setId]) {
@@ -2867,8 +2913,9 @@ function generateEquipment(slot, rarity, world, setId = null) {
 
       // Generate base attribute value
       const baseAttrName = item.baseAttribute.name;
-      const baseRange = ranges[baseAttrName];
+      const baseRange = BASE_STAT_RANGES[item.rarity][baseAttrName];
       item.baseAttribute.value = GameState.rng.randInt(baseRange[0], baseRange[1]);
+      item.initialBaseValue = item.baseAttribute.value; // Store initial value for level scaling
 
       // Generate affixes
       const availableAffixes = [...AFFIX_POOL];
@@ -2878,7 +2925,7 @@ function generateEquipment(slot, rarity, world, setId = null) {
         const idx = availableAffixes.indexOf(chosenAffix);
         availableAffixes.splice(idx, 1);
 
-        const range = ranges[chosenAffix.name];
+        const range = AFFIX_RANGES[rarity][chosenAffix.name];
         const value = GameState.rng.randInt(range[0], range[1]);
         const unlockLevel = (CONFIG.STAR_THRESHOLDS && CONFIG.STAR_THRESHOLDS[i] !== undefined)
           ? CONFIG.STAR_THRESHOLDS[i]
@@ -2918,7 +2965,7 @@ function generateEquipment(slot, rarity, world, setId = null) {
   else if (slot === 'ring') baseAttrName = 'DMG%';
   else if (slot === 'weapon') baseAttrName = 'ATK';
 
-  const baseRange = ranges[baseAttrName];
+  const baseRange = BASE_STAT_RANGES[rarity][baseAttrName];
   const baseValue = GameState.rng.randInt(baseRange[0], baseRange[1]);
 
   const affixes = [];
@@ -2929,7 +2976,7 @@ function generateEquipment(slot, rarity, world, setId = null) {
     const idx = availableAffixes.indexOf(chosenAffix);
     availableAffixes.splice(idx, 1);
 
-    const range = ranges[chosenAffix.name];
+    const range = AFFIX_RANGES[rarity][chosenAffix.name];
     const value = GameState.rng.randInt(range[0], range[1]);
     const unlockLevel = (CONFIG.STAR_THRESHOLDS && CONFIG.STAR_THRESHOLDS[i] !== undefined)
       ? CONFIG.STAR_THRESHOLDS[i]
@@ -2957,6 +3004,7 @@ function generateEquipment(slot, rarity, world, setId = null) {
     level: 1,
     stars: 0,
     baseAttribute: { name: baseAttrName, value: baseValue },
+    initialBaseValue: baseValue, // Store initial value for level scaling
     affixes: affixes,
     buyPrice: buyPrice,
     sellPrice: sellPrice,
@@ -3385,7 +3433,7 @@ function sellItem(itemId) {
 
   renderInventory();
   hideTooltip();
-  showNotification(`💰 Sold for ${item.sellPrice} coins`, 'success');
+  showNotification(`💰 Sold ${item.name} for ${item.sellPrice} coins`, 'success');
 }
 
 function upgradeItem(itemId) {
@@ -3394,7 +3442,11 @@ function upgradeItem(itemId) {
 
   // cap item level at 100
   if (typeof item.level === 'number' && item.level >= 100) {
-    showNotification('⚠️ Item is already at max level (100)!', 'warning');
+    if (item.rarity === 'mythic') {
+      showNotification('⚠️ Item is already at MAX LEVEL!', 'warning');
+    } else {
+      showNotification('⚠️ Item is level 100! Use Enhance to promote to next rarity.', 'info');
+    }
     return;
   }
 
@@ -3435,13 +3487,21 @@ function upgradeItem(itemId) {
     }
   });
 
-  // Upgrade stat increase - balanced formula
-  // Give a small base increase + a tiny percentage (2-3%) to scale moderately
-  const rarityMultiplier = { common: 1, uncommon: 1.2, rare: 1.5, epic: 2, legendary: 2.5, mythic: 3 };
-  const baseIncrease = Math.ceil(2 * (rarityMultiplier[item.rarity] || 1));
-  const percentBoost = Math.floor(item.baseAttribute.value * 0.025); // 2.5% instead of 10%
-  const totalIncrease = Math.max(1, baseIncrease + percentBoost);
-  item.baseAttribute.value += totalIncrease;
+  // Upgrade stat increase - linear interpolation from Level 1 to Level 100
+  // Calculate what the stat should be at the new level
+  if (item.initialBaseValue === undefined) {
+    // Store initial value if not already stored (for old items)
+    item.initialBaseValue = item.baseAttribute.value;
+  }
+  
+  const level1Value = item.initialBaseValue;
+  const level100Value = BASE_STAT_LEVEL100[item.rarity][item.baseAttribute.name];
+  
+  // Linear interpolation: value = level1 + (level100 - level1) * ((currentLevel - 1) / 99)
+  const progress = (item.level - 1) / 99; // 0 at level 1, 1 at level 100
+  const targetValue = Math.floor(level1Value + (level100Value - level1Value) * progress);
+  
+  item.baseAttribute.value = targetValue;
 
   computeDerivedStats();
   renderInventory();
@@ -3493,6 +3553,153 @@ function getUpgradeCost(item) {
   }
 
   return { coins, gems };
+}
+
+function enhanceItem(itemId) {
+  const item = findItem(itemId);
+  if (!item || item.type !== 'equipment') return;
+
+  // Can only enhance at level 100
+  if (item.level < 100) {
+    showNotification('⚠️ Item must be level 100 to enhance!', 'warning');
+    return;
+  }
+
+  // Cannot enhance mythic items
+  if (item.rarity === 'mythic') {
+    showNotification('⚠️ Mythic items cannot be enhanced further!', 'warning');
+    return;
+  }
+
+  // Enhancement cost: base upgrade cost + 15 gems
+  const cost = getUpgradeCost(item);
+  const enhanceCost = {
+    coins: cost.coins,
+    gems: 15
+  };
+
+  if (GameState.player.coins < enhanceCost.coins) {
+    showNotification('⚠️ Not enough coins!', 'warning');
+    return;
+  }
+  if (GameState.player.gems < enhanceCost.gems) {
+    showNotification('⚠️ Not enough gems!', 'warning');
+    return;
+  }
+
+  // Store tooltip state BEFORE any operations
+  const tooltip = document.getElementById('inventory-tooltip');
+  const tooltipWasOpen = tooltip && tooltip.getAttribute('aria-hidden') === 'false';
+  const tooltipItemId = tooltip ? tooltip.dataset.currentItemId : null;
+  const tooltipIsEquipped = tooltip ? tooltip.dataset.isEquipped === 'true' : false;
+
+  // Pay the cost
+  GameState.player.coins -= enhanceCost.coins;
+  showFloatingChange(-enhanceCost.coins, 'coins');
+  GameState.player.gems -= enhanceCost.gems;
+  showFloatingChange(-enhanceCost.gems, 'gems');
+
+  // Determine next rarity
+  const rarityOrder = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'mythic'];
+  const currentRarityIndex = rarityOrder.indexOf(item.rarity);
+  const nextRarity = rarityOrder[currentRarityIndex + 1];
+
+  if (!nextRarity) {
+    showNotification('⚠️ Cannot enhance this item further!', 'warning');
+    return;
+  }
+
+  // Store old rarity for notification
+  const oldRarity = item.rarity;
+
+  // Promote to next rarity
+  item.rarity = nextRarity;
+
+  // Reset level and stars
+  item.level = 1;
+  item.stars = 0;
+
+  // Lock all affixes again
+  item.affixes.forEach(aff => {
+    aff.locked = true;
+  });
+
+  // Generate new base stat value for the new rarity (random from new rarity's range)
+  const baseAttrName = item.baseAttribute.name;
+  const newBaseRange = BASE_STAT_RANGES[nextRarity][baseAttrName];
+  const newBaseValue = GameState.rng.randInt(newBaseRange[0], newBaseRange[1]);
+  
+  // Update base attribute and store as new initial value
+  item.baseAttribute.value = newBaseValue;
+  item.initialBaseValue = newBaseValue;
+
+  // Regenerate affixes with new rarity ranges
+  const availableAffixes = [...AFFIX_POOL];
+  const newAffixes = [];
+  
+  for (let i = 0; i < 4; i++) {
+    const weights = availableAffixes.map(a => a.weight);
+    const chosenAffix = GameState.rng.weightedChoice(availableAffixes, weights);
+    const idx = availableAffixes.indexOf(chosenAffix);
+    availableAffixes.splice(idx, 1);
+
+    const range = AFFIX_RANGES[nextRarity][chosenAffix.name];
+    const value = GameState.rng.randInt(range[0], range[1]);
+    const unlockLevel = (CONFIG.STAR_THRESHOLDS && CONFIG.STAR_THRESHOLDS[i] !== undefined)
+      ? CONFIG.STAR_THRESHOLDS[i]
+      : (CONFIG.STAR_THRESHOLDS && CONFIG.STAR_THRESHOLDS.length
+          ? CONFIG.STAR_THRESHOLDS[CONFIG.STAR_THRESHOLDS.length - 1] + (i - (CONFIG.STAR_THRESHOLDS.length - 1)) * 10
+          : 10 + i * 10);
+
+    newAffixes.push({
+      name: chosenAffix.name,
+      value: value,
+      locked: true,
+      unlockLevel: unlockLevel
+    });
+  }
+
+  item.affixes = newAffixes;
+
+  // Update name if it's a generic item (not a set item)
+  if (!item.setId) {
+    item.name = `${nextRarity.charAt(0).toUpperCase() + nextRarity.slice(1)} ${item.slot.charAt(0).toUpperCase() + item.slot.slice(1)}`;
+  }
+
+  computeDerivedStats();
+  renderInventory();
+  renderPlayerStats();
+
+  showNotification(`✨ Enhanced ${item.name} to ${nextRarity}!`, 'legendary');
+
+  // Keep the tooltip open if it was showing this item
+  if (tooltipWasOpen && tooltipItemId === item.id) {
+    requestAnimationFrame(() => {
+      try {
+        let slotEl = null;
+        if (tooltipIsEquipped) {
+          slotEl = document.getElementById(`equip-${item.slot === 'ring' ? 'ring-slot' : item.slot}`);
+        } else {
+          let itemIndex = -1;
+          for (let i = 0; i < CONFIG.MAX_INVENTORY_SLOTS; i++) {
+            if (GameState.player.inventory[i] && GameState.player.inventory[i].id === item.id) {
+              itemIndex = i;
+              break;
+            }
+          }
+          if (itemIndex !== -1) {
+            slotEl = document.querySelector(`.inv-slot[data-index="${itemIndex}"]`);
+          }
+        }
+
+        if (slotEl) {
+          slotEl.dispatchEvent(new Event('click', { bubbles: false }));
+        }
+      } catch (err) {
+        console.error('Error reopening tooltip after enhance:', err);
+      }
+    });
+  }
 }
 
 function useConsumable(itemId) {
@@ -5956,12 +6163,28 @@ function buildItemTooltipHtml(item, isEquipped) {
     });
 
     const cost = getUpgradeCost(item);
+    
+    // Determine upgrade/enhance button text and function
+    let upgradeButton = '';
+    if (item.level >= 100) {
+      if (item.rarity === 'mythic') {
+        // Mythic at level 100 - show MAX LEVEL (disabled)
+        upgradeButton = `<button class="tooltip-btn secondary" disabled style="opacity: 0.5; cursor: not-allowed;">MAX LEVEL</button>`;
+      } else {
+        // Non-mythic at level 100 - show Enhance button
+        upgradeButton = `<button class="tooltip-btn legendary" onclick="enhanceItem('${item.id}')" style="background: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%); border-color: #9c27b0;">Enhance (💰${cost.coins} 💎15)</button>`;
+      }
+    } else {
+      // Normal upgrade
+      upgradeButton = `<button class="tooltip-btn secondary" onclick="upgradeItem('${item.id}')">Upgrade (💰${cost.coins} ${cost.gems > 0 ? `💎${cost.gems}` : ''})</button>`;
+    }
+    
     html += `
       </div>
       <div class="tooltip-actions">
         ${!isEquipped ? `<button class="tooltip-btn primary" onclick="equipItem('${item.id}')">Equip</button>` : ''}
         ${isEquipped ? `<button class="tooltip-btn secondary" onclick="unequipItem('${item.slot}')">Unequip</button>` : ''}
-        <button class="tooltip-btn secondary" onclick="upgradeItem('${item.id}')">Upgrade (💰${cost.coins} ${cost.gems > 0 ? `💎${cost.gems}` : ''})</button>
+        ${upgradeButton}
         <button class="tooltip-btn danger" onclick="sellItem('${item.id}')">Sell (💰${item.sellPrice})</button>
       </div>
     `;
@@ -7705,7 +7928,8 @@ const DevTools = {
         return;
       }
 
-      const mythicRanges = RARITY_RANGES.mythic;
+      const mythicBaseRanges = BASE_STAT_RANGES.mythic;
+      const mythicAffixRanges = AFFIX_RANGES.mythic;
 
       Object.keys(setData.items).forEach(itemKey => {
         const itemTemplate = setData.items[itemKey];
@@ -7740,30 +7964,31 @@ const DevTools = {
           element: setData.element,
           baseAttribute: {
             name: baseAttrName,
-            value: mythicRanges[baseAttrName][1] // Max value for mythic
+            value: mythicBaseRanges[baseAttrName][1] // Max value for mythic base stat
           },
+          initialBaseValue: mythicBaseRanges[baseAttrName][1], // Store initial value for level scaling
           affixes: [
             {
               name: 'ATK%',
-              value: mythicRanges['ATK%'][1], // 35 (max)
+              value: mythicAffixRanges['ATK%'][1], // 35 (max)
               locked: false, // Unlocked since we're giving them for testing
               unlockLevel: 10
             },
             {
               name: 'DMG%',
-              value: mythicRanges['DMG%'][1], // 100 (max)
+              value: mythicAffixRanges['DMG%'][1], // 100 (max)
               locked: false,
               unlockLevel: 25
             },
             {
               name: 'Crit Rate',
-              value: mythicRanges['Crit Rate'][1], // 35 (max)
+              value: mythicAffixRanges['Crit Rate'][1], // 35 (max)
               locked: false,
               unlockLevel: 50
             },
             {
               name: 'Crit Damage',
-              value: mythicRanges['Crit Damage'][1], // 250 (max)
+              value: mythicAffixRanges['Crit Damage'][1], // 250 (max)
               locked: false,
               unlockLevel: 75
             }
