@@ -1080,6 +1080,16 @@
       transform: scale(0.95);
     }
 
+    .reroll-btn:hover {
+      opacity: 0.8;
+      transform: scale(1.05);
+      transition: all 0.2s;
+    }
+
+    .reroll-btn:active {
+      transform: scale(0.95);
+    }
+
     .shop-container {
       max-width: 900px;
       margin: 0 auto;
@@ -1843,6 +1853,8 @@
               <div class="stat-line"><span class="stat-label">Critical Hits</span><span class="stat-value" id="stat-crits">0</span></div>
               <div class="stat-line"><span class="stat-label">Damage Dealt</span><span class="stat-value" id="stat-dmg-dealt">0</span></div>
               <div class="stat-line"><span class="stat-label">Damage Taken</span><span class="stat-value" id="stat-dmg-taken">0</span></div>
+              <div class="stat-line"><span class="stat-label">Highest Damage Dealt</span><span class="stat-value" id="stat-highest-dmg-dealt">0</span></div>
+              <div class="stat-line"><span class="stat-label">Highest Damage Taken</span><span class="stat-value" id="stat-highest-dmg-taken">0</span></div>
               <div class="stat-line"><span class="stat-label">Coins Earned</span><span class="stat-value" id="stat-coins-earned">0</span></div>
               <div class="stat-line"><span class="stat-label">Gems Earned</span><span class="stat-value" id="stat-gems-earned">0</span></div>
               <div class="stat-line"><span class="stat-label">EXP Gained</span><span class="stat-value" id="stat-exp-gained">0</span></div>
@@ -1962,7 +1974,17 @@ const CONFIG = {
   MIN_WAVE_ENEMIES: 5,
   MAX_WAVE_ENEMIES: 200,
   RARITY_PROB: { common:0.45, uncommon:0.35, rare:0.10, epic:0.05, legendary:0.03, mythic:0.02 },
-  EQUIP_BASE_UPGRADE_COST: { common:50, uncommon:200, rare:1000, epic:5000, legendary:25000, mythic:100000 },
+  // Base upgrade costs calculated so that upgrading from level 1 to 100 costs max 300% of next rarity's shop price
+  // Formula: maxTotalCost = nextRarityShopPrice * 3.0
+  // Using geometric series with r=1.055 over 99 levels (1->2, 2->3, ... 99->100)
+  EQUIP_BASE_UPGRADE_COST: { 
+    common: 10.7,      // Upgrades to 100 cost ~1500 (300% of uncommon's 2000/3 ≈ 667)
+    uncommon: 42.8,    // Upgrades to 100 cost ~6000 (300% of rare's 10000/3 ≈ 3333)
+    rare: 214,         // Upgrades to 100 cost ~30000 (300% of epic's 50000/3 ≈ 16667)
+    epic: 1070,        // Upgrades to 100 cost ~150000 (300% of legendary's 200000/3 ≈ 66667)
+    legendary: 4280,   // Upgrades to 100 cost ~600000 (300% of mythic's 1000000/3 ≈ 333333)
+    mythic: 21400      // Upgrades to 100 cost ~3000000 (no next rarity, so 300% of its own value)
+  },
   STAR_THRESHOLDS: [10,25,50,75,100],
   STAR_GEM_COSTS: { "10":0, "25":1, "50":3, "75":5, "100":10 },
   BASE_SHOP_PRICE: { common:500, uncommon:2000, rare:10000, epic:50000, legendary:200000, mythic:1000000 },
@@ -2273,6 +2295,8 @@ function createPlayer() {
       totalKills: 0,
       totalDamageDealt: 0,
       totalDamageTaken: 0,
+      highestDamageDealt: 0,
+      highestDamageTaken: 0,
       totalCoinsEarned: 0,
       totalGemsEarned: 0,
       totalExpGained: 0,
@@ -2303,7 +2327,8 @@ function createWorldProgress() {
     requiredEnemies: 25,
     requiredElites: 1,
     requiredLevel: 3,
-    equipmentRequirement: { minRarity: 'rare', required: false }
+    equipmentRequirement: { minRarity: 'rare', required: false },
+    assignedChallenges: {} // Store challenge type per world: { worldNum: challengeType }
   };
 }
 
@@ -2488,6 +2513,9 @@ function computeDamage(enemy) {
   // Track total damage dealt
   if (p.statistics) {
     p.statistics.totalDamageDealt += appliedDamage;
+    if (appliedDamage > (p.statistics.highestDamageDealt || 0)) {
+      p.statistics.highestDamageDealt = appliedDamage;
+    }
   }
 
   return { damage: appliedDamage, crit: isCrit };
@@ -2541,6 +2569,9 @@ function dealDamageToPlayer(amount) {
   // Track damage taken
   if (GameState.player.statistics) {
     GameState.player.statistics.totalDamageTaken += amount;
+    if (amount > (GameState.player.statistics.highestDamageTaken || 0)) {
+      GameState.player.statistics.highestDamageTaken = amount;
+    }
   }
   if (GameState.player.hp <= 0) {
     handlePlayerDeath();
@@ -3228,7 +3259,20 @@ function onEnemyDeath(enemy) {
     const rarity = rollRarity();
     const slots = ['helmet', 'chestplate', 'leggings', 'boots', 'ring', 'weapon'];
     const slot = slots[GameState.rng.randInt(0, slots.length - 1)];
-    const item = generateEquipment(slot, rarity, p.world);
+    
+    // Chance to drop set equipment (5% base, scales with world)
+    let item;
+    const setDropChance = Math.min(0.05 + (p.world * 0.01), 0.30); // 5% base, +1% per world, max 30%
+    if (GameState.rng.rand() < setDropChance) {
+      // Drop a set item
+      const availableSets = Object.keys(EQUIPMENT_SETS);
+      const randomSet = availableSets[GameState.rng.randInt(0, availableSets.length - 1)];
+      item = generateEquipment(slot, 'mythic', p.world, randomSet); // Set items are always mythic
+    } else {
+      // Drop normal equipment
+      item = generateEquipment(slot, rarity, p.world);
+    }
+    
     addToInventory(item);
     if (p.statistics) {
       p.statistics.itemsFound++;
@@ -3328,8 +3372,19 @@ function getInventoryCount() {
 function addToInventory(item) {
   cleanInventory();
   if (getInventoryCount() >= CONFIG.MAX_INVENTORY_SLOTS) {
-    showNotification('⚠️ Inventory full!', 'warning');
-    return false;
+    // Inventory is full - auto-sell the item
+    if (item.sellPrice) {
+      GameState.player.coins += item.sellPrice;
+      if (GameState.player.statistics) {
+        GameState.player.statistics.totalCoinsEarned += item.sellPrice;
+      }
+      showFloatingChange(item.sellPrice, 'coins');
+      showNotification(`💰 Inventory full! Auto-sold ${item.name} for ${item.sellPrice.toLocaleString()} coins`, 'warning');
+      return false;
+    } else {
+      showNotification('⚠️ Inventory full!', 'warning');
+      return false;
+    }
   }
 
   // Find first empty slot
@@ -3341,7 +3396,17 @@ function addToInventory(item) {
     }
   }
 
-  showNotification('⚠️ Inventory full!', 'warning');
+  // Fallback: should not reach here after cleanInventory, but auto-sell if it does
+  if (item.sellPrice) {
+    GameState.player.coins += item.sellPrice;
+    if (GameState.player.statistics) {
+      GameState.player.statistics.totalCoinsEarned += item.sellPrice;
+    }
+    showFloatingChange(item.sellPrice, 'coins');
+    showNotification(`💰 Inventory full! Auto-sold ${item.name} for ${item.sellPrice.toLocaleString()} coins`, 'warning');
+  } else {
+    showNotification('⚠️ Inventory full!', 'warning');
+  }
   return false;
 }
 
@@ -3544,7 +3609,7 @@ function upgradeItem(itemId) {
 
 function getUpgradeCost(item) {
   const baseCost = CONFIG.EQUIP_BASE_UPGRADE_COST[item.rarity];
-  const coins = Math.floor(baseCost * Math.pow(1.06, item.level - 1));
+  const coins = Math.floor(baseCost * Math.pow(1.055, item.level - 1));
 
   const nextLevel = item.level + 1;
   let gems = 0;
@@ -3633,33 +3698,30 @@ function enhanceItem(itemId) {
   item.baseAttribute.value = newBaseValue;
   item.initialBaseValue = newBaseValue;
 
-  // Regenerate affixes with new rarity ranges
-  const availableAffixes = [...AFFIX_POOL];
-  const newAffixes = [];
-  
-  for (let i = 0; i < 4; i++) {
-    const weights = availableAffixes.map(a => a.weight);
-    const chosenAffix = GameState.rng.weightedChoice(availableAffixes, weights);
-    const idx = availableAffixes.indexOf(chosenAffix);
-    availableAffixes.splice(idx, 1);
-
-    const range = AFFIX_RANGES[nextRarity][chosenAffix.name];
-    const value = GameState.rng.randInt(range[0], range[1]);
-    const unlockLevel = (CONFIG.STAR_THRESHOLDS && CONFIG.STAR_THRESHOLDS[i] !== undefined)
-      ? CONFIG.STAR_THRESHOLDS[i]
-      : (CONFIG.STAR_THRESHOLDS && CONFIG.STAR_THRESHOLDS.length
-          ? CONFIG.STAR_THRESHOLDS[CONFIG.STAR_THRESHOLDS.length - 1] + (i - (CONFIG.STAR_THRESHOLDS.length - 1)) * 10
-          : 10 + i * 10);
-
-    newAffixes.push({
-      name: chosenAffix.name,
-      value: value,
-      locked: true,
-      unlockLevel: unlockLevel
-    });
-  }
-
-  item.affixes = newAffixes;
+  // Keep existing affixes but upgrade their values to new rarity ranges
+  item.affixes.forEach(affix => {
+    const range = AFFIX_RANGES[nextRarity][affix.name];
+    if (range) {
+      // Keep the same affix, but scale value to new rarity range
+      const oldRange = AFFIX_RANGES[oldRarity][affix.name];
+      if (oldRange) {
+        // Calculate percentage position in old range
+        const oldMin = oldRange[0];
+        const oldMax = oldRange[1];
+        const oldSpan = oldMax - oldMin;
+        const percentage = oldSpan > 0 ? (affix.value - oldMin) / oldSpan : 0.5;
+        
+        // Apply same percentage to new range
+        const newMin = range[0];
+        const newMax = range[1];
+        const newSpan = newMax - newMin;
+        affix.value = Math.floor(newMin + (newSpan * percentage));
+      } else {
+        // Fallback: random value in new range
+        affix.value = GameState.rng.randInt(range[0], range[1]);
+      }
+    }
+  });
 
   // Update name if it's a generic item (not a set item)
   if (!item.setId) {
@@ -3726,6 +3788,167 @@ function useConsumable(itemId) {
   renderInventory();
   hideTooltip();
   showNotification(`🧪 Consumed: ${item.name}`, 'success');
+}
+
+function rerollAffix(itemId, affixIndex) {
+  const item = findItem(itemId);
+  if (!item || item.type !== 'equipment') return;
+
+  const affix = item.affixes[affixIndex];
+  if (!affix) return;
+
+  // Can only reroll unlocked affixes
+  if (affix.locked) {
+    showNotification('⚠️ Cannot reroll locked affixes!', 'warning');
+    return;
+  }
+
+  // Cost: 15 gems
+  const cost = 15;
+  if (GameState.player.gems < cost) {
+    showNotification('⚠️ Not enough gems!', 'warning');
+    return;
+  }
+
+  // Store tooltip state
+  const tooltip = document.getElementById('inventory-tooltip');
+  const tooltipWasOpen = tooltip && tooltip.getAttribute('aria-hidden') === 'false';
+  const tooltipItemId = tooltip ? tooltip.dataset.currentItemId : null;
+  const tooltipIsEquipped = tooltip ? tooltip.dataset.isEquipped === 'true' : false;
+
+  // Pay the cost
+  GameState.player.gems -= cost;
+  showFloatingChange(-cost, 'gems');
+
+  // Reroll to a different affix
+  const currentAffixName = affix.name;
+  const availableAffixes = AFFIX_POOL.filter(a => {
+    // Filter out affixes already on the item
+    return !item.affixes.some(existing => existing.name === a.name);
+  });
+
+  if (availableAffixes.length === 0) {
+    showNotification('⚠️ No other affixes available!', 'warning');
+    return;
+  }
+
+  // Pick a random new affix
+  const weights = availableAffixes.map(a => a.weight);
+  const chosenAffix = GameState.rng.weightedChoice(availableAffixes, weights);
+  
+  // Get random value for new affix
+  const range = AFFIX_RANGES[item.rarity][chosenAffix.name];
+  const value = GameState.rng.randInt(range[0], range[1]);
+
+  // Update the affix
+  affix.name = chosenAffix.name;
+  affix.value = value;
+
+  computeDerivedStats();
+  renderInventory();
+  renderPlayerStats();
+
+  showNotification(`🔄 Rerolled affix to ${chosenAffix.name}!`, 'info');
+
+  // Keep the tooltip open if it was showing this item
+  if (tooltipWasOpen && tooltipItemId === item.id) {
+    requestAnimationFrame(() => {
+      try {
+        let slotEl = null;
+        if (tooltipIsEquipped) {
+          slotEl = document.getElementById(`equip-${item.slot === 'ring' ? 'ring-slot' : item.slot}`);
+        } else {
+          let itemIndex = -1;
+          for (let i = 0; i < CONFIG.MAX_INVENTORY_SLOTS; i++) {
+            if (GameState.player.inventory[i] && GameState.player.inventory[i].id === item.id) {
+              itemIndex = i;
+              break;
+            }
+          }
+          if (itemIndex >= 0) {
+            slotEl = document.querySelector(`.inv-slot[data-index="${itemIndex}"]`);
+          }
+        }
+        if (slotEl) {
+          showItemTooltip(item, slotEl, tooltipIsEquipped);
+        }
+      } catch (e) {
+        console.error('Error reopening tooltip:', e);
+      }
+    });
+  }
+}
+
+function rerollAffixValue(itemId, affixIndex) {
+  const item = findItem(itemId);
+  if (!item || item.type !== 'equipment') return;
+
+  const affix = item.affixes[affixIndex];
+  if (!affix) return;
+
+  // Can only reroll unlocked affixes
+  if (affix.locked) {
+    showNotification('⚠️ Cannot reroll locked affixes!', 'warning');
+    return;
+  }
+
+  // Cost: 50 gems
+  const cost = 50;
+  if (GameState.player.gems < cost) {
+    showNotification('⚠️ Not enough gems!', 'warning');
+    return;
+  }
+
+  // Store tooltip state
+  const tooltip = document.getElementById('inventory-tooltip');
+  const tooltipWasOpen = tooltip && tooltip.getAttribute('aria-hidden') === 'false';
+  const tooltipItemId = tooltip ? tooltip.dataset.currentItemId : null;
+  const tooltipIsEquipped = tooltip ? tooltip.dataset.isEquipped === 'true' : false;
+
+  // Pay the cost
+  GameState.player.gems -= cost;
+  showFloatingChange(-cost, 'gems');
+
+  // Reroll the value (keep same affix name)
+  const range = AFFIX_RANGES[item.rarity][affix.name];
+  const oldValue = affix.value;
+  affix.value = GameState.rng.randInt(range[0], range[1]);
+
+  computeDerivedStats();
+  renderInventory();
+  renderPlayerStats();
+
+  const change = affix.value - oldValue;
+  const changeText = change > 0 ? `+${change}` : change.toString();
+  showNotification(`🎲 Rerolled ${affix.name} value: ${oldValue} → ${affix.value} (${changeText})`, 'info');
+
+  // Keep the tooltip open if it was showing this item
+  if (tooltipWasOpen && tooltipItemId === item.id) {
+    requestAnimationFrame(() => {
+      try {
+        let slotEl = null;
+        if (tooltipIsEquipped) {
+          slotEl = document.getElementById(`equip-${item.slot === 'ring' ? 'ring-slot' : item.slot}`);
+        } else {
+          let itemIndex = -1;
+          for (let i = 0; i < CONFIG.MAX_INVENTORY_SLOTS; i++) {
+            if (GameState.player.inventory[i] && GameState.player.inventory[i].id === item.id) {
+              itemIndex = i;
+              break;
+            }
+          }
+          if (itemIndex >= 0) {
+            slotEl = document.querySelector(`.inv-slot[data-index="${itemIndex}"]`);
+          }
+        }
+        if (slotEl) {
+          showItemTooltip(item, slotEl, tooltipIsEquipped);
+        }
+      } catch (e) {
+        console.error('Error reopening tooltip:', e);
+      }
+    });
+  }
 }
 
 function findItem(itemId) {
@@ -3871,11 +4094,11 @@ function renderUI() {
   const expNeeded = 100 * Math.pow(1.5, p.level - 1);
   const expPct = Math.min(100, (p.exp / expNeeded) * 100);
   document.getElementById('exp-fill').style.width = `${expPct}%`;
-  document.getElementById('exp-text').textContent = `${Math.floor(p.exp)} / ${Math.floor(expNeeded)}`;
+  document.getElementById('exp-text').textContent = `${Math.floor(p.exp).toLocaleString()} / ${Math.floor(expNeeded).toLocaleString()}`;
 
   const hpPct = Math.max(0, (p.hp / p.maxHp) * 100);
   document.getElementById('player-hp-fill').style.width = `${hpPct}%`;
-  document.getElementById('player-hp-text').textContent = `${Math.floor(p.hp)} / ${Math.floor(p.maxHp)}`;
+  document.getElementById('player-hp-text').textContent = `${Math.floor(p.hp).toLocaleString()} / ${Math.floor(p.maxHp).toLocaleString()}`;
 
   renderEquipmentRing();
   updateActiveEffects();
@@ -4239,9 +4462,9 @@ function renderPlayerStats() {
   // Helper function to format stat with bonus
   const formatStatWithBonus = (value, bonus) => {
     if (bonus > 0) {
-      return `${Math.floor(value)} <span style="color: var(--text-bonus);">(+${Math.floor(bonus)})</span>`;
+      return `${Math.floor(value).toLocaleString()} <span style="color: var(--text-bonus);">(+${Math.floor(bonus).toLocaleString()})</span>`;
     }
-    return Math.floor(value).toString();
+    return Math.floor(value).toLocaleString();
   };
 
   // Update inventory stats (combat only)
@@ -4249,8 +4472,8 @@ function renderPlayerStats() {
   document.getElementById('stat-hp').innerHTML = formatStatWithBonus(stats.finalHP, bonuses.hpBonus);
   document.getElementById('stat-spd').innerHTML = formatStatWithBonus(stats.finalSPD, bonuses.spdBonus);
   document.getElementById('stat-dmg').innerHTML = formatStatWithBonus(stats.finalDMGPct, bonuses.dmgBonus) + '%';
-  document.getElementById('stat-crit-rate').textContent = `${Math.floor(stats.finalCritRate)}%`;
-  document.getElementById('stat-crit-dmg').textContent = `${Math.floor(stats.finalCritDmg)}%`;
+  document.getElementById('stat-crit-rate').textContent = `${Math.floor(stats.finalCritRate).toLocaleString()}%`;
+  document.getElementById('stat-crit-dmg').textContent = `${Math.floor(stats.finalCritDmg).toLocaleString()}%`;
 
   // Update stats overlay - combat stats
   const atkDetail = document.getElementById('stat-atk-detail');
@@ -4276,6 +4499,8 @@ function renderPlayerStats() {
     const critsEl = document.getElementById('stat-crits');
     const dmgDealtEl = document.getElementById('stat-dmg-dealt');
     const dmgTakenEl = document.getElementById('stat-dmg-taken');
+    const highestDmgDealtEl = document.getElementById('stat-highest-dmg-dealt');
+    const highestDmgTakenEl = document.getElementById('stat-highest-dmg-taken');
     const coinsEarnedEl = document.getElementById('stat-coins-earned');
     const gemsEarnedEl = document.getElementById('stat-gems-earned');
     const expGainedEl = document.getElementById('stat-exp-gained');
@@ -4290,6 +4515,8 @@ function renderPlayerStats() {
     if (critsEl) critsEl.textContent = playerStats.criticalHits.toLocaleString();
     if (dmgDealtEl) dmgDealtEl.textContent = Math.floor(playerStats.totalDamageDealt).toLocaleString();
     if (dmgTakenEl) dmgTakenEl.textContent = Math.floor(playerStats.totalDamageTaken).toLocaleString();
+    if (highestDmgDealtEl) highestDmgDealtEl.textContent = Math.floor(playerStats.highestDamageDealt || 0).toLocaleString();
+    if (highestDmgTakenEl) highestDmgTakenEl.textContent = Math.floor(playerStats.highestDamageTaken || 0).toLocaleString();
     if (coinsEarnedEl) coinsEarnedEl.textContent = Math.floor(playerStats.totalCoinsEarned).toLocaleString();
     if (gemsEarnedEl) gemsEarnedEl.textContent = Math.floor(playerStats.totalGemsEarned).toLocaleString();
     if (expGainedEl) expGainedEl.textContent = Math.floor(playerStats.totalExpGained).toLocaleString();
@@ -4343,7 +4570,7 @@ function renderShop() {
     div.innerHTML = `
       <div class="shop-item-icon">${item.icon}</div>
       <div class="shop-item-name">${item.name}</div>
-      <div class="shop-item-price">💎 ${item.price}</div>
+      <div class="shop-item-price">💎 ${item.price.toLocaleString()}</div>
     `;
     if (!isSoldOut) {
       div.onclick = () => showShopItemTooltip(item, div);
@@ -4409,7 +4636,7 @@ function showElementDamage(damage, elementType, enemyEl, isCrit, customColor = n
 
   const dmgEl = document.createElement('div');
   dmgEl.className = 'drop-item';
-  dmgEl.textContent = isCrit ? `${damage}!` : `${damage}`;
+  dmgEl.textContent = isCrit ? `${damage.toLocaleString()}!` : `${damage.toLocaleString()}`;
   dmgEl.style.left = `${rect.left - stageRect.left + rect.width / 2}px`;
   dmgEl.style.top = `${rect.top - stageRect.top - 30}px`;
   dmgEl.style.color = customColor || getElementColor(elementType);
@@ -4441,6 +4668,15 @@ function applyDamageToEnemy(enemy, dmg, ctx = {}) {
   enemy.hp -= dmg;
   // attach lastHit context for on-death detection
   enemy.lastHit = Object.assign({}, ctx, { damage: dmg, timestamp: Date.now() });
+
+  // Track total damage dealt and highest damage dealt
+  const p = GameState.player;
+  if (p && p.statistics) {
+    p.statistics.totalDamageDealt += dmg;
+    if (dmg > (p.statistics.highestDamageDealt || 0)) {
+      p.statistics.highestDamageDealt = dmg;
+    }
+  }
 
   // floating damage display: color by element (special-case aether & wind etc)
   const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
@@ -5228,6 +5464,18 @@ function createCryoZone(centerX, centerY, aoeDmg, duration, player) {
   }, duration);
 }
 
+// Helper function to calculate weapon damage with all bonuses including DMG%
+function calculateWeaponDamage(player, multiplier) {
+  const baseATK = player.currentStats?.finalATK || player.ATK;
+  const baseDmg = Math.floor(baseATK * multiplier);
+  
+  // Apply DMG% bonus
+  const dmgPct = player.currentStats?.finalDMGPct || 0;
+  const finalDmg = Math.floor(baseDmg * (1 + dmgPct / 100));
+  
+  return finalDmg;
+}
+
 const WEAPON_HANDLERS = {
   // Aquila Longbow (Skywarden) - wind green, pushback, big explosion on kill
   skywarden: (p, enemy, weapon) => {
@@ -5319,7 +5567,7 @@ const WEAPON_HANDLERS = {
   // Storm Pike (Stormbreaker) - purple lightning arc & chaining arcs
   stormbreaker: (p, enemy, weapon) => {
     const element = 'lightning';
-    const main = Math.floor((p.currentStats?.finalATK || p.ATK) * 1.20);
+    const main = calculateWeaponDamage(p, 1.20);
     const playerEl = document.getElementById('player-container');
     const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
     let px = 0, py = 0, ex = 0, ey = 0;
@@ -5391,7 +5639,7 @@ const WEAPON_HANDLERS = {
                              tr.left + tr.width/2, tr.top + tr.height/2,
                              getElementColor(element), 220);
           }
-          const multishotDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 1.20);
+          const multishotDmg = calculateWeaponDamage(p, 1.20);
           applyCritDamage(target, multishotDmg, { type: element, source:'multishot', setId:'stormbreaker'});
         }, (index + 1) * 100);
       });
@@ -5421,7 +5669,7 @@ const WEAPON_HANDLERS = {
               createLightningArc(fr.left + fr.width/2, fr.top + fr.height/2,
                                tr.left + tr.width/2, tr.top + tr.height/2,
                                getElementColor(element), 200);
-              const chainDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 1.20);
+              const chainDmg = calculateWeaponDamage(p, 1.20);
               applyCritDamage(chainTarget, chainDmg, { type: element, source:'multishot_chain', setId:'stormbreaker'});
             }
           }
@@ -5431,7 +5679,7 @@ const WEAPON_HANDLERS = {
       // Lightning Surge: Guaranteed 2+ hits, 75% damage, 50% for 4th, 25% for 5th
       const usedIds = new Set([enemy.id]);
       let prevEnemy = enemy;
-      const surgeDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.75);
+      const surgeDmg = calculateWeaponDamage(p, 0.75);
 
       // Guaranteed 2 hits
       for (let i = 0; i < 2; i++) {
@@ -5535,7 +5783,7 @@ const WEAPON_HANDLERS = {
           }
           if (targetEl) { const rr = targetEl.getBoundingClientRect(); toX = rr.left + rr.width/2; toY = rr.top + rr.height/2; }
           createLightningArc(fromX, fromY, toX, toY, getElementColor(element), 200);
-          const chainDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.75);
+          const chainDmg = calculateWeaponDamage(p, 0.75);
           applyCritDamage(target, chainDmg, { type: element, source:'weapon_chain', setId:'stormbreaker'});
           usedIds.add(target.id);
           prevEnemy = target;
@@ -5559,7 +5807,7 @@ const WEAPON_HANDLERS = {
               }
               if (target2El) { const rr = target2El.getBoundingClientRect(); toX2 = rr.left + rr.width/2; toY2 = rr.top + rr.height/2; }
               createLightningArc(fromX2, fromY2, toX2, toY2, getElementColor(element), 230);
-              const chainDmg2 = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.50);
+              const chainDmg2 = calculateWeaponDamage(p, 0.50);
               applyCritDamage(target2, chainDmg2, { type: element, source:'weapon_chain', setId:'stormbreaker'});
             }
           }
@@ -5581,7 +5829,7 @@ const WEAPON_HANDLERS = {
 
     // AoE damage: 80% physical damage equal to 20% player HP
     const aoeHpComponent = (getPlayerHP(p) || 0) * 0.20;
-    const aoeDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.80 + aoeHpComponent);
+    const aoeDmg = Math.floor(calculateWeaponDamage(p, 0.80) + aoeHpComponent);
     const aoeRadius = 100;
     const enemyX = enemy.position?.x || enemy.x || 0;
     const enemyY = enemy.position?.y || enemy.y || 0;
@@ -5656,7 +5904,7 @@ const WEAPON_HANDLERS = {
   // Wraith Scythe - HP sacrifice with execute and lifesteal on kill
   shade: (p, enemy, weapon) => {
     const element = 'physical';
-    const small = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.50);
+    const small = calculateWeaponDamage(p, 0.50);
 
     // Lose 2% max HP, but if player has lower than 2% max HP, set HP to 1
     const hpMax = p.maxHp || p.HP_max || 1;
@@ -5684,7 +5932,7 @@ const WEAPON_HANDLERS = {
     if (getSetCount('shade') >= 3) {
       hpLostMultiplier = 4.00; // 200% base + 200% bonus = 400%
     }
-    const execDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 2.00 + hpLostMultiplier * hpLost);
+    const execDmg = Math.floor(calculateWeaponDamage(p, 2.00) + hpLostMultiplier * hpLost);
 
     // Red execute VFX
     const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
@@ -5848,17 +6096,17 @@ const WEAPON_HANDLERS = {
     const has6Piece = getSetCount('aegis') >= 6;
 
     // Base ball: 120% damage, 2 second duration
-    const dmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 1.20);
+    const dmg = calculateWeaponDamage(p, 1.20);
     applyCritDamage(enemy, dmg, { type: element, source:'weapon', setId:'aegis'});
 
     // Launch ball that hovers and deals damage
-    const ballDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 1.20);
+    const ballDmg = calculateWeaponDamage(p, 1.20);
     spawnAegisHoveringBall(enemy, ballDmg, 2000, p, has3Piece, has6Piece);
   },
 
   glacier: (p, enemy, weapon) => {
     const element = 'cryo';
-    const cryoDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 1.20);
+    const cryoDmg = calculateWeaponDamage(p, 1.20);
     applyCritDamage(enemy, cryoDmg, { type: element, source:'weapon', setId:'glacier'});
 
     const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
@@ -5883,7 +6131,7 @@ const WEAPON_HANDLERS = {
     if (enemy.hp <= 0) {
       const enemyX = enemy.position?.x || enemy.x || 0;
       const enemyY = enemy.position?.y || enemy.y || 0;
-      const aoeDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.10);
+      const aoeDmg = calculateWeaponDamage(p, 0.10);
 
       // Create cryo AOE zone that freezes enemies for 3 seconds and deals 10% cryo damage every tick
       createCryoZone(enemyX, enemyY, aoeDmg, 5000, p);
@@ -5893,8 +6141,8 @@ const WEAPON_HANDLERS = {
   // Emberkin - Inferno Blade: instant damage + fire AoE zone
   emberkin: (p, enemy, weapon) => {
     const element = 'fire';
-    const instant = Math.floor((p.currentStats?.finalATK || p.ATK) * 1.20);
-    const burnTick = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.20);
+    const instant = calculateWeaponDamage(p, 1.20);
+    const burnTick = calculateWeaponDamage(p, 0.20);
 
     applyCritDamage(enemy, instant, { type: element, source:'weapon', setId:'emberkin'});
 
@@ -5919,7 +6167,7 @@ const WEAPON_HANDLERS = {
   // Zephyr - Gale Daggers: stars (star-shaped) and explosions
   zephyr: (p, enemy, weapon) => {
     const element = 'aether';
-    const main = Math.floor((p.currentStats?.finalATK || p.ATK) * 1.20);
+    const main = calculateWeaponDamage(p, 1.20);
     applyCritDamage(enemy, main, { type: element, source:'weapon', setId:'zephyr'});
 
     // 4-piece: +2 stars (6 total)
@@ -5930,7 +6178,7 @@ const WEAPON_HANDLERS = {
     const fromX = enemyEl ? (enemyEl.getBoundingClientRect().left + enemyEl.getBoundingClientRect().width/2) : (enemy.x||0);
     const fromY = enemyEl ? (enemyEl.getBoundingClientRect().top + enemyEl.getBoundingClientRect().height/2) : (enemy.y||0);
 
-    const starDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.50);
+    const starDmg = calculateWeaponDamage(p, 0.50);
 
     for (let i=0;i<nStars;i++){
       const candidates = GameState.enemies.filter(e => e.id !== enemy.id);
@@ -5947,7 +6195,7 @@ const WEAPON_HANDLERS = {
 
             // 3-piece: Blow - explosion on each star collision
             if (getSetCount('zephyr') >= 3) {
-              const explosionDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.50);
+              const explosionDmg = calculateWeaponDamage(p, 0.50);
               const nearbyEnemies = findEnemiesInRadius(toX, toY, 80);
               nearbyEnemies.forEach(ne => {
                 if (ne.id !== h.id) {
@@ -5977,7 +6225,7 @@ const WEAPON_HANDLERS = {
                   onArrive: () => {
                     applyCritDamage(bounceTarget, starDmg, { type: element, source:'weapon_star_bounce', setId:'zephyr'});
                     if (getSetCount('zephyr') >= 3) {
-                      const explosionDmg = Math.floor((p.currentStats?.finalATK || p.ATK) * 0.50);
+                      const explosionDmg = calculateWeaponDamage(p, 0.50);
                       const nearbyEnemies = findEnemiesInRadius(bounceToX, bounceToY, 80);
                       nearbyEnemies.forEach(ne => {
                         if (ne.id !== bounceTarget.id) {
@@ -6018,7 +6266,7 @@ function attackEnemy(enemy) {
     if (enemyEl) {
       const n = document.createElement('div');
       n.className = 'drop-item';
-      n.textContent = clickResult.crit ? `${clickResult.damage}!` : `${clickResult.damage}`;
+      n.textContent = clickResult.crit ? `${clickResult.damage.toLocaleString()}!` : `${clickResult.damage.toLocaleString()}`;
       n.style.left = `${enemy.position?.x || enemy.x || 0}px`;
       n.style.top = `${(enemy.position?.y || enemy.y || 0) - 30}px`;
       n.style.color = clickResult.crit ? '#ff0' : '#fff';
@@ -6047,9 +6295,12 @@ function attackEnemy(enemy) {
     } else {
       // fallback: elemental damage only
       const p = player;
-      const weaponBase = Math.floor((p.currentStats?.finalATK || p.ATK) * (weaponItem.weaponMultiplier || 1.20));
+      const weaponBase = calculateWeaponDamage(p, (weaponItem.weaponMultiplier || 1.20));
+      // Apply DMG% bonus
+      const dmgMultiplier = 1 + (p.currentStats?.finalDMGPct || 0) / 100;
+      const finalWeaponDmg = Math.floor(weaponBase * dmgMultiplier);
       const el = weaponItem.element || (weaponItem.setId && (EQUIPMENT_SETS[weaponItem.setId]?.element || 'physical')) || 'physical';
-      applyCritDamage(enemy, weaponBase, { type: el, source:'weapon', setId: weaponItem.setId||null});
+      applyCritDamage(enemy, finalWeaponDmg, { type: el, source:'weapon', setId: weaponItem.setId||null});
     }
   }
 
@@ -6074,7 +6325,7 @@ function showFloatingDamage(damage, isCrit, element) {
 
   const dmgEl = document.createElement('div');
   dmgEl.className = 'drop-item';
-  dmgEl.textContent = isCrit ? `${damage}! ⚡` : damage;
+  dmgEl.textContent = isCrit ? `${damage.toLocaleString()}! ⚡` : damage.toLocaleString();
   dmgEl.style.left = `${rect.left - stageRect.left + rect.width / 2}px`;
   dmgEl.style.top = `${rect.top - stageRect.top - 30}px`;
   dmgEl.style.color = isCrit ? '#ff0' : '#ffa500';
@@ -6110,7 +6361,7 @@ function buildItemTooltipHtml(item, isEquipped) {
       ${item.type === 'equipment' ? `
         <div class="tooltip-base-stat">
           <div class="base-stat-name">${item.baseAttribute.name}</div>
-          <div class="base-stat-value">${item.baseAttribute.value}</div>
+          <div class="base-stat-value">${item.baseAttribute.value.toLocaleString()}</div>
         </div>
       ` : ''}
     </div>
@@ -6153,12 +6404,31 @@ function buildItemTooltipHtml(item, isEquipped) {
     }
 
     // Item attributes
-    item.affixes.forEach(affix => {
+    item.affixes.forEach((affix, affixIndex) => {
       const suffix = (affix.name.includes('%') || affix.name.includes('Crit')) ? '%' : '';
       if (affix.locked) {
-        html += `<div class="tooltip-attr locked">${affix.name}: ${affix.value}${suffix} (Upgrade to level ${affix.unlockLevel})</div>`;
+        html += `<div class="tooltip-attr locked">${affix.name}: ${affix.value.toLocaleString()}${suffix} (Upgrade to level ${affix.unlockLevel})</div>`;
       } else {
-        html += `<div class="tooltip-attr">${affix.name}: ${affix.value}${suffix}</div>`;
+        // Unlocked affix with reroll buttons
+        html += `
+          <div class="tooltip-attr" style="display: flex; align-items: center; justify-content: space-between; gap: 4px;">
+            <span>${affix.name}: ${affix.value.toLocaleString()}${suffix}</span>
+            <div style="display: flex; gap: 3px; flex-shrink: 0;">
+              <button 
+                class="reroll-btn" 
+                data-action="reroll-affix" data-affix-index="${affixIndex}"
+                title="Reroll affix type (15 gems)"
+                style="padding: 2px 6px; font-size: 9px; background: rgba(76,175,80,0.2); border: 1px solid #4caf50; color: #4caf50; border-radius: 3px; cursor: pointer; white-space: nowrap;"
+              >🔄 15💎</button>
+              <button 
+                class="reroll-btn" 
+                data-action="reroll-affix-value" data-affix-index="${affixIndex}"
+                title="Reroll affix value (50 gems)"
+                style="padding: 2px 6px; font-size: 9px; background: rgba(33,150,243,0.2); border: 1px solid #2196f3; color: #2196f3; border-radius: 3px; cursor: pointer; white-space: nowrap;"
+              >🎲 50💎</button>
+            </div>
+          </div>
+        `;
       }
     });
 
@@ -6172,27 +6442,27 @@ function buildItemTooltipHtml(item, isEquipped) {
         upgradeButton = `<button class="tooltip-btn secondary" disabled style="opacity: 0.5; cursor: not-allowed;">MAX LEVEL</button>`;
       } else {
         // Non-mythic at level 100 - show Enhance button
-        upgradeButton = `<button class="tooltip-btn legendary" onclick="enhanceItem('${item.id}')" style="background: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%); border-color: #9c27b0;">Enhance (💰${cost.coins} 💎15)</button>`;
+        upgradeButton = `<button class="tooltip-btn legendary" data-action="enhance" style="background: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%); border-color: #9c27b0;">Enhance (💰${cost.coins} 💎15)</button>`;
       }
     } else {
       // Normal upgrade
-      upgradeButton = `<button class="tooltip-btn secondary" onclick="upgradeItem('${item.id}')">Upgrade (💰${cost.coins} ${cost.gems > 0 ? `💎${cost.gems}` : ''})</button>`;
+      upgradeButton = `<button class=\"tooltip-btn secondary\" data-action=\"upgrade\">Upgrade (💰${cost.coins.toLocaleString()} ${cost.gems > 0 ? `💎${cost.gems.toLocaleString()}` : ''})</button>`;
     }
     
     html += `
       </div>
       <div class="tooltip-actions">
-        ${!isEquipped ? `<button class="tooltip-btn primary" onclick="equipItem('${item.id}')">Equip</button>` : ''}
-        ${isEquipped ? `<button class="tooltip-btn secondary" onclick="unequipItem('${item.slot}')">Unequip</button>` : ''}
+        ${!isEquipped ? `<button class="tooltip-btn primary" data-action="equip">Equip</button>` : ''}
+        ${isEquipped ? `<button class="tooltip-btn secondary" data-action="unequip" data-slot="${item.slot}">Unequip</button>` : ''}
         ${upgradeButton}
-        <button class="tooltip-btn danger" onclick="sellItem('${item.id}')">Sell (💰${item.sellPrice})</button>
+        <button class="tooltip-btn danger" data-action="sell">Sell (💰${item.sellPrice.toLocaleString()})</button>
       </div>
     `;
   } else if (item.type === 'consumable') {
     html += `
       <div>${item.name}</div>
       <div class="tooltip-actions">
-        <button class="tooltip-btn primary" onclick="useConsumable('${item.id}')">Use</button>
+        <button class="tooltip-btn primary" data-action="use-consumable">Use</button>
       </div>
     </div>
     `;
@@ -6213,7 +6483,7 @@ function buildShopItemTooltipHtml(item) {
       ${item.type === 'equipment' ? `
         <div class="tooltip-base-stat">
           <div class="base-stat-name">${item.baseAttribute.name}</div>
-          <div class="base-stat-value">${item.baseAttribute.value}</div>
+          <div class="base-stat-value">${item.baseAttribute.value.toLocaleString()}</div>
         </div>
       ` : ''}
     </div>
@@ -6258,9 +6528,9 @@ function buildShopItemTooltipHtml(item) {
     item.affixes.forEach(affix => {
       const suffix = (affix.name.includes('%') || affix.name.includes('Crit')) ? '%' : '';
       if (affix.locked) {
-        html += `<div class="tooltip-attr locked">${affix.name}: ${affix.value}${suffix} (Upgrade to level ${affix.unlockLevel})</div>`;
+        html += `<div class="tooltip-attr locked">${affix.name}: ${affix.value.toLocaleString()}${suffix} (Upgrade to level ${affix.unlockLevel})</div>`;
       } else {
-        html += `<div class="tooltip-attr">${affix.name}: ${affix.value}${suffix}</div>`;
+        html += `<div class="tooltip-attr">${affix.name}: ${affix.value.toLocaleString()}${suffix}</div>`;
       }
     });
 
@@ -6275,7 +6545,7 @@ function buildShopItemTooltipHtml(item) {
       <div style="padding: 8px;">${item.desc || item.name}</div>
       </div>
       <div class="tooltip-actions">
-        <button class="tooltip-btn primary buy-shop-btn" data-item-id="${item.id}">Buy (💎${item.price})</button>
+        <button class="tooltip-btn primary buy-shop-btn" data-item-id="${item.id}">Buy (💎${item.price.toLocaleString()})</button>
       </div>
     `;
   } else {
@@ -6565,8 +6835,24 @@ const CHALLENGE_TYPES = {
 };
 
 function selectRandomChallenge() {
+  const world = GameState.player.world;
+  
+  // Check if this world already has an assigned challenge
+  if (!GameState.worldProgress.assignedChallenges) {
+    GameState.worldProgress.assignedChallenges = {};
+  }
+  
+  if (GameState.worldProgress.assignedChallenges[world]) {
+    // Return the previously assigned challenge for this world
+    return GameState.worldProgress.assignedChallenges[world];
+  }
+  
+  // No challenge assigned yet, pick a random one and save it
   const challenges = Object.keys(CHALLENGE_TYPES);
-  return challenges[Math.floor(Math.random() * challenges.length)];
+  const selectedChallenge = challenges[Math.floor(Math.random() * challenges.length)];
+  GameState.worldProgress.assignedChallenges[world] = selectedChallenge;
+  
+  return selectedChallenge;
 }
 
 function startChallenge(challengeType) {
@@ -6851,6 +7137,12 @@ function onChallengeComplete() {
   }
 
   GameState.player.world++;
+  
+  // Clear the challenge assignment for the OLD world (the one we just completed)
+  const completedWorld = GameState.player.world - 1;
+  if (GameState.worldProgress.assignedChallenges && GameState.worldProgress.assignedChallenges[completedWorld]) {
+    delete GameState.worldProgress.assignedChallenges[completedWorld];
+  }
 
   // Track world completion
   if (GameState.player.statistics) {
@@ -6978,6 +7270,8 @@ function loadGame() {
         totalKills: 0,
         totalDamageDealt: 0,
         totalDamageTaken: 0,
+        highestDamageDealt: 0,
+        highestDamageTaken: 0,
         totalCoinsEarned: 0,
         totalGemsEarned: 0,
         totalExpGained: 0,
@@ -6991,6 +7285,13 @@ function loadGame() {
         sessionStartTime: Date.now()
       };
     } else {
+      // Add new statistics fields if they don't exist (for saves created before these fields were added)
+      if (GameState.player.statistics.highestDamageDealt === undefined) {
+        GameState.player.statistics.highestDamageDealt = 0;
+      }
+      if (GameState.player.statistics.highestDamageTaken === undefined) {
+        GameState.player.statistics.highestDamageTaken = 0;
+      }
       // Reset session start time for loaded game
       GameState.player.statistics.sessionStartTime = Date.now();
     }
@@ -7337,7 +7638,7 @@ function updateSetBonusesPeriodic(dt) {
               // Calculate burn damage with 3-piece bonus
               let totalBurnDmg = zone.baseDamage;
               if (getSetCount('emberkin') >= 3) {
-                totalBurnDmg += Math.floor((p.currentStats?.finalATK || p.ATK) * 0.08);
+                totalBurnDmg += calculateWeaponDamage(p, 0.08);
               }
 
               applyDamageToEnemy(enemy, Math.floor(totalBurnDmg), { type: 'fire', source: 'weapon_zone', setId: 'emberkin', isDoT: true });
@@ -7930,6 +8231,7 @@ const DevTools = {
 
       const mythicBaseRanges = BASE_STAT_RANGES.mythic;
       const mythicAffixRanges = AFFIX_RANGES.mythic;
+      const mythicLevel100Stats = BASE_STAT_LEVEL100.mythic;
 
       Object.keys(setData.items).forEach(itemKey => {
         const itemTemplate = setData.items[itemKey];
@@ -7957,16 +8259,16 @@ const DevTools = {
           name: itemTemplate.name,
           icon: itemTemplate.icon,
           rarity: 'mythic',
-          level: 1,
-          stars: 0,
+          level: 100,
+          stars: 5,
           setId: setId,
           setName: setData.name,
           element: setData.element,
           baseAttribute: {
             name: baseAttrName,
-            value: mythicBaseRanges[baseAttrName][1] // Max value for mythic base stat
+            value: mythicLevel100Stats[baseAttrName] // Level 100 value for mythic base stat
           },
-          initialBaseValue: mythicBaseRanges[baseAttrName][1], // Store initial value for level scaling
+          initialBaseValue: mythicBaseRanges[baseAttrName][1], // Store initial level 1 value for level scaling reference
           affixes: [
             {
               name: 'ATK%',
@@ -8206,6 +8508,60 @@ if (document.readyState === 'loading') {
   requestAnimationFrame(renderEnemiesPerFrame);
 }
 /* --- end smooth renderer --- */
+
+
+// ========== Tooltip Button Event Delegation ==========
+// Handle all tooltip button clicks to fix the wrong-item bug
+document.addEventListener('click', (e) => {
+  const button = e.target.closest('.tooltip-btn, .reroll-btn');
+  if (!button) return;
+
+  const tooltip = document.getElementById('inventory-tooltip');
+  if (!tooltip || !tooltip.contains(button)) return;
+  if (tooltip.getAttribute('aria-hidden') === 'true') return;
+
+  const action = button.getAttribute('data-action');
+  if (!action) return;
+
+  // Get item ID from tooltip dataset (this is the correct item ID)
+  const itemId = tooltip.dataset.currentItemId;
+  if (!itemId) return;
+
+  // Prevent default and stop propagation
+  e.preventDefault();
+  e.stopPropagation();
+
+  // Execute the appropriate action with the correct item ID
+  switch (action) {
+    case 'equip':
+      equipItem(itemId);
+      break;
+    case 'unequip':
+      const slot = button.getAttribute('data-slot');
+      if (slot) unequipItem(slot);
+      break;
+    case 'upgrade':
+      upgradeItem(itemId);
+      break;
+    case 'enhance':
+      enhanceItem(itemId);
+      break;
+    case 'sell':
+      sellItem(itemId);
+      break;
+    case 'use-consumable':
+      useConsumable(itemId);
+      break;
+    case 'reroll-affix':
+      const affixIndex1 = parseInt(button.getAttribute('data-affix-index'));
+      if (!isNaN(affixIndex1)) rerollAffix(itemId, affixIndex1);
+      break;
+    case 'reroll-affix-value':
+      const affixIndex2 = parseInt(button.getAttribute('data-affix-index'));
+      if (!isNaN(affixIndex2)) rerollAffixValue(itemId, affixIndex2);
+      break;
+  }
+});
 
 </script>
 </body>
