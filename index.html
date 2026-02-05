@@ -19,6 +19,7 @@
       --color-epic: #9c27b0;
       --color-legendary: #ff9800;
       --color-mythic: #f44336;
+      --color-divine: #dc2367;
       --bg-primary:#1a1410;
       --bg-secondary:#2a1f1a;
       --bg-tertiary:#3a2f2a;
@@ -1495,6 +1496,7 @@
     .rarity-epic { border-color: var(--color-epic) !important; }
     .rarity-legendary { border-color: var(--color-legendary) !important; }
     .rarity-mythic { border-color: var(--color-mythic) !important; }
+    .rarity-divine { border-color: var(--color-divine) !important; }
 
     .text-common { color: var(--color-common); }
     .text-uncommon { color: var(--color-uncommon); }
@@ -1502,6 +1504,7 @@
     .text-epic { color: var(--color-epic); }
     .text-legendary { color: var(--color-legendary); }
     .text-mythic { color: var(--color-mythic); }
+    .text-divine { color: var(--color-divine); }
 
     /* Floating coin/gem popup */
     .floating-change {
@@ -1912,6 +1915,20 @@
       </div>
     </div>
 
+    <!-- Sell confirmation modal -->
+    <div id="sell-modal" class="custom-modal" aria-hidden="true">
+      <div class="modal-content">
+        <div class="modal-header">Sell Item</div>
+        <div class="modal-body" id="sell-modal-body">
+          Are you sure you want to sell this item?
+        </div>
+        <div class="modal-actions">
+          <button class="modal-btn modal-btn-cancel" id="sell-modal-cancel">Cancel</button>
+          <button class="modal-btn modal-btn-confirm" id="sell-modal-confirm">Sell</button>
+        </div>
+      </div>
+    </div>
+
     <div id="bottom-nav">
       <button class="nav-btn" onclick="openOverlay('inventory-overlay')">
         <span class="nav-btn-icon">🎒</span>
@@ -1970,7 +1987,7 @@ const CONFIG = {
   SHOP_MANUAL_COOLDOWN_SEC: 5,
   DEFAULT_CONSUMABLE_DURATION_S: 3600,
   TEST_CONSUMABLE_DURATION_S: 300,
-  WAVE_INTERVAL_SEC: 10,
+  WAVE_INTERVAL_SEC: 0.3,
   MIN_WAVE_ENEMIES: 5,
   MAX_WAVE_ENEMIES: 200,
   RARITY_PROB: { common:0.45, uncommon:0.35, rare:0.10, epic:0.05, legendary:0.03, mythic:0.02 },
@@ -1983,7 +2000,8 @@ const CONFIG = {
     rare: 214,         // Upgrades to 100 cost ~30000 (300% of epic's 50000/3 ≈ 16667)
     epic: 1070,        // Upgrades to 100 cost ~150000 (300% of legendary's 200000/3 ≈ 66667)
     legendary: 4280,   // Upgrades to 100 cost ~600000 (300% of mythic's 1000000/3 ≈ 333333)
-    mythic: 21400      // Upgrades to 100 cost ~3000000 (no next rarity, so 300% of its own value)
+    mythic: 21400,     // Upgrades to 100 cost ~3000000 (300% of divine's cost)
+    divine: 107000     // Upgrades to 100 cost ~15000000 (highest tier)
   },
   STAR_THRESHOLDS: [10,25,50,75,100],
   STAR_GEM_COSTS: { "10":0, "25":1, "50":3, "75":5, "100":10 },
@@ -2845,6 +2863,9 @@ const BASE_STAT_RANGES = {
   },
   mythic: {
     HP: [50000, 55000], ATK: [50000, 55000], SPD: [1200, 1500], 'DMG%': [5500, 6000]
+  },
+  divine: {
+    HP: [100000, 120000], ATK: [100000, 120000], SPD: [2500, 3000], 'DMG%': [12000, 15000]
   }
 };
 
@@ -2868,6 +2889,9 @@ const BASE_STAT_LEVEL100 = {
   },
   mythic: {
     HP: 100000, ATK: 100000, SPD: 2500, 'DMG%': 10000
+  },
+  divine: {
+    HP: 200000, ATK: 200000, SPD: 5000, 'DMG%': 20000
   }
 };
 
@@ -2896,6 +2920,10 @@ const AFFIX_RANGES = {
   mythic: {
     HP: [2500, 5000], 'HP%': [25, 35], ATK: [2500, 5000], 'ATK%': [25, 35],
     SPD: [25, 35], 'DMG%': [75, 100], 'Crit Rate': [5, 35], 'Crit Damage': [100, 250]
+  },
+  divine: {
+    HP: [5000, 10000], 'HP%': [35, 50], ATK: [5000, 10000], 'ATK%': [35, 50],
+    SPD: [35, 50], 'DMG%': [100, 150], 'Crit Rate': [10, 50], 'Crit Damage': [150, 350]
   }
 };
 
@@ -3294,7 +3322,24 @@ function onEnemyDeath(enemy) {
 
 function checkLevelUp() {
   const p = GameState.player;
-  const expNeeded = 100 * Math.pow(1.5, p.level - 1);
+  
+  // Three-tier XP curve system
+  let expNeeded;
+  if (p.level <= 15) {
+    // Levels 1-15: Full exponential curve
+    expNeeded = 100 * Math.pow(1.5, p.level - 1);
+  } else if (p.level <= 30) {
+    // Levels 16-30: Transition period - slow down a bit
+    const baseXP = 100 * Math.pow(1.5, 14); // XP at level 15
+    const levelsAbove15 = p.level - 15;
+    // Use 1.3 multiplier instead of 1.5 for slower growth
+    expNeeded = baseXP * Math.pow(1.1, levelsAbove15);
+  } else {
+    // Levels 31+: Much slower polynomial growth
+    const baseXP = 100 * Math.pow(1.5, 14) * Math.pow(1.1, 15); // XP at level 30
+    const levelsAbove30 = p.level - 30;
+    expNeeded = baseXP + (levelsAbove30 * levelsAbove30 * 3200);
+  }
 
   while (p.exp >= expNeeded) {
     p.exp -= expNeeded;
@@ -3302,6 +3347,20 @@ function checkLevelUp() {
     p.baseStats.ATK += 10;
     p.baseStats.HP += 20;
     p.baseStats.SPD += 1;
+    
+    // Recalculate expNeeded for next level
+    if (p.level <= 15) {
+      expNeeded = 100 * Math.pow(1.5, p.level - 1);
+    } else if (p.level <= 30) {
+      const baseXP = 100 * Math.pow(1.5, 14);
+      const levelsAbove15 = p.level - 15;
+      expNeeded = baseXP * Math.pow(1.3, levelsAbove15);
+    } else {
+      const baseXP = 100 * Math.pow(1.5, 14) * Math.pow(1.3, 15);
+      const levelsAbove30 = p.level - 30;
+      expNeeded = baseXP + (levelsAbove30 * levelsAbove30 * 800);
+    }
+    
     computeDerivedStats();
     p.hp = p.maxHp;
     showNotification(`⭐ Level Up! You are now level ${p.level}`, 'success');
@@ -3312,33 +3371,50 @@ function checkLevelUp() {
 function spawnWave() {
   if (GameState.suspendWaves) return;
 
-  // Limit max enemies on screen to 50
-  if (GameState.enemies.length >= 50) {
-    return;
+  const p = GameState.player;
+  
+  // Dynamic enemy cap: starts at 10, increases by 5 per world, max 100
+  const enemyCap = Math.min(100, 10 + (p.world - 1) * 5);
+  const currentEnemyCount = GameState.enemies.length;
+  
+  if (currentEnemyCount >= enemyCap) {
+    return; // Already at cap
   }
 
-  const p = GameState.player;
-  const count = Math.max(CONFIG.MIN_WAVE_ENEMIES, Math.min(
-    CONFIG.MAX_WAVE_ENEMIES,
-    CONFIG.MIN_WAVE_ENEMIES + p.world + Math.floor(p.level / 5)
-  ));
-
   const typeWeights = { small: 30, normal: 50, big: 15, elite: 5 };
+  const enemiesNeeded = enemyCap - currentEnemyCount;
 
-  // Only spawn enemies up to the 50 limit
-  const maxToSpawn = Math.min(count, 50 - GameState.enemies.length);
-
-  for (let i = 0; i < maxToSpawn; i++) {
-    const type = GameState.rng.weightedChoice(
-      Object.keys(typeWeights),
-      Object.values(typeWeights)
-    );
-    const enemy = createEnemy(type, p.world);
-    GameState.enemies.push(enemy);
-  // initialize previous render position
-  enemy.prevX = enemy.position.x;
-  enemy.prevY = enemy.position.y;
-
+  // 15% chance to spawn a group of 5-12 enemies together
+  const spawnGroup = Math.random() < 0.15 && enemiesNeeded >= 5;
+  
+  if (spawnGroup) {
+    // Group spawn: 5-12 enemies at once
+    const groupSize = Math.min(Math.floor(Math.random() * 8) + 5, enemiesNeeded);
+    
+    for (let i = 0; i < groupSize; i++) {
+      const type = GameState.rng.weightedChoice(
+        Object.keys(typeWeights),
+        Object.values(typeWeights)
+      );
+      const enemy = createEnemy(type, p.world);
+      GameState.enemies.push(enemy);
+      enemy.prevX = enemy.position.x;
+      enemy.prevY = enemy.position.y;
+    }
+  } else {
+    // Continuous spawn: spawn 1-2 enemies to continuously fill to cap
+    const spawnCount = Math.min(Math.floor(Math.random() * 2) + 1, enemiesNeeded);
+    
+    for (let i = 0; i < spawnCount; i++) {
+      const type = GameState.rng.weightedChoice(
+        Object.keys(typeWeights),
+        Object.values(typeWeights)
+      );
+      const enemy = createEnemy(type, p.world);
+      GameState.enemies.push(enemy);
+      enemy.prevX = enemy.position.x;
+      enemy.prevY = enemy.position.y;
+    }
   }
 }
 
@@ -3473,6 +3549,42 @@ function sellItem(itemId) {
   const item = findItem(itemId);
   if (!item) return;
 
+  // Show confirmation modal
+  const modal = document.getElementById('sell-modal');
+  const modalBody = document.getElementById('sell-modal-body');
+  
+  // Build item description for modal
+  let itemDescription = `<strong>${item.name}</strong>`;
+  if (item.type === 'equipment') {
+    const rarityColor = `var(--color-${item.rarity})`;
+    const stars = '⭐'.repeat(Math.floor(item.level / 20));
+    itemDescription = `<strong style="color: ${rarityColor};">${item.name}</strong> ${stars}<br>Level ${item.level}`;
+  }
+  
+  modalBody.innerHTML = `
+    Are you sure you want to sell:<br><br>
+    ${itemDescription}<br><br>
+    for <strong style="color: var(--accent-gold);">💰 ${item.sellPrice.toLocaleString()} coins</strong>?
+  `;
+  
+  modal.setAttribute('aria-hidden', 'false');
+  
+  // Store the itemId for the confirm handler
+  modal.dataset.pendingSellItemId = itemId;
+}
+
+function confirmSellItem() {
+  const modal = document.getElementById('sell-modal');
+  const itemId = modal.dataset.pendingSellItemId;
+  
+  if (!itemId) return;
+  
+  const item = findItem(itemId);
+  if (!item) {
+    modal.setAttribute('aria-hidden', 'true');
+    return;
+  }
+
   GameState.player.coins += item.sellPrice;
   showFloatingChange(item.sellPrice, 'coins');
 
@@ -3498,6 +3610,7 @@ function sellItem(itemId) {
 
   renderInventory();
   hideTooltip();
+  modal.setAttribute('aria-hidden', 'true');
   showNotification(`💰 Sold ${item.name} for ${item.sellPrice} coins`, 'success');
 }
 
@@ -3507,7 +3620,7 @@ function upgradeItem(itemId) {
 
   // cap item level at 100
   if (typeof item.level === 'number' && item.level >= 100) {
-    if (item.rarity === 'mythic') {
+    if (item.rarity === 'divine') {
       showNotification('⚠️ Item is already at MAX LEVEL!', 'warning');
     } else {
       showNotification('⚠️ Item is level 100! Use Enhance to promote to next rarity.', 'info');
@@ -3568,6 +3681,9 @@ function upgradeItem(itemId) {
   
   item.baseAttribute.value = targetValue;
 
+  // Update sell price based on new item value
+  updateItemSellPrice(item);
+
   computeDerivedStats();
   renderInventory();
   renderPlayerStats();
@@ -3620,6 +3736,37 @@ function getUpgradeCost(item) {
   return { coins, gems };
 }
 
+// Calculate the current value of an item based on its level and upgrades
+function getItemCurrentValue(item) {
+  if (!item || item.type !== 'equipment') return item.buyPrice || 0;
+  
+  // Start with base buy price
+  let totalValue = item.buyPrice || 0;
+  
+  // Add value for each level upgrade (sum of all upgrade costs from level 1 to current level)
+  const baseCost = CONFIG.EQUIP_BASE_UPGRADE_COST[item.rarity];
+  for (let lvl = 1; lvl < item.level; lvl++) {
+    const upgradeCost = Math.floor(baseCost * Math.pow(1.055, lvl - 1));
+    totalValue += upgradeCost;
+    
+    // Add gem costs for star thresholds
+    if (CONFIG.STAR_THRESHOLDS.includes(lvl + 1)) {
+      const gemCost = CONFIG.STAR_GEM_COSTS[(lvl + 1).toString()] || 0;
+      // Convert gems to coins at a rate (e.g., 1 gem = 1000 coins)
+      totalValue += gemCost * 1000;
+    }
+  }
+  
+  return totalValue;
+}
+
+// Update an item's sell price based on its current value
+function updateItemSellPrice(item) {
+  if (!item || item.type !== 'equipment') return;
+  const currentValue = getItemCurrentValue(item);
+  item.sellPrice = Math.floor(currentValue * 0.5); // 50% of current value
+}
+
 function enhanceItem(itemId) {
   const item = findItem(itemId);
   if (!item || item.type !== 'equipment') return;
@@ -3630,9 +3777,9 @@ function enhanceItem(itemId) {
     return;
   }
 
-  // Cannot enhance mythic items
-  if (item.rarity === 'mythic') {
-    showNotification('⚠️ Mythic items cannot be enhanced further!', 'warning');
+  // Cannot enhance divine items (max rarity)
+  if (item.rarity === 'divine') {
+    showNotification('⚠️ Divine items cannot be enhanced further!', 'warning');
     return;
   }
 
@@ -3665,7 +3812,7 @@ function enhanceItem(itemId) {
   showFloatingChange(-enhanceCost.gems, 'gems');
 
   // Determine next rarity
-  const rarityOrder = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'mythic'];
+  const rarityOrder = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'mythic', 'divine'];
   const currentRarityIndex = rarityOrder.indexOf(item.rarity);
   const nextRarity = rarityOrder[currentRarityIndex + 1];
 
@@ -3728,6 +3875,13 @@ function enhanceItem(itemId) {
     item.name = `${nextRarity.charAt(0).toUpperCase() + nextRarity.slice(1)} ${item.slot.charAt(0).toUpperCase() + item.slot.slice(1)}`;
   }
 
+  // Update buy price to reflect new rarity (using same formula as generateEquipment)
+  const world = item.createdAtWorld || GameState.player.world || 1;
+  item.buyPrice = Math.floor(CONFIG.BASE_SHOP_PRICE[nextRarity] * (1 + world * 0.1));
+  
+  // Update sell price based on new value (now at level 1 of new rarity)
+  updateItemSellPrice(item);
+
   computeDerivedStats();
   renderInventory();
   renderPlayerStats();
@@ -3759,6 +3913,290 @@ function enhanceItem(itemId) {
         }
       } catch (err) {
         console.error('Error reopening tooltip after enhance:', err);
+      }
+    });
+  }
+}
+
+// Quick enhance: upgrades item to level 100 and then enhances to next rarity
+function quickEnhanceItem(itemId) {
+  const item = findItem(itemId);
+  if (!item || item.type !== 'equipment') return;
+
+  if (item.level >= 100) {
+    showNotification('⚠️ Item is already at level 100!', 'warning');
+    return;
+  }
+
+  if (item.rarity === 'divine') {
+    showNotification('⚠️ Divine items cannot be enhanced further!', 'warning');
+    return;
+  }
+
+  // Calculate total cost to upgrade to level 100 and enhance
+  let totalCoins = 0;
+  let totalGems = 0;
+  const baseCost = CONFIG.EQUIP_BASE_UPGRADE_COST[item.rarity];
+  
+  for (let lvl = item.level; lvl < 100; lvl++) {
+    const upgradeCost = Math.floor(baseCost * Math.pow(1.055, lvl - 1));
+    totalCoins += upgradeCost;
+    
+    const nextLevel = lvl + 1;
+    if (CONFIG.STAR_THRESHOLDS.includes(nextLevel)) {
+      totalGems += CONFIG.STAR_GEM_COSTS[nextLevel.toString()] || 0;
+    }
+  }
+  
+  // Add enhancement cost
+  const finalUpgradeCost = Math.floor(baseCost * Math.pow(1.055, 99));
+  totalCoins += finalUpgradeCost;
+  totalGems += 15; // Enhancement gem cost
+
+  const p = GameState.player;
+  if (p.coins < totalCoins) {
+    showNotification('⚠️ Not enough coins!', 'warning');
+    return;
+  }
+  if (p.gems < totalGems) {
+    showNotification('⚠️ Not enough gems!', 'warning');
+    return;
+  }
+
+  // Store tooltip state BEFORE any operations
+  const tooltip = document.getElementById('inventory-tooltip');
+  const tooltipWasOpen = tooltip && tooltip.getAttribute('aria-hidden') === 'false';
+  const tooltipItemId = tooltip ? tooltip.dataset.currentItemId : null;
+  const tooltipIsEquipped = tooltip ? tooltip.dataset.isEquipped === 'true' : false;
+
+  // Pay the cost
+  p.coins -= totalCoins;
+  showFloatingChange(-totalCoins, 'coins');
+  p.gems -= totalGems;
+  showFloatingChange(-totalGems, 'gems');
+
+  // Upgrade to level 100
+  const oldLevel = item.level;
+  item.level = 100;
+  item.stars = 5;
+
+  // Unlock all affixes
+  item.affixes.forEach(aff => {
+    aff.locked = false;
+  });
+
+  // Update base stat to level 100 value
+  if (item.initialBaseValue === undefined) {
+    item.initialBaseValue = item.baseAttribute.value;
+  }
+  
+  const level1Value = item.initialBaseValue;
+  const level100Value = BASE_STAT_LEVEL100[item.rarity][item.baseAttribute.name];
+  item.baseAttribute.value = level100Value;
+
+  // Now enhance to next rarity
+  const rarityOrder = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'mythic', 'divine'];
+  const currentRarityIndex = rarityOrder.indexOf(item.rarity);
+  const nextRarity = rarityOrder[currentRarityIndex + 1];
+
+  if (nextRarity) {
+    const oldRarity = item.rarity;
+    item.rarity = nextRarity;
+    item.level = 1;
+    item.stars = 0;
+
+    // Lock all affixes again
+    item.affixes.forEach(aff => {
+      aff.locked = true;
+    });
+
+    // Generate new base stat value for the new rarity
+    const baseAttrName = item.baseAttribute.name;
+    const newBaseRange = BASE_STAT_RANGES[nextRarity][baseAttrName];
+    const newBaseValue = GameState.rng.randInt(newBaseRange[0], newBaseRange[1]);
+    
+    item.baseAttribute.value = newBaseValue;
+    item.initialBaseValue = newBaseValue;
+
+    // Keep existing affixes but upgrade their values to new rarity ranges
+    item.affixes.forEach(affix => {
+      const range = AFFIX_RANGES[nextRarity][affix.name];
+      if (range) {
+        const oldRange = AFFIX_RANGES[oldRarity][affix.name];
+        if (oldRange) {
+          const oldMin = oldRange[0];
+          const oldMax = oldRange[1];
+          const oldSpan = oldMax - oldMin;
+          const percentage = oldSpan > 0 ? (affix.value - oldMin) / oldSpan : 0.5;
+          
+          const newMin = range[0];
+          const newMax = range[1];
+          const newSpan = newMax - newMin;
+          affix.value = Math.floor(newMin + (newSpan * percentage));
+        } else {
+          affix.value = GameState.rng.randInt(range[0], range[1]);
+        }
+      }
+    });
+
+    // Update name if it's a generic item
+    if (!item.setId) {
+      item.name = `${nextRarity.charAt(0).toUpperCase() + nextRarity.slice(1)} ${item.slot.charAt(0).toUpperCase() + item.slot.slice(1)}`;
+    }
+
+    // Update buy price to reflect new rarity
+    const world = item.createdAtWorld || p.world || 1;
+    item.buyPrice = Math.floor(CONFIG.BASE_SHOP_PRICE[nextRarity] * (1 + world * 0.1));
+  }
+
+  // Update sell price based on new value
+  updateItemSellPrice(item);
+
+  computeDerivedStats();
+  renderInventory();
+  renderPlayerStats();
+
+  showNotification(`⚡ Quick Enhanced to ${nextRarity}! (Lvl ${oldLevel} → Lvl 1 ${nextRarity})`, 'legendary');
+
+  // Keep the tooltip open if it was showing this item
+  if (tooltipWasOpen && tooltipItemId === item.id) {
+    requestAnimationFrame(() => {
+      try {
+        let slotEl = null;
+        if (tooltipIsEquipped) {
+          slotEl = document.getElementById(`equip-${item.slot === 'ring' ? 'ring-slot' : item.slot}`);
+        } else {
+          let itemIndex = -1;
+          for (let i = 0; i < CONFIG.MAX_INVENTORY_SLOTS; i++) {
+            if (p.inventory[i] && p.inventory[i].id === item.id) {
+              itemIndex = i;
+              break;
+            }
+          }
+          if (itemIndex !== -1) {
+            slotEl = document.querySelector(`.inv-slot[data-index="${itemIndex}"]`);
+          }
+        }
+        
+        if (slotEl) {
+          showItemTooltip(item, slotEl, tooltipIsEquipped);
+        }
+      } catch (err) {
+        console.error('Error reopening tooltip:', err);
+      }
+    });
+  }
+}
+
+// Quick upgrade: upgrades item to a specific level (typically next star threshold)
+function quickUpgradeItem(itemId, targetLevel) {
+  const item = findItem(itemId);
+  if (!item || item.type !== 'equipment') return;
+
+  if (item.level >= targetLevel) {
+    showNotification(`⚠️ Item is already at level ${targetLevel} or higher!`, 'warning');
+    return;
+  }
+
+  // Calculate total cost to upgrade to target level
+  let totalCoins = 0;
+  let totalGems = 0;
+  const baseCost = CONFIG.EQUIP_BASE_UPGRADE_COST[item.rarity];
+  
+  for (let lvl = item.level; lvl < targetLevel; lvl++) {
+    const upgradeCost = Math.floor(baseCost * Math.pow(1.055, lvl - 1));
+    totalCoins += upgradeCost;
+    
+    const nextLevel = lvl + 1;
+    if (CONFIG.STAR_THRESHOLDS.includes(nextLevel)) {
+      totalGems += CONFIG.STAR_GEM_COSTS[nextLevel.toString()] || 0;
+    }
+  }
+
+  const p = GameState.player;
+  if (p.coins < totalCoins) {
+    showNotification('⚠️ Not enough coins!', 'warning');
+    return;
+  }
+  if (p.gems < totalGems) {
+    showNotification('⚠️ Not enough gems!', 'warning');
+    return;
+  }
+
+  // Store tooltip state BEFORE any operations
+  const tooltip = document.getElementById('inventory-tooltip');
+  const tooltipWasOpen = tooltip && tooltip.getAttribute('aria-hidden') === 'false';
+  const tooltipItemId = tooltip ? tooltip.dataset.currentItemId : null;
+  const tooltipIsEquipped = tooltip ? tooltip.dataset.isEquipped === 'true' : false;
+
+  // Pay the cost
+  p.coins -= totalCoins;
+  showFloatingChange(-totalCoins, 'coins');
+  p.gems -= totalGems;
+  showFloatingChange(-totalGems, 'gems');
+
+  // Upgrade to target level
+  const oldLevel = item.level;
+  item.level = targetLevel;
+  
+  // Update stars based on level
+  const starCount = CONFIG.STAR_THRESHOLDS.filter(threshold => targetLevel >= threshold).length;
+  item.stars = starCount;
+
+  // Unlock affixes that should be unlocked at this level
+  item.affixes.forEach(aff => {
+    if (aff.locked && typeof aff.unlockLevel === 'number' && targetLevel >= aff.unlockLevel) {
+      aff.locked = false;
+    }
+  });
+
+  // Update base stat to target level value
+  if (item.initialBaseValue === undefined) {
+    item.initialBaseValue = item.baseAttribute.value;
+  }
+  
+  const level1Value = item.initialBaseValue;
+  const level100Value = BASE_STAT_LEVEL100[item.rarity][item.baseAttribute.name];
+  
+  // Linear interpolation
+  const progress = (targetLevel - 1) / 99;
+  const targetValue = Math.floor(level1Value + (level100Value - level1Value) * progress);
+  item.baseAttribute.value = targetValue;
+
+  // Update sell price based on new value
+  updateItemSellPrice(item);
+
+  computeDerivedStats();
+  renderInventory();
+  renderPlayerStats();
+
+  showNotification(`⚡ Quick Upgraded to Level ${targetLevel}! (${oldLevel} → ${targetLevel})`, 'success');
+
+  // Keep the tooltip open if it was showing this item
+  if (tooltipWasOpen && tooltipItemId === item.id) {
+    requestAnimationFrame(() => {
+      try {
+        let slotEl = null;
+        if (tooltipIsEquipped) {
+          slotEl = document.getElementById(`equip-${item.slot === 'ring' ? 'ring-slot' : item.slot}`);
+        } else {
+          let itemIndex = -1;
+          for (let i = 0; i < CONFIG.MAX_INVENTORY_SLOTS; i++) {
+            if (p.inventory[i] && p.inventory[i].id === item.id) {
+              itemIndex = i;
+              break;
+            }
+          }
+          if (itemIndex !== -1) {
+            slotEl = document.querySelector(`.inv-slot[data-index="${itemIndex}"]`);
+          }
+        }
+        
+        if (slotEl) {
+          showItemTooltip(item, slotEl, tooltipIsEquipped);
+        }
+      } catch (err) {
+        console.error('Error reopening tooltip:', err);
       }
     });
   }
@@ -4091,7 +4529,23 @@ function renderUI() {
   document.getElementById('level').textContent = `Lv ${p.level}`;
   document.getElementById('world').textContent = `World ${p.world}`;
 
-  const expNeeded = 100 * Math.pow(1.5, p.level - 1);
+  // Use same three-tier XP formula as checkLevelUp
+  let expNeeded;
+  if (p.level <= 15) {
+    // Levels 1-15: Full exponential curve
+    expNeeded = 100 * Math.pow(1.5, p.level - 1);
+  } else if (p.level <= 30) {
+    // Levels 16-30: Transition period - slow down a bit
+    const baseXP = 100 * Math.pow(1.5, 14);
+    const levelsAbove15 = p.level - 15;
+    expNeeded = baseXP * Math.pow(1.3, levelsAbove15);
+  } else {
+    // Levels 31+: Much slower polynomial growth
+    const baseXP = 100 * Math.pow(1.5, 14) * Math.pow(1.3, 15);
+    const levelsAbove30 = p.level - 30;
+    expNeeded = baseXP + (levelsAbove30 * levelsAbove30 * 800);
+  }
+  
   const expPct = Math.min(100, (p.exp / expNeeded) * 100);
   document.getElementById('exp-fill').style.width = `${expPct}%`;
   document.getElementById('exp-text').textContent = `${Math.floor(p.exp).toLocaleString()} / ${Math.floor(expNeeded).toLocaleString()}`;
@@ -4161,7 +4615,8 @@ function updateAttackRangeCircle() {
       rare: 'var(--color-rare)',
       epic: 'var(--color-epic)',
       legendary: 'var(--color-legendary)',
-      mythic: 'var(--color-mythic)'
+      mythic: 'var(--color-mythic)',
+      divine: 'var(--color-divine)'
     };
 
     const color = rarityColors[weaponItem.rarity] || '#888';
@@ -6436,17 +6891,79 @@ function buildItemTooltipHtml(item, isEquipped) {
     
     // Determine upgrade/enhance button text and function
     let upgradeButton = '';
+    let quickActionButton = '';
+    
     if (item.level >= 100) {
-      if (item.rarity === 'mythic') {
-        // Mythic at level 100 - show MAX LEVEL (disabled)
+      if (item.rarity === 'divine') {
+        // Divine at level 100 - show MAX LEVEL (disabled)
         upgradeButton = `<button class="tooltip-btn secondary" disabled style="opacity: 0.5; cursor: not-allowed;">MAX LEVEL</button>`;
       } else {
-        // Non-mythic at level 100 - show Enhance button
-        upgradeButton = `<button class="tooltip-btn legendary" data-action="enhance" style="background: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%); border-color: #9c27b0;">Enhance (💰${cost.coins} 💎15)</button>`;
+        // Non-divine at level 100 - show Enhance button
+        const enhanceCost = { coins: cost.coins, gems: 15 };
+        upgradeButton = `<button class="tooltip-btn legendary" data-action="enhance" style="background: linear-gradient(135deg, #dc2367 0%, #9c27b0 100%); border-color: #dc2367;">Enhance (💰${enhanceCost.coins.toLocaleString()}${enhanceCost.gems > 0 ? ` 💎${enhanceCost.gems}` : ''})</button>`;
       }
     } else {
-      // Normal upgrade
-      upgradeButton = `<button class=\"tooltip-btn secondary\" data-action=\"upgrade\">Upgrade (💰${cost.coins.toLocaleString()} ${cost.gems > 0 ? `💎${cost.gems.toLocaleString()}` : ''})</button>`;
+      // Normal upgrade - fix spacing
+      const gemText = cost.gems > 0 ? ` 💎${cost.gems.toLocaleString()}` : '';
+      upgradeButton = `<button class="tooltip-btn secondary" data-action="upgrade">Upgrade (💰${cost.coins.toLocaleString()}${gemText})</button>`;
+      
+      // PRIORITY 1: Try full enhancement first (if not already divine)
+      if (item.rarity !== 'divine') {
+        // Calculate total cost to upgrade to level 100 and enhance to next rarity
+        let totalCoins = 0;
+        let totalGems = 0;
+        const baseCost = CONFIG.EQUIP_BASE_UPGRADE_COST[item.rarity];
+        
+        for (let lvl = item.level; lvl < 100; lvl++) {
+          const upgradeCost = Math.floor(baseCost * Math.pow(1.055, lvl - 1));
+          totalCoins += upgradeCost;
+          
+          const nextLevel = lvl + 1;
+          if (CONFIG.STAR_THRESHOLDS.includes(nextLevel)) {
+            totalGems += CONFIG.STAR_GEM_COSTS[nextLevel.toString()] || 0;
+          }
+        }
+        
+        // Add enhancement cost
+        const finalUpgradeCost = Math.floor(baseCost * Math.pow(1.055, 99));
+        totalCoins += finalUpgradeCost;
+        totalGems += 15; // Enhancement gem cost
+        
+        // Check if player has enough resources for full enhancement
+        const p = GameState.player;
+        if (p.coins >= totalCoins && p.gems >= totalGems) {
+          quickActionButton = `<button class="tooltip-btn legendary" data-action="quick-enhance" style="background: linear-gradient(135deg, #f4cf57 0%, #d4af37 100%); border-color: #f4cf57; color: #1a1410; font-weight: 700;">⚡ Quick Enhance (💰${totalCoins.toLocaleString()} 💎${totalGems})</button>`;
+        }
+      }
+      
+      // PRIORITY 2: If can't afford full enhancement, try next star threshold
+      if (!quickActionButton) {
+        const nextStarThreshold = CONFIG.STAR_THRESHOLDS.find(threshold => threshold > item.level);
+        
+        if (nextStarThreshold) {
+          // Calculate cost to upgrade to next star
+          let totalCoins = 0;
+          let totalGems = 0;
+          const baseCost = CONFIG.EQUIP_BASE_UPGRADE_COST[item.rarity];
+          
+          for (let lvl = item.level; lvl < nextStarThreshold; lvl++) {
+            const upgradeCost = Math.floor(baseCost * Math.pow(1.055, lvl - 1));
+            totalCoins += upgradeCost;
+            
+            const nextLevel = lvl + 1;
+            if (CONFIG.STAR_THRESHOLDS.includes(nextLevel)) {
+              totalGems += CONFIG.STAR_GEM_COSTS[nextLevel.toString()] || 0;
+            }
+          }
+          
+          // Check if player has enough resources for quick upgrade to next star
+          const p = GameState.player;
+          if (p.coins >= totalCoins && p.gems >= totalGems) {
+            const gemText = totalGems > 0 ? ` 💎${totalGems}` : '';
+            quickActionButton = `<button class="tooltip-btn legendary" data-action="quick-upgrade" data-target-level="${nextStarThreshold}" style="background: linear-gradient(135deg, #4fc3f7 0%, #2196f3 100%); border-color: #4fc3f7; color: #ffffff; font-weight: 700;">⚡ Quick to Lvl ${nextStarThreshold} (💰${totalCoins.toLocaleString()}${gemText})</button>`;
+          }
+        }
+      }
     }
     
     html += `
@@ -6455,6 +6972,7 @@ function buildItemTooltipHtml(item, isEquipped) {
         ${!isEquipped ? `<button class="tooltip-btn primary" data-action="equip">Equip</button>` : ''}
         ${isEquipped ? `<button class="tooltip-btn secondary" data-action="unequip" data-slot="${item.slot}">Unequip</button>` : ''}
         ${upgradeButton}
+        ${quickActionButton}
         <button class="tooltip-btn danger" data-action="sell">Sell (💰${item.sellPrice.toLocaleString()})</button>
       </div>
     `;
@@ -6560,6 +7078,18 @@ function showShopItemTooltip(item, targetEl) {
 
   // Set content first
   tooltip.innerHTML = buildShopItemTooltipHtml(item);
+
+  // Set border color based on item rarity
+  const rarityColors = {
+    common: 'var(--color-common)',
+    uncommon: 'var(--color-uncommon)',
+    rare: 'var(--color-rare)',
+    epic: 'var(--color-epic)',
+    legendary: 'var(--color-legendary)',
+    mythic: 'var(--color-mythic)',
+    divine: 'var(--color-divine)'
+  };
+  tooltip.style.borderColor = rarityColors[item.rarity] || 'var(--border-color)';
 
   // Temporarily position offscreen to measure without showing
   const originalLeft = tooltip.style.left;
@@ -6736,6 +7266,18 @@ function showItemTooltip(item, targetEl, isEquipped) {
 
   // build content using helper
   tooltip.innerHTML = buildItemTooltipHtml(item, isEquipped);
+
+  // Set border color based on item rarity
+  const rarityColors = {
+    common: 'var(--color-common)',
+    uncommon: 'var(--color-uncommon)',
+    rare: 'var(--color-rare)',
+    epic: 'var(--color-epic)',
+    legendary: 'var(--color-legendary)',
+    mythic: 'var(--color-mythic)',
+    divine: 'var(--color-divine)'
+  };
+  tooltip.style.borderColor = rarityColors[item.rarity] || 'var(--border-color)';
 
   // mark which item is shown (so we can update it later without needing the target element)
   tooltip.dataset.currentItemId = item.id;
@@ -7229,7 +7771,51 @@ function updateActiveEffects() {
 }
 
 // ========== Save/Load ==========
+function calculateOfflineProgress(hours) {
+  const p = GameState.player;
+  
+  // Calculate base rates per hour based on player's current stats
+  // Offline earnings are at 50% efficiency
+  const efficiencyMultiplier = 0.5;
+  
+  // Base earnings per hour (scaled by world and level)
+  const baseCoinsPerHour = 1000 * p.world * (1 + p.level / 10);
+  const baseGemsPerHour = 50 * Math.floor(p.world / 2);
+  const baseExpPerHour = 500 * p.world * (1 + p.level / 20);
+  
+  // Calculate total offline earnings
+  const coinsEarned = Math.floor(baseCoinsPerHour * hours * efficiencyMultiplier);
+  const gemsEarned = Math.floor(baseGemsPerHour * hours * efficiencyMultiplier);
+  const expEarned = Math.floor(baseExpPerHour * hours * efficiencyMultiplier);
+  
+  // Apply earnings
+  p.coins += coinsEarned;
+  p.gems += gemsEarned;
+  p.exp += expEarned;
+  
+  // Update statistics
+  if (p.statistics) {
+    p.statistics.totalCoinsEarned += coinsEarned;
+    p.statistics.totalGemsEarned += gemsEarned;
+    p.statistics.totalExpGained += expEarned;
+  }
+  
+  // Show notification
+  const hoursText = hours < 1 ? `${Math.floor(hours * 60)} minutes` : `${hours.toFixed(1)} hours`;
+  const message = `⏰ Welcome back! You were offline for ${hoursText}
+💰 +${coinsEarned.toLocaleString()} coins
+💎 +${gemsEarned.toLocaleString()} gems
+⭐ +${expEarned.toLocaleString()} XP`;
+  
+  setTimeout(() => {
+    showNotification(message, 'success');
+  }, 500);
+}
+
 function saveGame() {
+  // Don't save if we're in the middle of resetting
+  if (window.RESETTING_GAME) return;
+  
   // Update total play time before saving
   if (GameState.player.statistics) {
     const currentSession = (Date.now() - GameState.player.statistics.sessionStartTime) / 1000;
@@ -7240,6 +7826,7 @@ function saveGame() {
   const saveData = {
     saveVersion: 1,
     timestamp: Date.now(),
+    lastOnlineTime: Date.now(), // Track when player was last online
     player: GameState.player,
     shop: GameState.shop,
     worldProgress: GameState.worldProgress
@@ -7258,6 +7845,20 @@ function loadGame() {
     GameState.player = data.player;
     GameState.shop = data.shop;
     GameState.worldProgress = data.worldProgress;
+
+    // Calculate offline progression (up to 8 hours)
+    if (data.lastOnlineTime) {
+      const offlineTimeMs = Date.now() - data.lastOnlineTime;
+      const offlineTimeSeconds = offlineTimeMs / 1000;
+      const offlineTimeHours = offlineTimeSeconds / 3600;
+      
+      // Cap offline time at 8 hours
+      const cappedOfflineHours = Math.min(offlineTimeHours, 8);
+      
+      if (cappedOfflineHours >= 0.016) { // At least 1 minute offline
+        calculateOfflineProgress(cappedOfflineHours);
+      }
+    }
 
     // Ensure inventory is properly initialized as sparse array
     if (!GameState.player.inventory) {
@@ -8222,16 +8823,16 @@ const DevTools = {
         p.equipment[slot] = null;
       });
 
-      // Grant all items from the set at mythic rarity with max stats
+      // Grant all items from the set at divine rarity with max stats
       if (!setData.items) {
         console.error('Set has no items:', setId);
         showNotification('Error: Set has no items', 'danger');
         return;
       }
 
-      const mythicBaseRanges = BASE_STAT_RANGES.mythic;
-      const mythicAffixRanges = AFFIX_RANGES.mythic;
-      const mythicLevel100Stats = BASE_STAT_LEVEL100.mythic;
+      const divineBaseRanges = BASE_STAT_RANGES.divine;
+      const divineAffixRanges = AFFIX_RANGES.divine;
+      const divineLevel100Stats = BASE_STAT_LEVEL100.divine;
 
       Object.keys(setData.items).forEach(itemKey => {
         const itemTemplate = setData.items[itemKey];
@@ -8258,7 +8859,7 @@ const DevTools = {
           slot: slot,
           name: itemTemplate.name,
           icon: itemTemplate.icon,
-          rarity: 'mythic',
+          rarity: 'divine',
           level: 100,
           stars: 5,
           setId: setId,
@@ -8266,31 +8867,31 @@ const DevTools = {
           element: setData.element,
           baseAttribute: {
             name: baseAttrName,
-            value: mythicLevel100Stats[baseAttrName] // Level 100 value for mythic base stat
+            value: divineLevel100Stats[baseAttrName] // Level 100 value for divine base stat
           },
-          initialBaseValue: mythicBaseRanges[baseAttrName][1], // Store initial level 1 value for level scaling reference
+          initialBaseValue: divineBaseRanges[baseAttrName][1], // Store initial level 1 value for level scaling reference
           affixes: [
             {
               name: 'ATK%',
-              value: mythicAffixRanges['ATK%'][1], // 35 (max)
+              value: divineAffixRanges['ATK%'][1], // 50 (max)
               locked: false, // Unlocked since we're giving them for testing
               unlockLevel: 10
             },
             {
               name: 'DMG%',
-              value: mythicAffixRanges['DMG%'][1], // 100 (max)
+              value: divineAffixRanges['DMG%'][1], // 150 (max)
               locked: false,
               unlockLevel: 25
             },
             {
               name: 'Crit Rate',
-              value: mythicAffixRanges['Crit Rate'][1], // 35 (max)
+              value: divineAffixRanges['Crit Rate'][1], // 50 (max)
               locked: false,
               unlockLevel: 50
             },
             {
               name: 'Crit Damage',
-              value: mythicAffixRanges['Crit Damage'][1], // 250 (max)
+              value: divineAffixRanges['Crit Damage'][1], // 350 (max)
               locked: false,
               unlockLevel: 75
             }
@@ -8369,6 +8970,12 @@ function init() {
 
     setInterval(gameTick, CONFIG.TICK_INTERVAL_MS);
     setInterval(uiTick, CONFIG.UI_UPDATE_MS);
+    
+    // Auto-save every 30 seconds
+    setInterval(() => {
+      saveGame();
+    }, 30000);
+    
     if (CONFIG.DEV_MODE) {
       setInterval(updateDebugPanel, 500);
     }
@@ -8386,58 +8993,93 @@ function init() {
 }
 
 // ========== Event Listeners ==========
-document.addEventListener('DOMContentLoaded', init);
-
-document.addEventListener('keydown', (e) => {
-  if (e.ctrlKey && e.key === 'd') {
-    e.preventDefault();
-    const panel = document.getElementById('debug-panel');
-    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-  }
-
-  if (e.key === 'Escape') {
-    hideTooltip();
-    document.querySelectorAll('.overlay').forEach(overlay => {
-      overlay.setAttribute('aria-hidden', 'true');
-    });
-    // Close custom modal
-    const modal = document.getElementById('reset-modal');
-    if (modal) {
-      modal.setAttribute('aria-hidden', 'true');
+document.addEventListener('DOMContentLoaded', () => {
+  init();
+  
+  // All event listeners below this point
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key === 'd') {
+      e.preventDefault();
+      const panel = document.getElementById('debug-panel');
+      panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
     }
-  }
-});
 
-document.getElementById('btn-challenge-world').addEventListener('click', challengeWorld);
+    if (e.key === 'Escape') {
+      hideTooltip();
+      document.querySelectorAll('.overlay').forEach(overlay => {
+        overlay.setAttribute('aria-hidden', 'true');
+      });
+      // Close custom modals
+      const resetModal = document.getElementById('reset-modal');
+      if (resetModal) {
+        resetModal.setAttribute('aria-hidden', 'true');
+      }
+      const sellModal = document.getElementById('sell-modal');
+      if (sellModal) {
+        sellModal.setAttribute('aria-hidden', 'true');
+      }
+    }
+  });
 
-document.getElementById('btn-manual-refresh').addEventListener('click', () => {
-  if (Date.now() >= GameState.shop.manualCooldownEndTs) {
-    refreshShop();
-    GameState.shop.manualCooldownEndTs = Date.now() + CONFIG.SHOP_MANUAL_COOLDOWN_SEC * 1000;
-    renderShop();
-  }
-});
+  document.getElementById('btn-challenge-world').addEventListener('click', challengeWorld);
 
-document.getElementById('btn-reset-progress').addEventListener('click', () => {
-  const modal = document.getElementById('reset-modal');
-  modal.setAttribute('aria-hidden', 'false');
-});
+  document.getElementById('btn-manual-refresh').addEventListener('click', () => {
+    if (Date.now() >= GameState.shop.manualCooldownEndTs) {
+      refreshShop();
+      GameState.shop.manualCooldownEndTs = Date.now() + CONFIG.SHOP_MANUAL_COOLDOWN_SEC * 1000;
+      renderShop();
+    }
+  });
 
-document.getElementById('modal-cancel').addEventListener('click', () => {
-  const modal = document.getElementById('reset-modal');
-  modal.setAttribute('aria-hidden', 'true');
-});
+  document.getElementById('btn-reset-progress').addEventListener('click', () => {
+    const modal = document.getElementById('reset-modal');
+    modal.setAttribute('aria-hidden', 'false');
+  });
 
-document.getElementById('modal-confirm').addEventListener('click', () => {
-  localStorage.removeItem(CONFIG.SAVE_KEY);
-  location.reload();
-});
+  document.getElementById('modal-cancel').addEventListener('click', () => {
+    const modal = document.getElementById('reset-modal');
+    modal.setAttribute('aria-hidden', 'true');
+  });
 
-// Close modal when clicking outside
-document.getElementById('reset-modal').addEventListener('click', (e) => {
-  if (e.target.id === 'reset-modal') {
-    e.target.setAttribute('aria-hidden', 'true');
-  }
+  document.getElementById('modal-confirm').addEventListener('click', () => {
+    // Set a flag to prevent any saves during reset
+    window.RESETTING_GAME = true;
+    
+    // Stop all game loops immediately
+    GameState.gameActive = false;
+    
+    // Clear all localStorage
+    localStorage.clear();
+    
+    // Force reload after a small delay
+    setTimeout(() => {
+      window.location.href = window.location.href.split('?')[0]; // Remove any query params and reload
+    }, 50);
+  });
+
+  // Close modal when clicking outside
+  document.getElementById('reset-modal').addEventListener('click', (e) => {
+    if (e.target.id === 'reset-modal') {
+      e.target.setAttribute('aria-hidden', 'true');
+    }
+  });
+
+  // Sell modal event listeners
+  document.getElementById('sell-modal-cancel').addEventListener('click', () => {
+    const modal = document.getElementById('sell-modal');
+    modal.setAttribute('aria-hidden', 'true');
+  });
+
+  document.getElementById('sell-modal-confirm').addEventListener('click', () => {
+    confirmSellItem();
+  });
+
+  // Close sell modal when clicking outside
+  document.getElementById('sell-modal').addEventListener('click', (e) => {
+    if (e.target.id === 'sell-modal') {
+      e.target.setAttribute('aria-hidden', 'true');
+    }
+  });
 });
 
 document.addEventListener('click', (e) => {
@@ -8546,6 +9188,13 @@ document.addEventListener('click', (e) => {
     case 'enhance':
       enhanceItem(itemId);
       break;
+    case 'quick-enhance':
+      quickEnhanceItem(itemId);
+      break;
+    case 'quick-upgrade':
+      const targetLevel = parseInt(button.getAttribute('data-target-level'));
+      if (!isNaN(targetLevel)) quickUpgradeItem(itemId, targetLevel);
+      break;
     case 'sell':
       sellItem(itemId);
       break;
@@ -8560,6 +9209,18 @@ document.addEventListener('click', (e) => {
       const affixIndex2 = parseInt(button.getAttribute('data-affix-index'));
       if (!isNaN(affixIndex2)) rerollAffixValue(itemId, affixIndex2);
       break;
+  }
+});
+
+// Save game before page unload
+window.addEventListener('beforeunload', () => {
+  saveGame();
+});
+
+// Save game when page becomes hidden (tab switch, minimize, etc.)
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    saveGame();
   }
 });
 
