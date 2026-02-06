@@ -2963,7 +2963,7 @@ function dealRespawnDamage() {
   const stage = document.getElementById('stage');
   const playerX = stage.clientWidth / 2;
   const playerY = stage.clientHeight / 2;
-  const pushDistance = 250; // Distance to push enemies away
+  const pushDistance = 200; // Distance to push enemies away
 
   GameState.enemies.forEach(enemy => {
     // Visual feedback for each enemy
@@ -3828,8 +3828,49 @@ function updateEnemies(dt) {
 
     if (distance > engageRadius) {
       enemy.engaged = false;
-      const ndx = dx / distance;
-      const ndy = dy / distance;
+      let ndx = dx / distance;
+      let ndy = dy / distance;
+      
+      // Group cohesion: if enemy is part of a group, adjust movement to stay with group
+      if (enemy.groupCohesion && enemy.groupId) {
+        const groupMembers = GameState.enemies.filter(e => 
+          e.groupId === enemy.groupId && e.id !== enemy.id && e.hp > 0
+        );
+        
+        if (groupMembers.length > 0) {
+          // Calculate group center
+          let centerX = 0, centerY = 0;
+          groupMembers.forEach(member => {
+            centerX += member.position.x;
+            centerY += member.position.y;
+          });
+          centerX /= groupMembers.length;
+          centerY /= groupMembers.length;
+          
+          // Calculate distance to group center
+          const toCenterX = centerX - enemy.position.x;
+          const toCenterY = centerY - enemy.position.y;
+          const distToCenter = Math.sqrt(toCenterX * toCenterX + toCenterY * toCenterY);
+          
+          // If too far from group (>100px), blend movement toward group center
+          if (distToCenter > 100) {
+            const cohesionStrength = 0.3; // 30% movement toward group
+            const centerNdx = toCenterX / distToCenter;
+            const centerNdy = toCenterY / distToCenter;
+            
+            ndx = ndx * (1 - cohesionStrength) + centerNdx * cohesionStrength;
+            ndy = ndy * (1 - cohesionStrength) + centerNdy * cohesionStrength;
+            
+            // Re-normalize
+            const newLength = Math.sqrt(ndx * ndx + ndy * ndy);
+            if (newLength > 0) {
+              ndx /= newLength;
+              ndy /= newLength;
+            }
+          }
+        }
+      }
+      
       enemy.position.x += ndx * enemy.speed * dt;
       enemy.position.y += ndy * enemy.speed * dt;
     } else {
@@ -4039,8 +4080,8 @@ function spawnWave() {
 
   const p = GameState.player;
   
-  // Dynamic enemy cap: starts at 10, increases by 5 per world, max 100
-  const enemyCap = Math.min(100, 10 + (p.world - 1) * 5);
+  // Dynamic enemy cap: starts at 10, increases by 5 per world, max 50
+  const enemyCap = Math.min(50, 10 + (p.world - 1) * 5);
   const currentEnemyCount = GameState.enemies.length;
   
   if (currentEnemyCount >= enemyCap) {
@@ -4055,7 +4096,7 @@ function spawnWave() {
     typeWeights = { 
       small: 10, normal: 20, big: 8, elite: 4,
       assassin: 8, tank: 6, ranger: 8, berserker: 6,
-      mage: 8, necromancer: 5, paladin: 4, demon: 3, archboss: 2
+      mage: 8, necromancer: 5, paladin: 4, demon: 3 
     };
   } else if (p.world >= 9) {
     // World 9-11: + mage, necromancer
@@ -4087,15 +4128,33 @@ function spawnWave() {
   const spawnGroup = Math.random() < 0.15 && enemiesNeeded >= 5;
   
   if (spawnGroup) {
-    // Group spawn: 5-12 enemies at once
+    // Group spawn: 5-12 enemies at once, spawning close together
     const groupSize = Math.min(Math.floor(Math.random() * 8) + 5, enemiesNeeded);
+    
+    // Pick a shared spawn position for the group
+    const groupPosition = randomEdgePosition();
+    const groupId = `group_${Date.now()}_${Math.random()}`;
     
     for (let i = 0; i < groupSize; i++) {
       const type = GameState.rng.weightedChoice(
         Object.keys(typeWeights),
         Object.values(typeWeights)
       );
-      const enemy = createEnemy(type, p.world);
+      
+      // Spawn enemies in a small cluster around the group position (within 80px radius)
+      const angle = (i / groupSize) * Math.PI * 2;
+      const radius = 30 + Math.random() * 50; // 30-80px from center
+      const offsetX = Math.cos(angle) * radius;
+      const offsetY = Math.sin(angle) * radius;
+      
+      const position = {
+        x: groupPosition.x + offsetX,
+        y: groupPosition.y + offsetY
+      };
+      
+      const enemy = createEnemy(type, p.world, position);
+      enemy.groupId = groupId; // Mark as part of a group
+      enemy.groupCohesion = true; // Enable group movement behavior
       GameState.enemies.push(enemy);
       enemy.prevX = enemy.position.x;
       enemy.prevY = enemy.position.y;
@@ -8342,6 +8401,13 @@ function trackWaveCompletion() {
   
   console.log(`[WAVE] Wave ${currentWaveIndex + 1}/${totalWaves} completed.`);
   
+  // IMMEDIATELY stop all spawn intervals to prevent more enemies from spawning
+  if (progress.spawnIntervals && progress.spawnIntervals.length > 0) {
+    console.log(`[WAVE] Stopping ${progress.spawnIntervals.length} spawn intervals`);
+    progress.spawnIntervals.forEach(intervalId => clearInterval(intervalId));
+    progress.spawnIntervals = [];
+  }
+  
   // Kill any spare enemies with shockwave effect
   if (GameState.enemies.length > 0) {
     const spareEnemies = [...GameState.enemies];
@@ -8623,9 +8689,14 @@ function spawnChallengeWave() {
   }
   
   // Calculate total enemies to spawn
+  // Add 5-10 extra enemies as buffer (in case player kills more than required)
+  const extraEnemies = 5 + Math.floor(Math.random() * 6); // Random 5-10 enemies
   const totalEnemies = (currentWave.composition.normal || 0) + 
                        (currentWave.composition.elite || 0) + 
-                       (currentWave.composition.boss || 0);
+                       (currentWave.composition.boss || 0) +
+                       extraEnemies;
+  
+  console.log(`[WAVE] Total enemies to spawn: ${totalEnemies} (required: ${currentWave.totalRequired}, buffer: ${extraEnemies})`);
   
   // Build enemy queue with varied types based on world level
   const enemyQueue = [];
@@ -8673,36 +8744,31 @@ function spawnChallengeWave() {
     }
   }
   
+  // Spawn extra buffer enemies - mix of normal types
+  for (let i = 0; i < extraEnemies; i++) {
+    const roll = Math.random();
+    let category;
+    if (roll < 0.3) category = 'SMALL';
+    else if (roll < 0.8) category = 'NORMAL';
+    else category = 'BIG';
+    
+    const type = getRandomEnemyFromCategory(category);
+    enemyQueue.push({ type, world });
+  }
+  
   // Shuffle enemy queue for variety
   for (let i = enemyQueue.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [enemyQueue[i], enemyQueue[j]] = [enemyQueue[j], enemyQueue[i]];
   }
   
-  // Calculate spawn timing - FAST SPAWNS like normal gameplay
-  let spawnInterval;
-  let spawnBatchSize;
+  // Calculate spawn timing - ALL challenges spawn the same way
+  // Spawn like normal waves (fast and continuous)
+  const spawnInterval = 300; // 0.3 seconds like CONFIG.WAVE_INTERVAL_SEC
+  const spawnBatchSize = Math.min(3, Math.max(1, Math.floor(totalEnemies / 10))); // 1-3 enemies per batch
   
-  if (currentWave.hasTimer) {
-    // Timed challenges: spawn ALL enemies 10-20 seconds before timer runs out
-    const bufferTime = 10 + Math.random() * 10; // 10-20 seconds
-    const spawnDuration = Math.max(5, currentWave.timeLimit - bufferTime);
-    
-    // Spawn in batches to fill quickly
-    spawnBatchSize = Math.max(1, Math.floor(totalEnemies / (spawnDuration * 3))); // 3 batches per second
-    spawnInterval = 333; // ~3 times per second
-    
-    console.log(`[WAVE] Timed challenge: Spawning ${totalEnemies} enemies in batches of ${spawnBatchSize}`);
-    console.log(`[WAVE] Spawn duration: ${spawnDuration.toFixed(1)}s, buffer: ${bufferTime.toFixed(1)}s`);
-  } else {
-    // Non-timed challenges: spawn like normal waves (fast and continuous)
-    // Same as normal: spawn batches every 0.3 seconds
-    spawnInterval = 300; // 0.3 seconds like CONFIG.WAVE_INTERVAL_SEC
-    spawnBatchSize = Math.min(3, Math.max(1, Math.floor(totalEnemies / 10))); // 1-3 enemies per batch
-    
-    const estimatedTime = (spawnInterval * Math.ceil(totalEnemies / spawnBatchSize)) / 1000;
-    console.log(`[WAVE] Non-timed challenge: Spawning ${totalEnemies} enemies in batches of ${spawnBatchSize} every ${spawnInterval}ms (~${estimatedTime.toFixed(1)}s total)`);
-  }
+  const estimatedTime = (spawnInterval * Math.ceil(totalEnemies / spawnBatchSize)) / 1000;
+  console.log(`[WAVE] Spawning ${totalEnemies} enemies in batches of ${spawnBatchSize} every ${spawnInterval}ms (~${estimatedTime.toFixed(1)}s total)`);
   
   // Reset spawn counter
   GameState.challengeProgress.spawnedCount = 0;
@@ -9788,8 +9854,8 @@ function gameTick() {
     updateChallengeTimer();
   }
 
-  // Track wave completion when all enemies are defeated
-  if (GameState.currentChallenge && GameState.enemies.length === 0 && !GameState.isDead) {
+  // Track wave completion when requirements are met (not waiting for all enemies to die)
+  if (GameState.currentChallenge && !GameState.isDead) {
     trackWaveCompletion();
   }
 
