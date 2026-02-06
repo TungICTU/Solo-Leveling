@@ -20,23 +20,23 @@
       --color-legendary: #ff9800;
       --color-mythic: #f44336;
       --color-divine: #dc2367;
-      --bg-primary:#1a1410;
-      --bg-secondary:#2a1f1a;
-      --bg-tertiary:#3a2f2a;
-      --accent-gold:#d4af37;
-      --accent-gold-bright:#f4cf57;
-      --accent-copper:#b87333;
-      --text-primary:#f5e6d3;
-      --text-secondary:#c5b5a3;
-      --text-dim:#8a7a6a;
-      --text-bonus:#4fc3f7;
-      --border-radius:8px;
+      --bg-primary : #1a1410;
+      --bg-secondary : #2a1f1a;
+      --bg-tertiary : #3a2f2a;
+      --accent-gold : #d4af37;
+      --accent-gold-bright : #f4cf57;
+      --accent-copper : #b87333;
+      --text-primary : #f5e6d3;
+      --text-secondary : #c5b5a3;
+      --text-dim : #8a7a6a;
+      --text-bonus : #4fc3f7;
+      --border-radius : 8px;
       --border-color: #444;
-      --shadow-sm:0 2px 4px rgba(0,0,0,0.3);
-      --shadow-md:0 4px 12px rgba(0,0,0,0.5);
-      --shadow-lg:0 8px 24px rgba(0,0,0,0.7);
-      --font-display:'Cinzel',serif;
-      --font-body:'Merriweather',serif
+      --shadow-sm : 0 2px 4px rgba(0,0,0,0.3);
+      --shadow-md : 0 4px 12px rgba(0,0,0,0.5);
+      --shadow-lg : 0 8px 24px rgba(0,0,0,0.7);
+      --font-display:'Cinzel', serif;
+      --font-body:'Merriweather', serif;
     }
 
     body {
@@ -189,9 +189,21 @@
     }
 
     #challenge-description {
-      font-size: 16px;
+      font-size: 14px;
       color: var(--text-primary);
-      line-height: 1.4;
+      line-height: 1.6;
+      white-space: pre-line;
+      margin-bottom: 12px;
+      font-family: var(--font-body);
+    }
+
+    #challenge-description .wave-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--accent-gold);
+      font-family: var(--font-display);
+      display: block;
+      margin-bottom: 8px;
     }
 
     #challenge-timer {
@@ -377,6 +389,143 @@
       font-size: 36px;
       box-shadow: 0 0 30px rgba(244, 67, 54, 0.9);
       animation: boss-pulse 1s infinite;
+    }
+
+    /* New Enemy Types - Sized by Category */
+    
+    /* Small Category */
+    .enemy.assassin {
+      width: 32px;
+      height: 32px;
+      background: #263238;
+      border-color: #000;
+      font-size: 14px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+    }
+
+    /* Normal Category */
+    .enemy.tank {
+      width: 40px;
+      height: 40px;
+      background: #546e7a;
+      border-color: #37474f;
+      font-size: 18px;
+      box-shadow: 0 0 15px rgba(100, 150, 255, 0.6);
+    }
+
+    .enemy.ranger {
+      width: 40px;
+      height: 40px;
+      background: #558b2f;
+      border-color: #33691e;
+      font-size: 18px;
+    }
+
+    .enemy.mage {
+      width: 40px;
+      height: 40px;
+      background: #4a148c;
+      border-color: #311b92;
+      font-size: 18px;
+      box-shadow: 0 0 15px rgba(156, 39, 176, 0.8);
+      animation: mage-glow 2s infinite;
+    }
+
+    /* Big Category */
+    .enemy.necromancer {
+      width: 56px;
+      height: 56px;
+      background: #1b5e20;
+      border-color: #0d3d0f;
+      font-size: 24px;
+      box-shadow: 0 0 20px rgba(76, 175, 80, 0.6);
+    }
+
+    /* Elite Category */
+    .enemy.berserker {
+      width: 64px;
+      height: 64px;
+      background: #bf360c;
+      border-color: #870000;
+      font-size: 28px;
+      box-shadow: 0 0 12px rgba(255, 87, 34, 0.7);
+    }
+
+    .enemy.paladin {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, #ffd700 0%, #ffecb3 100%);
+      border-color: #f57f17;
+      font-size: 28px;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+      animation: holy-shine 1.5s infinite;
+    }
+
+    .enemy.demon {
+      width: 64px;
+      height: 64px;
+      background: #b71c1c;
+      border-color: #880e4f;
+      font-size: 28px;
+      box-shadow: 0 0 25px rgba(183, 28, 28, 0.9);
+      animation: demon-flicker 1.2s infinite;
+    }
+
+    /* Boss Category */
+    .enemy.archboss {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #4a148c 0%, #880e4f 50%, #b71c1c 100%);
+      border-color: #000;
+      font-size: 36px;
+      box-shadow: 0 0 40px rgba(183, 28, 28, 1);
+      animation: archboss-pulse 1s infinite;
+    }
+
+    @keyframes mage-glow {
+      0%, 100% {
+        box-shadow: 0 0 15px rgba(156, 39, 176, 0.8);
+      }
+      50% {
+        box-shadow: 0 0 25px rgba(156, 39, 176, 1);
+      }
+    }
+
+    @keyframes holy-shine {
+      0%, 100% {
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+      }
+      50% {
+        box-shadow: 0 0 30px rgba(255, 215, 0, 1);
+        filter: brightness(1.2);
+      }
+    }
+
+    @keyframes demon-flicker {
+      0%, 100% {
+        box-shadow: 0 0 25px rgba(183, 28, 28, 0.9);
+        filter: brightness(1);
+      }
+      25% {
+        box-shadow: 0 0 35px rgba(183, 28, 28, 1);
+        filter: brightness(1.3);
+      }
+      75% {
+        box-shadow: 0 0 20px rgba(183, 28, 28, 0.8);
+        filter: brightness(0.9);
+      }
+    }
+
+    @keyframes archboss-pulse {
+      0%, 100% {
+        box-shadow: 0 0 40px rgba(183, 28, 28, 1);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 0 0 60px rgba(183, 28, 28, 1);
+        transform: scale(1.05);
+        filter: brightness(1.3);
+      }
     }
 
     @keyframes boss-pulse {
@@ -1636,8 +1785,8 @@
       }
     }
 
-    /* Boss Failure Screen */
-    #boss-failure-screen {
+    /* Challenge Failure Screen */
+    #challenge-failure-screen {
       position: absolute;
       top: 0;
       left: 0;
@@ -1652,11 +1801,11 @@
       pointer-events: none;
     }
 
-    #boss-failure-screen.active {
+    #challenge-failure-screen.active {
       display: flex;
     }
 
-    #boss-failure-message {
+    #challenge-failure-message {
       font-family: var(--font-display);
       font-size: 56px;
       font-weight: bold;
@@ -1671,18 +1820,17 @@
       50% { transform: scale(1.08); opacity: 0.7; }
     }
 
-    #boss-failure-info {
+    #challenge-failure-info {
       font-family: var(--font-display);
       font-size: 28px;
       color: var(--accent-gold);
       text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
     }
 
-    #boss-failure-world {
+    #challenge-failure-world {
       font-weight: bold;
       color: var(--accent-gold-bright);
     }
-
 
     @keyframes fire-pulse {
       0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
@@ -1732,9 +1880,9 @@
         <div id="death-message">You Died!</div>
         <div id="respawn-timer">Respawning in 5 seconds...</div>
       </div>
-      <div id="boss-failure-screen">
-        <div id="boss-failure-message">Challenge Failed!</div>
-        <div id="boss-failure-info">Return to World <span id="boss-failure-world">1</span></div>
+      <div id="challenge-failure-screen">
+        <div id="challenge-failure-message">Challenge Failed!</div>
+        <div id="challenge-failure-info">Return to World <span id="challenge-failure-world">1</span></div>
       </div>
     </main>
 
@@ -2285,11 +2433,11 @@ const GameState = {
   challengeProgress: {
     enemiesKilled: 0,
     elitesKilled: 0,
-    wavesCompleted: 0,
-    bossKilled: false,
+    bossesKilled: 0,
+    totalKilled: 0,
     died: false,
     startTime: 0,
-    timeLimit: 60
+    waitingForNextWave: false
   }
 };
 
@@ -2572,11 +2720,16 @@ function rollCrit(baseDamage) {
 
 // Wrapper function that applies damage with automatic crit calculation
 function applyCritDamage(enemy, baseDamage, ctx = {}) {
+  // Apply weakness debuff if active (-50% damage)
+  if (GameState.player.activeDebuffs && GameState.player.activeDebuffs.weakness) {
+    baseDamage = Math.floor(baseDamage * GameState.player.activeDebuffs.weakness.multiplier);
+  }
+  
   const { damage, crit } = rollCrit(baseDamage);
   applyDamageToEnemy(enemy, damage, { ...ctx, crit });
 }
 
-function dealDamageToPlayer(amount) {
+function dealDamageToPlayer(amount, isCrit = false) {
   // Don't take damage if dead or invincible
   if (GameState.isDead || GameState.isInvincible) return;
 
@@ -2591,6 +2744,12 @@ function dealDamageToPlayer(amount) {
       GameState.player.statistics.highestDamageTaken = amount;
     }
   }
+  
+  // Show critical hit notification
+  if (isCrit) {
+    showNotification(`💥 Critical Hit! -${amount}`, 'danger');
+  }
+  
   if (GameState.player.hp <= 0) {
     handlePlayerDeath();
   }
@@ -2609,13 +2768,13 @@ function handlePlayerDeath() {
     GameState.player.statistics.deaths++;
   }
 
-  // Check if in boss challenge
-  if (GameState.inBossChallenge) {
-    // Boss challenge failed
-    GameState.deathTimer = 3; // 3 seconds for boss failure screen
-    handleBossChallengeFailed();
+  // Check if in any challenge (boss challenge or regular challenge)
+  if (GameState.inBossChallenge || GameState.currentChallenge) {
+    // Challenge failed - show challenge failure screen
+    GameState.deathTimer = 3; // 3 seconds for challenge failure screen
+    handleChallengeFailed();
   } else {
-    // Normal death
+    // Normal death (not in a challenge)
     GameState.deathTimer = 5; // 5 seconds death screen
 
     // Show death screen
@@ -2637,7 +2796,8 @@ function updateDeathSystem(dt) {
   if (GameState.isDead) {
     GameState.deathTimer -= dt;
 
-    if (GameState.inBossChallenge) {
+    if (GameState.inBossChallenge || GameState.currentChallenge) {
+      // Challenge failure - no timer display needed
     } else {
       // Update respawn timer display for normal death
       const respawnTimer = document.getElementById('respawn-timer');
@@ -2648,8 +2808,8 @@ function updateDeathSystem(dt) {
     }
 
     if (GameState.deathTimer <= 0) {
-      if (GameState.inBossChallenge) {
-        returnFromBossChallenge();
+      if (GameState.inBossChallenge || GameState.currentChallenge) {
+        returnFromChallengeFailure();
       } else {
         respawnPlayer();
       }
@@ -2698,44 +2858,62 @@ function respawnPlayer() {
   dealRespawnDamage();
 }
 
-
-function handleBossChallengeFailed() {
-  // Clear boss challenge flags FIRST to prevent onBossDefeated from triggering
+function handleChallengeFailed() {
+  console.log('[CHALLENGE] handleChallengeFailed called (player died in challenge)');
+  
+  // Mark that the player died in the challenge
+  if (GameState.challengeProgress) {
+    GameState.challengeProgress.died = true;
+  }
+  
+  // Clear any active spawn intervals
+  if (GameState.challengeProgress && GameState.challengeProgress.spawnIntervals) {
+    GameState.challengeProgress.spawnIntervals.forEach(intervalId => clearInterval(intervalId));
+    GameState.challengeProgress.spawnIntervals = [];
+  }
+  
+  // Hide challenge overlay
+  hideChallengeOverlay();
+  
+  // Clear challenge flags
   GameState.suspendWaves = false;
 
-  // Show boss failure screen
-  const bossFailureScreen = document.getElementById('boss-failure-screen');
-  if (bossFailureScreen) {
-    bossFailureScreen.classList.add('active');
+  // Show challenge failure screen
+  const challengeFailureScreen = document.getElementById('challenge-failure-screen');
+  if (challengeFailureScreen) {
+    challengeFailureScreen.classList.add('active');
   }
 
   // Update world display
-  const worldSpan = document.getElementById('boss-failure-world');
+  const worldSpan = document.getElementById('challenge-failure-world');
   if (worldSpan) {
     worldSpan.textContent = GameState.player.world;
   }
 
-  // Remove all enemies (boss)
+  // Remove all enemies
   GameState.enemies = [];
 
-  showNotification('💀 Boss challenge failed!', 'danger');
+  showNotification('💀 Challenge failed!', 'danger');
 }
 
-function returnFromBossChallenge() {
-  console.log('returnFromBossChallenge called'); // Debug log
+function returnFromChallengeFailure() {
+  console.log('returnFromChallengeFailure called');
 
-  // Clear boss challenge state (suspendWaves already cleared in handleBossChallengeFailed)
+  // Clear challenge state
   GameState.inBossChallenge = false;
   GameState.isDead = false;
   GameState.canAttack = true;
+  
+  // Reset challenge
+  GameState.currentChallenge = null;
 
   // Restore player HP
   GameState.player.hp = GameState.player.maxHp;
 
-  // Hide boss failure screen
-  const bossFailureScreen = document.getElementById('boss-failure-screen');
-  if (bossFailureScreen) {
-    bossFailureScreen.classList.remove('active');
+  // Hide challenge failure screen
+  const challengeFailureScreen = document.getElementById('challenge-failure-screen');
+  if (challengeFailureScreen) {
+    challengeFailureScreen.classList.remove('active');
   }
 
   // Make player visible
@@ -2868,7 +3046,6 @@ const BASE_STAT_RANGES = {
     HP: [100000, 120000], ATK: [100000, 120000], SPD: [2500, 3000], 'DMG%': [12000, 15000]
   }
 };
-
 
 // Level 100 target values for base stats
 const BASE_STAT_LEVEL100 = {
@@ -3071,7 +3248,6 @@ function generateEquipment(slot, rarity, world, setId = null) {
   };
 }
 
-
 function rollRarity() {
   const probs = CONFIG.RARITY_PROB;
   const total = Object.values(probs).reduce((sum, p) => sum + p, 0);
@@ -3086,12 +3262,140 @@ function rollRarity() {
 }
 
 // ========== Enemy Creation ==========
-const ENEMY_BASE_HP = { small: 120, normal: 360, big: 600, elite: 1000, boss: 6000 };
-const ENEMY_BASE_ATK = { small: 1, normal: 3, big: 6, elite: 10, boss: 30 };
-const ENEMY_BASE_RESIST = { small: 0, normal: 2, big: 5, elite: 8, boss: 10 };
-const ENEMY_ATTACK_INTERVAL = { small: 3.0, normal: 3.5, big: 4.5, elite: 3.0, boss: 2.5 };
-const ENEMY_BASE_EXP = { small: 5, normal: 10, big: 25, elite: 50, boss: 100 };
-const ENEMY_ICONS = { small: '🐀', normal: '🧟', big: '👹', elite: '👿', boss: '🐉' };
+// ========== Enemy Categories ==========
+// Enemies are organized by size/threat level categories
+// Each category unlocks at different world thresholds
+const ENEMY_CATEGORIES = {
+  SMALL: {
+    types: ['small', 'assassin'],
+    unlockWorlds: {
+      'small': 1,      // Available from World 1
+      'assassin': 3    // Unlocks at World 3
+    }
+  },
+  NORMAL: {
+    types: ['normal', 'tank', 'ranger', 'mage'],
+    unlockWorlds: {
+      'normal': 1,     // Available from World 1
+      'ranger': 3,     // Unlocks at World 3
+      'tank': 6,       // Unlocks at World 6
+      'mage': 9        // Unlocks at World 9
+    }
+  },
+  BIG: {
+    types: ['big', 'necromancer'],
+    unlockWorlds: {
+      'big': 1,          // Available from World 1
+      'necromancer': 9   // Unlocks at World 9
+    }
+  },
+  ELITE: {
+    types: ['elite', 'berserker', 'paladin', 'demon'],
+    unlockWorlds: {
+      'elite': 1,      // Available from World 1
+      'berserker': 6,  // Unlocks at World 6
+      'paladin': 12,   // Unlocks at World 12
+      'demon': 12      // Unlocks at World 12
+    }
+  },
+  BOSS: {
+    types: ['boss', 'archboss'],
+    unlockWorlds: {
+      'boss': 1,       // Available from World 1
+      'archboss': 12   // Unlocks at World 12
+    }
+  }
+};
+
+// Helper function to get available enemy types for a given category and world
+function getAvailableEnemyTypes(category, world) {
+  const categoryData = ENEMY_CATEGORIES[category];
+  if (!categoryData) return [];
+  
+  return categoryData.types.filter(type => {
+    const unlockWorld = categoryData.unlockWorlds[type];
+    return world >= unlockWorld;
+  });
+}
+
+const ENEMY_BASE_HP = { 
+  small: 120, normal: 360, big: 600, elite: 1000, boss: 6000,
+  // Categorized new enemies
+  assassin: 180,      // small category
+  tank: 800,          // normal category
+  ranger: 320,        // normal category
+  mage: 500,          // normal category
+  necromancer: 700,   // big category
+  berserker: 750,     // elite category
+  paladin: 1100,      // elite category
+  demon: 1400,        // elite category
+  archboss: 8000      // boss category
+};
+const ENEMY_BASE_ATK = { 
+  small: 1, normal: 3, big: 6, elite: 10, boss: 30,
+  // Categorized new enemies
+  assassin: 8,        // small category
+  tank: 4,            // normal category
+  ranger: 5,          // normal category
+  mage: 15,           // normal category
+  necromancer: 18,    // big category
+  berserker: 12,      // elite category
+  paladin: 14,        // elite category
+  demon: 22,          // elite category
+  archboss: 50        // boss category
+};
+const ENEMY_BASE_RESIST = { 
+  small: 0, normal: 2, big: 5, elite: 8, boss: 10,
+  // Categorized new enemies
+  assassin: 3,        // small category
+  tank: 12,           // normal category
+  ranger: 4,          // normal category
+  mage: 10,           // normal category
+  necromancer: 15,    // big category
+  berserker: 6,       // elite category
+  paladin: 18,        // elite category
+  demon: 20,          // elite category
+  archboss: 25        // boss category
+};
+const ENEMY_ATTACK_INTERVAL = { 
+  small: 3.0, normal: 3.5, big: 4.5, elite: 3.0, boss: 2.5,
+  // Categorized new enemies
+  assassin: 2.0,      // small category
+  tank: 5.0,          // normal category
+  ranger: 4.0,        // normal category
+  mage: 3.5,          // normal category
+  necromancer: 4.0,   // big category
+  berserker: 2.8,     // elite category
+  paladin: 3.2,       // elite category
+  demon: 2.2,         // elite category
+  archboss: 2.0       // boss category
+};
+const ENEMY_BASE_EXP = { 
+  small: 5, normal: 10, big: 25, elite: 50, boss: 100,
+  // Categorized new enemies
+  assassin: 8,        // small category
+  tank: 12,           // normal category
+  ranger: 10,         // normal category
+  mage: 15,           // normal category
+  necromancer: 30,    // big category
+  berserker: 55,      // elite category
+  paladin: 65,        // elite category
+  demon: 80,          // elite category
+  archboss: 150       // boss category
+};
+const ENEMY_ICONS = { 
+  small: '🐀', normal: '🧟', big: '👹', elite: '👿', boss: '🐉',
+  // Categorized new enemies
+  assassin: '🗡️',     // small category
+  tank: '🛡️',         // normal category
+  ranger: '🏹',       // normal category
+  mage: '🔮',         // normal category
+  necromancer: '💀',  // big category
+  berserker: '⚔️',    // elite category
+  paladin: '⚜️',      // elite category
+  demon: '😈',        // elite category
+  archboss: '👑'      // boss category
+};
 
 function createEnemy(type, world, position) {
   // Progressive scaling - starts easier (2.5 HP scale, 1.25 ATK scale for worlds 1-3), 
@@ -3103,7 +3407,14 @@ function createEnemy(type, world, position) {
   const atk = Math.floor(ENEMY_BASE_ATK[type] * Math.pow(atkScale, world - 1));
   const resist = ENEMY_BASE_RESIST[type] + (world - 1) * CONFIG.ENEMY_RESIST_BONUS_PER_WORLD;
 
-  return {
+  // Base enemy stats
+  const baseSpeed = {
+    small: 80, normal: 60, big: 50, elite: 70, boss: 40,
+    assassin: 100, tank: 35, ranger: 55, berserker: 75,
+    mage: 45, necromancer: 50, paladin: 60, demon: 65, archboss: 35
+  };
+
+  const enemy = {
     id: `enemy_${GameState.enemyIdCounter++}`,
     type: type,
     world: world,
@@ -3113,15 +3424,85 @@ function createEnemy(type, world, position) {
     resistancePct: Math.min(95, resist),
     attackInterval: ENEMY_ATTACK_INTERVAL[type],
     position: position || randomEdgePosition(),
-    speed: type === 'small' ? 80 : type === 'normal' ? 60 : type === 'big' ? 50 : type === 'elite' ? 70 : 40,
+    speed: baseSpeed[type] || 60,
     engaged: false,
     engageTimer: 0,
     expValue: ENEMY_BASE_EXP[type] * world,
     dropProfile: {
-      coinBase: CONFIG.ENEMY_BASE_COIN[type],
-      gemChancePct: type === 'big' ? 20 : type === 'elite' ? 50 : type === 'boss' ? 100 : 0
+      coinBase: CONFIG.ENEMY_BASE_COIN[type] || CONFIG.ENEMY_BASE_COIN['normal'],
+      gemChancePct: ['big', 'elite', 'boss', 'tank', 'berserker', 'mage', 'necromancer', 'paladin', 'demon', 'archboss'].includes(type) 
+        ? (type === 'boss' || type === 'archboss' ? 100 : type === 'elite' || type === 'necromancer' || type === 'demon' ? 50 : 20)
+        : 0
     }
   };
+
+  // Add special abilities for new enemy types
+  switch(type) {
+    case 'assassin':
+      // Assassin: Critical Strike - 50% chance to deal double damage
+      enemy.specialAbility = 'critical_strike';
+      enemy.critChance = 0.50;
+      break;
+    
+    case 'tank':
+      // Tank: Shield Block - 25% damage reduction
+      enemy.specialAbility = 'shield_block';
+      enemy.damageReduction = 0.25;
+      break;
+    
+    case 'ranger':
+      // Ranger: Long Range - Attacks from farther away (2.5x)
+      enemy.specialAbility = 'long_range';
+      enemy.attackRangeMultiplier = 2.5;
+      break;
+    
+    case 'berserker':
+      // Berserker: Rage Mode - Gains 20% speed and 50% attack when below 50% HP
+      enemy.specialAbility = 'rage_mode';
+      enemy.rageThreshold = 0.5;
+      enemy.rageActive = false;
+      break;
+    
+    case 'mage':
+      // Mage: Arcane Bolt - Shoots potion every 8 seconds with random debuff
+      enemy.specialAbility = 'arcane_bolt';
+      enemy.potionTimer = 0;
+      enemy.potionCooldown = 8.0;
+      break;
+    
+    case 'necromancer':
+      // Necromancer: Life Drain - Heals 15% of damage dealt
+      enemy.specialAbility = 'life_drain';
+      enemy.lifeDrainPct = 0.15;
+      break;
+    
+    case 'paladin':
+      // Paladin: Holy Aura - Regenerates 10% HP per second
+      enemy.specialAbility = 'holy_aura';
+      enemy.regenPctPerSec = 0.10;
+      enemy.regenTimer = 0;
+      break;
+    
+    case 'demon':
+      // Demon: Burning Strike - Applies damage over time (10% of attack over 3 seconds)
+      enemy.specialAbility = 'burning_strike';
+      enemy.burnDuration = 3;
+      enemy.burnMultiplier = 0.10;
+      break;
+    
+    case 'archboss':
+      // Archboss: Supreme Power - Multiple abilities
+      enemy.specialAbility = 'supreme_power';
+      enemy.enrageThreshold = 0.5;  // Enrage at 50% HP
+      enemy.enrageActive = false;
+      enemy.lifeDrainThreshold = 0.10;  // Life drain starts at 10% HP
+      enemy.lifeDrainActive = false;
+      enemy.lifeDrainPctPerSec = 0.005;  // 0.5% per second
+      enemy.hasSummoned = false;  // Track if summon has been used
+      break;
+  }
+
+  return enemy;
 }
 
 function randomEdgePosition() {
@@ -3134,6 +3515,246 @@ function randomEdgePosition() {
   if (side === 1) return { x: w + 50, y: GameState.rng.randRange(0, h) };
   if (side === 2) return { x: GameState.rng.randRange(0, w), y: h + 50 };
   return { x: -50, y: GameState.rng.randRange(0, h) };
+}
+
+// ========== Enemy Special Abilities ==========
+function handleEnemySpecialAbilities(enemy, dt) {
+  if (!enemy.specialAbility) return;
+  
+  const hpPct = enemy.hp / enemy.maxHp;
+  
+  // Berserker: Rage Mode (50% HP threshold, +20% speed, +50% attack)
+  if (enemy.specialAbility === 'rage_mode' && !enemy.rageActive && hpPct <= enemy.rageThreshold) {
+    enemy.rageActive = true;
+    const originalSpeed = enemy.speed / 1.0;  // Get base speed
+    const originalAtk = enemy.atk / 1.0;      // Get base attack
+    enemy.speed = Math.floor(originalSpeed * 1.2);
+    enemy.atk = Math.floor(originalAtk * 1.5);
+    showNotification('⚔️ Berserker enraged!', 'danger');
+  }
+  
+  // Archboss: Enrage at 50% HP (+20% speed, +50% attack)
+  if (enemy.specialAbility === 'supreme_power' && !enemy.enrageActive && hpPct <= enemy.enrageThreshold) {
+    enemy.enrageActive = true;
+    const baseSpeed = 35;  // Archboss base speed
+    const baseAtk = 50;    // Archboss base attack
+    enemy.speed = Math.floor(baseSpeed * 1.2);
+    enemy.atk = Math.floor(baseAtk * 1.5);
+    showNotification('👑 Archboss entered supreme state!', 'legendary');
+  }
+  
+  // Archboss: Summon at 50% HP (one-time)
+  if (enemy.specialAbility === 'supreme_power' && !enemy.hasSummoned && hpPct <= 0.5) {
+    enemy.hasSummoned = true;
+    summonEnemies(enemy, 5, 1);  // 5 random enemies + 1 elite
+    showNotification('👑 Archboss summoned reinforcements!', 'danger');
+  }
+  
+  // Archboss: Life Drain at 10% HP (0.5% regen per second, stops at 10%)
+  if (enemy.specialAbility === 'supreme_power' && hpPct <= enemy.lifeDrainThreshold && hpPct < 0.10) {
+    if (!enemy.lifeDrainActive) {
+      enemy.lifeDrainActive = true;
+      showNotification('👑 Archboss is draining life force!', 'legendary');
+    }
+    const healAmount = Math.floor(enemy.maxHp * enemy.lifeDrainPctPerSec * dt);
+    const maxHeal = enemy.maxHp * 0.10;  // Cap at 10% HP
+    enemy.hp = Math.min(maxHeal, enemy.hp + healAmount);
+  }
+  
+  // Paladin: Holy Aura (10% HP Regeneration per second)
+  if (enemy.specialAbility === 'holy_aura') {
+    enemy.regenTimer = (enemy.regenTimer || 0) + dt;
+    if (enemy.regenTimer >= 1.0) {
+      enemy.regenTimer -= 1.0;
+      const healAmount = Math.floor(enemy.maxHp * enemy.regenPctPerSec);
+      enemy.hp = Math.min(enemy.maxHp, enemy.hp + healAmount);
+    }
+  }
+  
+  // Mage: Arcane Bolt - Shoot potion every 8 seconds
+  if (enemy.specialAbility === 'arcane_bolt' && enemy.engaged) {
+    enemy.potionTimer = (enemy.potionTimer || 0) + dt;
+    if (enemy.potionTimer >= enemy.potionCooldown) {
+      enemy.potionTimer = 0;
+      shootPoisonPotion(enemy);
+    }
+  }
+  
+  // Tank: Visual indicator for shield
+  if (enemy.specialAbility === 'shield_block') {
+    const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
+    if (enemyEl && !enemyEl.style.boxShadow.includes('blue')) {
+      enemyEl.style.boxShadow = '0 0 12px rgba(100, 150, 255, 0.8)';
+    }
+  }
+}
+
+function summonEnemies(boss, randomCount, eliteCount) {
+  const world = boss.world;
+  const stage = document.getElementById('stage');
+  const bossX = boss.position.x;
+  const bossY = boss.position.y;
+  
+  // Summon random enemies from SMALL, NORMAL, and BIG categories
+  const availableSmall = getAvailableEnemyTypes('SMALL', world);
+  const availableNormal = getAvailableEnemyTypes('NORMAL', world);
+  const availableBig = getAvailableEnemyTypes('BIG', world);
+  const allAvailable = [...availableSmall, ...availableNormal, ...availableBig];
+  
+  for (let i = 0; i < randomCount; i++) {
+    const type = allAvailable[Math.floor(Math.random() * allAvailable.length)];
+    const enemy = createEnemy(type, world);
+    // Spawn near the boss
+    enemy.position.x = bossX + (Math.random() - 0.5) * 200;
+    enemy.position.y = bossY + (Math.random() - 0.5) * 200;
+    enemy.prevX = enemy.position.x;
+    enemy.prevY = enemy.position.y;
+    GameState.enemies.push(enemy);
+  }
+  
+  // Summon elite enemies using available elite types
+  const availableElites = getAvailableEnemyTypes('ELITE', world);
+  for (let i = 0; i < eliteCount; i++) {
+    const type = availableElites[Math.floor(Math.random() * availableElites.length)];
+    const enemy = createEnemy(type, world);
+    enemy.position.x = bossX + (Math.random() - 0.5) * 200;
+    enemy.position.y = bossY + (Math.random() - 0.5) * 200;
+    enemy.prevX = enemy.position.x;
+    enemy.prevY = enemy.position.y;
+    GameState.enemies.push(enemy);
+  }
+}
+
+function shootPoisonPotion(mage) {
+  // Create visual projectile
+  const stage = document.getElementById('stage');
+  const playerX = stage.clientWidth / 2;
+  const playerY = stage.clientHeight / 2;
+  
+  // Select random debuff
+  const debuffs = ['slowness', 'weakness', 'poison', 'harmness'];
+  const selectedDebuff = debuffs[Math.floor(Math.random() * debuffs.length)];
+  
+  // Apply debuff to player
+  applyPoisonDebuff(selectedDebuff, mage.atk);
+  
+  showNotification(`🔮 Mage cast ${selectedDebuff}!`, 'danger');
+}
+
+function applyPoisonDebuff(debuffType, mageAtk) {
+  if (!GameState.player.activeDebuffs) {
+    GameState.player.activeDebuffs = {};
+  }
+  
+  const duration = 3.0; // 3 seconds
+  const endTime = Date.now() + duration * 1000;
+  
+  switch(debuffType) {
+    case 'slowness':
+      GameState.player.activeDebuffs.slowness = {
+        endTime: endTime,
+        color: '#808080'
+      };
+      break;
+    
+    case 'weakness':
+      GameState.player.activeDebuffs.weakness = {
+        endTime: endTime,
+        multiplier: 0.5  // 50% damage reduction
+      };
+      break;
+    
+    case 'poison':
+      GameState.player.activeDebuffs.poison = {
+        endTime: endTime,
+        damage: Math.floor(mageAtk * 1.2),  // 120% of mage attack
+        tickInterval: 1.0,  // 1 second per tick
+        nextTick: Date.now() + 1000
+      };
+      break;
+    
+    case 'harmness':
+      GameState.player.activeDebuffs.harmness = {
+        endTime: endTime,
+        multiplier: 1.5  // +50% damage taken
+      };
+      break;
+  }
+}
+
+function updatePlayerDebuffs() {
+  if (!GameState.player.activeDebuffs) return;
+  
+  const now = Date.now();
+  
+  // Update poison ticks
+  if (GameState.player.activeDebuffs.poison) {
+    const poison = GameState.player.activeDebuffs.poison;
+    if (now >= poison.nextTick && now < poison.endTime) {
+      dealDamageToPlayer(poison.damage);
+      poison.nextTick = now + poison.tickInterval * 1000;
+    }
+    if (now >= poison.endTime) {
+      delete GameState.player.activeDebuffs.poison;
+    }
+  }
+  
+  // Clean up expired debuffs
+  for (const [debuffType, debuff] of Object.entries(GameState.player.activeDebuffs)) {
+    if (now >= debuff.endTime) {
+      delete GameState.player.activeDebuffs[debuffType];
+    }
+  }
+  
+  // Apply visual indicator
+  const player = document.getElementById('player');
+  if (player) {
+    if (GameState.player.activeDebuffs.slowness) {
+      player.style.filter = 'grayscale(0.8)';
+    } else if (GameState.player.activeDebuffs.weakness) {
+      player.style.filter = 'brightness(0.6)';
+    } else if (GameState.player.activeDebuffs.poison) {
+      player.style.filter = 'hue-rotate(90deg) brightness(0.8)';
+    } else if (GameState.player.activeDebuffs.harmness) {
+      player.style.filter = 'hue-rotate(180deg) brightness(1.2)';
+    } else {
+      player.style.filter = '';
+    }
+  }
+}
+
+function applyBurnToPlayer(baseDamage, duration, multiplier) {
+  const burnDamage = Math.floor(baseDamage * multiplier);
+  const tickInterval = 1.0; // 1 second per tick
+  const totalTicks = Math.floor(duration / tickInterval);
+  
+  if (!GameState.player.activeBurns) {
+    GameState.player.activeBurns = [];
+  }
+  
+  GameState.player.activeBurns.push({
+    damage: burnDamage,
+    ticksRemaining: totalTicks,
+    tickTimer: 0,
+    tickInterval: tickInterval
+  });
+  
+  showNotification('🔥 Burning!', 'danger');
+}
+
+function updatePlayerBurns(dt) {
+  if (!GameState.player.activeBurns || GameState.player.activeBurns.length === 0) return;
+  
+  GameState.player.activeBurns.forEach(burn => {
+    burn.tickTimer += dt;
+    if (burn.tickTimer >= burn.tickInterval) {
+      burn.tickTimer -= burn.tickInterval;
+      burn.ticksRemaining--;
+      dealDamageToPlayer(burn.damage);
+    }
+  });
+  
+  GameState.player.activeBurns = GameState.player.activeBurns.filter(b => b.ticksRemaining > 0);
 }
 
 // ========== Enemy Update Logic ==========
@@ -3193,11 +3814,19 @@ function updateEnemies(dt) {
       }
     }
 
+    // Handle special abilities
+    handleEnemySpecialAbilities(enemy, dt);
+
     const dx = playerX - enemy.position.x;
     const dy = playerY - enemy.position.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
 
-    if (distance > CONFIG.ENGAGE_RADIUS_PX) {
+    // Calculate engage radius (ranger has longer range)
+    const engageRadius = enemy.attackRangeMultiplier 
+      ? CONFIG.ENGAGE_RADIUS_PX * enemy.attackRangeMultiplier 
+      : CONFIG.ENGAGE_RADIUS_PX;
+
+    if (distance > engageRadius) {
       enemy.engaged = false;
       const ndx = dx / distance;
       const ndy = dy / distance;
@@ -3211,7 +3840,44 @@ function updateEnemies(dt) {
       enemy.engageTimer += dt;
       if (enemy.engageTimer >= enemy.attackInterval) {
         enemy.engageTimer -= enemy.attackInterval;
-        dealDamageToPlayer(enemy.atk);
+        
+        // Calculate damage with special abilities
+        let damage = enemy.atk;
+        let isCrit = false;
+        
+        // Assassin: Critical Strike (50% chance)
+        if (enemy.specialAbility === 'critical_strike' && Math.random() < (enemy.critChance || 0)) {
+          damage *= 2;
+          isCrit = true;
+        }
+        
+        // Berserker: Rage bonus (+50% attack)
+        if (enemy.rageActive && enemy.specialAbility === 'rage_mode') {
+          // Already applied in handleEnemySpecialAbilities
+        }
+        
+        // Archboss: Enrage bonus (+50% attack)
+        if (enemy.enrageActive && enemy.specialAbility === 'supreme_power') {
+          // Already applied in handleEnemySpecialAbilities
+        }
+        
+        // Apply harmness debuff (+50% damage taken)
+        if (GameState.player.activeDebuffs && GameState.player.activeDebuffs.harmness) {
+          damage = Math.floor(damage * GameState.player.activeDebuffs.harmness.multiplier);
+        }
+        
+        dealDamageToPlayer(damage, isCrit);
+        
+        // Necromancer: Life Drain
+        if (enemy.specialAbility === 'life_drain' && enemy.lifeDrainPct) {
+          const healAmount = Math.floor(damage * enemy.lifeDrainPct);
+          enemy.hp = Math.min(enemy.maxHp, enemy.hp + healAmount);
+        }
+        
+        // Demon: Burning Strike (DOT)
+        if (enemy.specialAbility === 'burning_strike') {
+          applyBurnToPlayer(enemy.atk, enemy.burnDuration, enemy.burnMultiplier);
+        }
       }
     }
   });
@@ -3292,10 +3958,10 @@ function onEnemyDeath(enemy) {
     let item;
     const setDropChance = Math.min(0.05 + (p.world * 0.01), 0.30); // 5% base, +1% per world, max 30%
     if (GameState.rng.rand() < setDropChance) {
-      // Drop a set item
+      // Drop a set item with random rarity (same distribution as normal items)
       const availableSets = Object.keys(EQUIPMENT_SETS);
       const randomSet = availableSets[GameState.rng.randInt(0, availableSets.length - 1)];
-      item = generateEquipment(slot, 'mythic', p.world, randomSet); // Set items are always mythic
+      item = generateEquipment(slot, rarity, p.world, randomSet); // Set items now use random rarity
     } else {
       // Drop normal equipment
       item = generateEquipment(slot, rarity, p.world);
@@ -3381,7 +4047,40 @@ function spawnWave() {
     return; // Already at cap
   }
 
-  const typeWeights = { small: 30, normal: 50, big: 15, elite: 5 };
+  // Define enemy weights based on world level
+  let typeWeights;
+  
+  if (p.world >= 12) {
+    // World 12+: All enemy types
+    typeWeights = { 
+      small: 10, normal: 20, big: 8, elite: 4,
+      assassin: 8, tank: 6, ranger: 8, berserker: 6,
+      mage: 8, necromancer: 5, paladin: 4, demon: 3, archboss: 2
+    };
+  } else if (p.world >= 9) {
+    // World 9-11: + mage, necromancer
+    typeWeights = { 
+      small: 12, normal: 22, big: 10, elite: 5,
+      assassin: 10, tank: 8, ranger: 10, berserker: 8,
+      mage: 10, necromancer: 7
+    };
+  } else if (p.world >= 6) {
+    // World 6-8: + tank, berserker
+    typeWeights = { 
+      small: 15, normal: 25, big: 12, elite: 6,
+      assassin: 12, tank: 10, ranger: 12, berserker: 10
+    };
+  } else if (p.world >= 3) {
+    // World 3-5: + assassin, ranger
+    typeWeights = { 
+      small: 20, normal: 30, big: 15, elite: 8,
+      assassin: 15, ranger: 15
+    };
+  } else {
+    // World 1-2: Original enemies only
+    typeWeights = { small: 30, normal: 50, big: 15, elite: 5 };
+  }
+  
   const enemiesNeeded = enemyCap - currentEnemyCount;
 
   // 15% chance to spawn a group of 5-12 enemies together
@@ -4431,7 +5130,6 @@ function refreshShop() {
     shop.offers.equipment.push(item);
   }
 
-
   CONSUMABLES.forEach(cons => {
     shop.offers.consumables.push({
       id: `cons_${GameState.itemIdCounter++}`,
@@ -5120,6 +5818,12 @@ function findEnemiesInRadius(x, y, radius) {
 
 function applyDamageToEnemy(enemy, dmg, ctx = {}) {
   if (!enemy || enemy.hp <= 0) return;
+  
+  // Tank: Shield Block - reduce damage
+  if (enemy.specialAbility === 'shield_block' && enemy.damageReduction) {
+    dmg = Math.floor(dmg * (1 - enemy.damageReduction));
+  }
+  
   enemy.hp -= dmg;
   // attach lastHit context for on-death detection
   enemy.lastHit = Object.assign({}, ctx, { damage: dmg, timestamp: Date.now() });
@@ -5262,7 +5966,6 @@ function spawnShockwave(x, y, radius, color, durationMs = 380) {
   });
   setTimeout(()=> w.remove(), durationMs+40);
 }
-
 
 /* ---------- safe player HP getters/setters ---------- */
 function getPlayerHP(p) {
@@ -5543,7 +6246,6 @@ function createStarProjectile(options) {
   // safety remove
   setTimeout(()=> { if (s.parentNode) s.remove(); }, (options.travelMs||260) + 600);
 }
-
 
 /* ---------- Aegis circle spawner ---------- */
 function spawnAegisCircle(centerX, centerY, index, totalCircles, player) {
@@ -6982,10 +7684,8 @@ function buildItemTooltipHtml(item, isEquipped) {
       <div class="tooltip-actions">
         <button class="tooltip-btn primary" data-action="use-consumable">Use</button>
       </div>
-    </div>
+      </div>
     `;
-  } else {
-    html += `</div>`;
   }
 
   return html;
@@ -7061,13 +7761,11 @@ function buildShopItemTooltipHtml(item) {
   } else if (item.type === 'consumable') {
     html += `
       <div style="padding: 8px;">${item.desc || item.name}</div>
-      </div>
+
       <div class="tooltip-actions">
         <button class="tooltip-btn primary buy-shop-btn" data-item-id="${item.id}">Buy (💎${item.price.toLocaleString()})</button>
       </div>
     `;
-  } else {
-    html += `</div>`;
   }
 
   return html;
@@ -7368,15 +8066,139 @@ function updateWorldProgress() {
 
 }
 
-// ========== Dynamic Challenge System ==========
-const CHALLENGE_TYPES = {
-  BOSS: { name: 'BOSS Challenge', desc: 'Defeat the boss.' },
-  SPEED: { name: 'Speed Challenge', desc: 'Defeat 20 enemies within 60 seconds.', requiredEnemies: 20, timeLimit: 60 },
-  ELITE_HUNTER: { name: 'Elite Hunter', desc: 'Defeat 5 elites.', requiredElites: 5 },
-  SURVIVAL: { name: 'Survival Challenge', desc: 'Complete 3 waves of enemies.', requiredWaves: 3 },
+// ========== Wave-Based Challenge System ==========
+const WAVE_CHALLENGE_TYPES = {
+  DEFEAT_ENEMIES: { 
+    name: 'Defeat Enemies',
+    enemyTypes: ['normal'],
+    hasTimer: false
+  },
+  DEFEAT_ENEMIES_TIMED: { 
+    name: 'Speed Kill',
+    enemyTypes: ['normal'],
+    hasTimer: true
+  },
+  DEFEAT_ELITES: { 
+    name: 'Elite Hunter',
+    enemyTypes: ['elite'],
+    hasTimer: false
+  },
+  DEFEAT_BOSS: { 
+    name: 'Boss Battle',
+    enemyTypes: ['boss'],
+    hasTimer: false,
+    bossCount: 1 // Can increase with world
+  },
+  DEFEAT_MIXED_ENEMIES_ELITES_BOSS: { 
+    name: 'Mixed Battle',
+    enemyTypes: ['normal', 'elite', 'boss'],
+    hasTimer: false
+  },
+  DEFEAT_MIXED_ENEMIES_BOSS: { 
+    name: 'Boss Rush',
+    enemyTypes: ['normal', 'boss'],
+    hasTimer: false
+  },
+  DEFEAT_MIXED_ENEMIES_ELITES_BOSS_TIMED: { 
+    name: 'Ultimate Challenge',
+    enemyTypes: ['normal', 'elite', 'boss'],
+    hasTimer: true
+  },
+  DEFEAT_MIXED_ENEMIES_BOSS_TIMED: { 
+    name: 'Timed Boss Rush',
+    enemyTypes: ['normal', 'boss'],
+    hasTimer: true
+  }
 };
 
-function selectRandomChallenge() {
+function getWaveCount(world) {
+  if (world === 1) return 1;
+  if (world === 2 || world === 3) return 2;
+  return 3;
+}
+
+function getEnemyCount(world, waveIndex) {
+  // Base count starts at 15, increases by 5, 10, or 15 per world
+  const increaseOptions = [5, 10, 15];
+  const increase = increaseOptions[Math.floor(Math.random() * increaseOptions.length)];
+  const baseCount = 15 + (world - 1) * increase;
+  
+  // Each wave in the same challenge gets progressively more enemies
+  const waveMultiplier = 1 + (waveIndex * 0.3); // 0%, 30%, 60% more
+  
+  return Math.min(300, Math.floor(baseCount * waveMultiplier));
+}
+
+function getTimeLimit() {
+  const options = [30, 45, 60];
+  return options[Math.floor(Math.random() * options.length)];
+}
+
+function generateWaveChallenge(world, waveIndex, totalWaves) {
+  const challengeTypes = Object.keys(WAVE_CHALLENGE_TYPES);
+  
+  // For final wave, increase chance of boss challenges
+  let selectedType;
+  if (waveIndex === totalWaves - 1) {
+    // 60% chance of boss-related challenge on final wave
+    const bossTypes = ['DEFEAT_BOSS', 'DEFEAT_MIXED_ENEMIES_BOSS', 'DEFEAT_MIXED_ENEMIES_ELITES_BOSS'];
+    if (Math.random() < 0.6) {
+      selectedType = bossTypes[Math.floor(Math.random() * bossTypes.length)];
+    } else {
+      selectedType = challengeTypes[Math.floor(Math.random() * challengeTypes.length)];
+    }
+  } else {
+    selectedType = challengeTypes[Math.floor(Math.random() * challengeTypes.length)];
+  }
+  
+  const challengeData = WAVE_CHALLENGE_TYPES[selectedType];
+  const enemyCount = getEnemyCount(world, waveIndex);
+  const timeLimit = challengeData.hasTimer ? getTimeLimit() : 0;
+  
+  // Calculate enemy composition
+  let composition = {};
+  if (challengeData.enemyTypes.includes('boss')) {
+    const bossCount = Math.max(1, Math.floor(world / 3)); // 1 boss per 3 worlds
+    composition.boss = bossCount;
+  }
+  if (challengeData.enemyTypes.includes('elite')) {
+    const eliteRatio = challengeData.enemyTypes.length === 1 ? 1.0 : 0.3; // 30% elites if mixed
+    composition.elite = Math.max(1, Math.floor(enemyCount * eliteRatio));
+  }
+  if (challengeData.enemyTypes.includes('normal')) {
+    const usedCount = (composition.elite || 0) + (composition.boss || 0);
+    composition.normal = Math.max(5, enemyCount - usedCount);
+  }
+  
+  // Calculate actual total enemies that will spawn
+  const actualTotal = (composition.normal || 0) + (composition.elite || 0) + (composition.boss || 0);
+  
+  return {
+    type: selectedType,
+    name: challengeData.name,
+    composition: composition,
+    totalRequired: actualTotal,  // Use actual count, not enemyCount
+    timeLimit: timeLimit,
+    hasTimer: challengeData.hasTimer
+  };
+}
+
+function generateWorldChallenge(world) {
+  const waveCount = getWaveCount(world);
+  const waves = [];
+  
+  for (let i = 0; i < waveCount; i++) {
+    waves.push(generateWaveChallenge(world, i, waveCount));
+  }
+  
+  return {
+    world: world,
+    waves: waves,
+    currentWave: 0
+  };
+}
+
+function selectOrCreateChallenge() {
   const world = GameState.player.world;
   
   // Check if this world already has an assigned challenge
@@ -7384,109 +8206,230 @@ function selectRandomChallenge() {
     GameState.worldProgress.assignedChallenges = {};
   }
   
-  if (GameState.worldProgress.assignedChallenges[world]) {
+  const existingChallenge = GameState.worldProgress.assignedChallenges[world];
+  
+  // Validate existing challenge has the correct structure
+  if (existingChallenge && existingChallenge.waves && Array.isArray(existingChallenge.waves)) {
     // Return the previously assigned challenge for this world
-    return GameState.worldProgress.assignedChallenges[world];
+    return existingChallenge;
   }
   
-  // No challenge assigned yet, pick a random one and save it
-  const challenges = Object.keys(CHALLENGE_TYPES);
-  const selectedChallenge = challenges[Math.floor(Math.random() * challenges.length)];
-  GameState.worldProgress.assignedChallenges[world] = selectedChallenge;
+  // No valid challenge assigned, generate a new one and save it
+  const challenge = generateWorldChallenge(world);
+  GameState.worldProgress.assignedChallenges[world] = challenge;
   
-  return selectedChallenge;
+  return challenge;
 }
 
-function startChallenge(challengeType) {
-  GameState.currentChallenge = challengeType;
+function startChallenge() {
+  const challenge = selectOrCreateChallenge();
+  GameState.currentChallenge = challenge;
+  GameState.currentChallenge.currentWave = 0;
+  
+  // Initialize progress tracking
   GameState.challengeProgress = {
     enemiesKilled: 0,
     elitesKilled: 0,
-    wavesCompleted: 0,
-    bossKilled: false,
+    bossesKilled: 0,
+    totalKilled: 0,
     died: false,
     startTime: Date.now(),
-    timeLimit: CHALLENGE_TYPES[challengeType].timeLimit || 0,
-    waitingForNextWave: false // For SURVIVAL challenge wave management
+    waitingForNextWave: false,
+    spawnedCount: 0,
+    spawnIntervals: []
   };
 }
 
 function updateChallengeTimer() {
+  if (!GameState.currentChallenge) return;
+  
+  const challenge = GameState.currentChallenge;
+  
+  // Validate challenge has waves array
+  if (!challenge.waves || !Array.isArray(challenge.waves)) {
+    console.error('Invalid challenge structure - missing waves array');
+    return;
+  }
+  
+  const currentWave = challenge.waves[challenge.currentWave];
+  
+  if (!currentWave || !currentWave.hasTimer) return;
+  
   const timerEl = document.getElementById('timer-text');
   if (!timerEl) return;
   
-  if (GameState.currentChallenge === 'SPEED') {
-    const elapsed = (Date.now() - GameState.challengeProgress.startTime) / 1000;
-    const remaining = Math.max(0, GameState.challengeProgress.timeLimit - elapsed);
-    const minutes = Math.floor(remaining / 60);
-    const seconds = Math.floor(remaining % 60);
-    
-    timerEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-    
-    // Check if time ran out
-    if (remaining <= 0 && !verifyChallengeComplete()) {
-      failChallenge('Time ran out!');
-    }
-  } else if (GameState.currentChallenge === 'SURVIVAL') {
-    // Show wave counter for survival challenge
-    const currentWave = GameState.challengeProgress.wavesCompleted + 1;
-    const totalWaves = CHALLENGE_TYPES['SURVIVAL'].requiredWaves;
-    timerEl.textContent = `Wave ${currentWave}/${totalWaves}`;
+  const elapsed = (Date.now() - GameState.challengeProgress.startTime) / 1000;
+  const remaining = Math.max(0, currentWave.timeLimit - elapsed);
+  const minutes = Math.floor(remaining / 60);
+  const seconds = Math.floor(remaining % 60);
+  
+  timerEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  
+  // Check if time ran out
+  if (remaining <= 0 && !isCurrentWaveComplete()) {
+    failChallenge('Time ran out!');
   }
 }
 
 function trackChallengeProgress(enemy) {
   if (!GameState.currentChallenge) return;
   
-  GameState.challengeProgress.enemiesKilled++;
+  GameState.challengeProgress.totalKilled++;
+  
   if (enemy.type === 'elite') {
     GameState.challengeProgress.elitesKilled++;
+  } else if (enemy.type === 'boss') {
+    GameState.challengeProgress.bossesKilled++;
+  } else {
+    GameState.challengeProgress.enemiesKilled++;
   }
-  if (enemy.type === 'boss') {
-    GameState.challengeProgress.bossKilled = true;
+  
+  // Update the challenge UI
+  updateChallengeDescription();
+}
+
+function isCurrentWaveComplete() {
+  if (!GameState.currentChallenge) return false;
+  
+  const challenge = GameState.currentChallenge;
+  const currentWave = challenge.waves[challenge.currentWave];
+  
+  // Validate challenge has waves array
+  if (!challenge.waves || !Array.isArray(challenge.waves)) return false;
+
+  const progress = GameState.challengeProgress;
+  
+  if (!currentWave) return false;
+  if (progress.died) return false;
+  
+  // Check if required count is met OR EXCEEDED (37/35 should count as complete)
+  const required = currentWave.totalRequired;
+  const killed = progress.totalKilled;
+  
+  if (killed < required) return false;
+  
+  // Check timer if applicable
+  if (currentWave.hasTimer) {
+    const elapsed = (Date.now() - progress.startTime) / 1000;
+    if (elapsed > currentWave.timeLimit) return false;
   }
+  
+  return true;
 }
 
 function trackWaveCompletion() {
-  if (GameState.currentChallenge !== 'SURVIVAL') return;
-  if (GameState.enemies.length > 0) return; // Still enemies alive
+  if (!GameState.currentChallenge) return;
   if (GameState.isDead) return; // Player died
   
   const progress = GameState.challengeProgress;
-  const requiredWaves = CHALLENGE_TYPES['SURVIVAL'].requiredWaves;
   
   // If we're already waiting for next wave to spawn, don't do anything
   if (progress.waitingForNextWave) return;
   
-  // If we've already completed all waves, don't process again
-  if (progress.wavesCompleted >= requiredWaves) return;
+  const challenge = GameState.currentChallenge;
+  const currentWaveIndex = challenge.currentWave;
+  
+  // Validate challenge has waves array
+  if (!challenge.waves || !Array.isArray(challenge.waves)) return;
+
+  const totalWaves = challenge.waves.length;
+  
+  // Check if current wave is complete (requirements met, even if enemies remain)
+  if (!isCurrentWaveComplete()) return;
   
   // Mark that we're processing this wave completion
   progress.waitingForNextWave = true;
   
-  // Increment wave count
-  progress.wavesCompleted++;
-  const completedWaves = progress.wavesCompleted;
+  console.log(`[WAVE] Wave ${currentWaveIndex + 1}/${totalWaves} completed.`);
   
-  console.log(`[SURVIVAL] Wave ${completedWaves} completed. Total: ${completedWaves}/${requiredWaves}`);
+  // Kill any spare enemies with shockwave effect
+  if (GameState.enemies.length > 0) {
+    const spareEnemies = [...GameState.enemies];
+    console.log(`[WAVE] Killing ${spareEnemies.length} spare enemies with shockwave`);
+    
+    spareEnemies.forEach(enemy => {
+      // Create shockwave effect at enemy position
+      createShockwaveEffect(enemy.position.x, enemy.position.y);
+      
+      // Remove enemy from the game
+      const enemyEl = document.querySelector(`[data-enemy-id="${enemy.id}"]`) || 
+                      document.querySelector(`[data-boss-id="${enemy.id}"]`) ||
+                      document.querySelector(`[data-entity-id="${enemy.id}"]`);
+      if (enemyEl && enemyEl.parentNode) {
+        enemyEl.parentNode.removeChild(enemyEl);
+      }
+    });
+    
+    // Clear all enemies at once
+    GameState.enemies = [];
+  }
   
-  if (completedWaves < requiredWaves) {
+  if (currentWaveIndex + 1 < totalWaves) {
     // More waves to go
-    showNotification(`✅ Wave ${completedWaves}/${requiredWaves} Complete!`, 'success');
+    showNotification(`✅ Wave ${currentWaveIndex + 1}/${totalWaves} Complete!`, 'success');
     
     // Spawn next wave after delay
     setTimeout(() => {
-      const nextWaveNumber = completedWaves + 1;
-      console.log(`[SURVIVAL] Spawning wave ${nextWaveNumber}`);
-      spawnSurvivalWave(nextWaveNumber);
-      progress.waitingForNextWave = false; // Ready for next wave completion
+      challenge.currentWave++;
+      console.log(`[WAVE] Starting wave ${challenge.currentWave + 1}`);
+      
+      // Reset progress for new wave
+      GameState.challengeProgress = {
+        enemiesKilled: 0,
+        elitesKilled: 0,
+        bossesKilled: 0,
+        totalKilled: 0,
+        died: false,
+        startTime: Date.now(),
+        waitingForNextWave: false,
+        spawnedCount: 0,
+        spawnIntervals: []
+      };
+      
+      spawnChallengeWave();
+      updateChallengeDescription();
     }, 2000);
   } else {
     // All waves completed!
-    showNotification(`✅ All ${requiredWaves} waves completed!`, 'legendary');
+    showNotification(`✅ All ${totalWaves} waves completed!`, 'legendary');
     progress.waitingForNextWave = false;
     // Challenge completion will be checked in gameTick
   }
+}
+
+function createShockwaveEffect(x, y) {
+  const stage = document.getElementById('stage');
+  if (!stage) return;
+  
+  const shockwave = document.createElement('div');
+  shockwave.style.position = 'absolute';
+  shockwave.style.left = '0';
+  shockwave.style.top = '0';
+  shockwave.style.width = '100px';
+  shockwave.style.height = '100px';
+  shockwave.style.borderRadius = '50%';
+  shockwave.style.border = '3px solid rgba(255, 215, 0, 0.8)';
+  shockwave.style.boxShadow = '0 0 20px rgba(255, 215, 0, 0.6), inset 0 0 20px rgba(255, 215, 0, 0.4)';
+  shockwave.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%) scale(0.1)`;
+  shockwave.style.pointerEvents = 'none';
+  shockwave.style.zIndex = '100';
+  shockwave.style.opacity = '1';
+  shockwave.style.transition = 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.6s ease-out';
+  
+  stage.appendChild(shockwave);
+  
+  // Trigger animation
+  setTimeout(() => {
+    shockwave.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%) scale(3)`;
+    shockwave.style.opacity = '0';
+  }, 10);
+  
+  // Remove element after animation
+  setTimeout(() => {
+    if (shockwave.parentNode) {
+      shockwave.parentNode.removeChild(shockwave);
+    }
+  }, 650);
 }
 
 function trackDeath() {
@@ -7499,40 +8442,34 @@ function trackDeath() {
 function verifyChallengeComplete() {
   if (!GameState.currentChallenge) return false;
   
-  const challenge = CHALLENGE_TYPES[GameState.currentChallenge];
+  const challenge = GameState.currentChallenge;
   const progress = GameState.challengeProgress;
   
-  // Check if died (all challenges fail on death)
+  // Validate challenge has waves array
+  if (!challenge.waves || !Array.isArray(challenge.waves)) return false;
+
+  
+  // Check if died
   if (progress.died) return false;
   
-  switch (GameState.currentChallenge) {
-    case 'BOSS':
-      // Just need to not die and defeat the boss normally
-      return progress.bossKilled;
-      
-    case 'SPEED':
-      // Must kill required enemies within time limit without dying
-      const elapsed = (Date.now() - progress.startTime) / 1000;
-      return progress.enemiesKilled >= challenge.requiredEnemies && elapsed <= challenge.timeLimit;
-      
-    case 'ELITE_HUNTER':
-      // Must defeat required number of elites without dying
-      return progress.elitesKilled >= challenge.requiredElites;
-      
-    case 'SURVIVAL':
-      // Must complete ALL required waves without dying
-      return progress.wavesCompleted >= challenge.requiredWaves;
-      
-    default:
-      return false;
-  }
+  // Check if all waves are completed
+  const lastWaveIndex = challenge.waves.length - 1;
+  if (challenge.currentWave !== lastWaveIndex) return false;
+  
+  // Check if the last wave is complete
+  return isCurrentWaveComplete();
 }
 
 function completeChallenge() {
   if (!GameState.currentChallenge) return;
   
-  const challengeName = CHALLENGE_TYPES[GameState.currentChallenge].name;
-  showNotification(`✅ ${challengeName} Complete!`, 'legendary');
+  // Clear any active spawn intervals
+  if (GameState.challengeProgress && GameState.challengeProgress.spawnIntervals) {
+    GameState.challengeProgress.spawnIntervals.forEach(intervalId => clearInterval(intervalId));
+    GameState.challengeProgress.spawnIntervals = [];
+  }
+  
+  showNotification(`✅ World ${GameState.player.world} Challenge Complete!`, 'legendary');
   
   // Hide challenge overlay
   hideChallengeOverlay();
@@ -7544,160 +8481,320 @@ function completeChallenge() {
 function failChallenge(reason) {
   if (!GameState.currentChallenge) return;
   
-  showNotification(`❌ Challenge Failed: ${reason}`, 'danger');
+  console.log(`[CHALLENGE] Challenge failed: ${reason}`);
+  
+  // Clear any active spawn intervals
+  if (GameState.challengeProgress && GameState.challengeProgress.spawnIntervals) {
+    GameState.challengeProgress.spawnIntervals.forEach(intervalId => clearInterval(intervalId));
+    GameState.challengeProgress.spawnIntervals = [];
+  }
   
   // Hide challenge overlay
   hideChallengeOverlay();
   
+  // Show challenge failure screen
+  const challengeFailureScreen = document.getElementById('challenge-failure-screen');
+  if (challengeFailureScreen) {
+    challengeFailureScreen.classList.add('active');
+  }
+  
+  // Update world display
+  const worldSpan = document.getElementById('challenge-failure-world');
+  if (worldSpan) {
+    worldSpan.textContent = GameState.player.world;
+  }
+  
+  // Remove all enemies
+  GameState.enemies = [];
+  
+  // Set a timer to return from challenge after 3 seconds
+  setTimeout(() => {
+    returnFromChallengeFailed();
+  }, 3000);
+  
+  showNotification(`❌ Challenge Failed: ${reason}`, 'danger');
+}
+
+function returnFromChallengeFailed() {
+  console.log('[CHALLENGE] Returning from failed challenge');
+  
+  // Hide challenge failure screen
+  const challengeFailureScreen = document.getElementById('challenge-failure-screen');
+  if (challengeFailureScreen) {
+    challengeFailureScreen.classList.remove('active');
+  }
+  
   // Reset challenge
   GameState.currentChallenge = null;
+  
+  // Reset game state flags
+  GameState.suspendWaves = false;
+  GameState.inBossChallenge = false;
+  
+  // Resume normal waves
+  updateWorldProgress();
+  
+  showNotification(`🔄 Returned to World ${GameState.player.world}`, 'warning');
+}
+
+function updateChallengeDescription() {
+  if (!GameState.currentChallenge) return;
+  
+  const challenge = GameState.currentChallenge;
+  const currentWave = challenge.waves[challenge.currentWave];
+  
+  // Validate challenge has waves array
+  if (!challenge.waves || !Array.isArray(challenge.waves)) {
+    console.error('Invalid challenge structure - missing waves array');
+    return;
+  }
+
+  const progress = GameState.challengeProgress;
+  
+  if (!currentWave) return;
+  
+  const descEl = document.getElementById('challenge-description');
+  const timerEl = document.getElementById('challenge-timer');
+  
+  if (!descEl) return;
+  
+  // Build description with progress using HTML structure
+  let desc = `<div class="wave-title">Wave ${challenge.currentWave + 1}/${challenge.waves.length}: ${currentWave.name}</div>`;
+  
+  if (currentWave.hasTimer) {
+    desc += `Defeat ${currentWave.totalRequired} enemies in ${currentWave.timeLimit} seconds (${progress.totalKilled}/${currentWave.totalRequired})`;
+  } else {
+    desc += `Defeat ${currentWave.totalRequired} enemies (${progress.totalKilled}/${currentWave.totalRequired})`;
+  }
+  
+  descEl.innerHTML = desc;
+  
+  // Show/hide timer
+  if (timerEl) {
+    if (currentWave.hasTimer) {
+      timerEl.style.display = 'inline-block';
+    } else {
+      timerEl.style.display = 'none';
+    }
+  }
 }
 
 function challengeWorld() {
   if (GameState.suspendWaves) return;
 
-  // Start a random dynamic challenge
-  const challengeType = selectRandomChallenge();
-  startChallenge(challengeType);
+  // Start the wave-based challenge
+  startChallenge();
 
   GameState.suspendWaves = true;
   GameState.inBossChallenge = true;
   GameState.enemies = [];
 
-  // Get challenge info
-  const challenge = CHALLENGE_TYPES[challengeType];
-
-  // Show challenge overlay with info
-  showChallengeOverlay(challenge.name, challenge.desc, challengeType === 'SPEED');
-
-  // Spawn enemies based on challenge type
-  switch (challengeType) {
-    case 'BOSS':
-      // These challenges are boss battles
-      const boss = createEnemy('boss', GameState.player.world);
-      boss.prevX = boss.position.x;
-      boss.prevY = boss.position.y;
-      GameState.enemies.push(boss);
-      break;
-      
-    case 'SPEED':
-      // Speed challenge: spawn 20+ normal enemies for a fast-paced battle
-      for (let i = 0; i < 25; i++) {
-        const enemy = createEnemy('normal', GameState.player.world);
-        enemy.prevX = enemy.position.x;
-        enemy.prevY = enemy.position.y;
-        GameState.enemies.push(enemy);
-      }
-      break;
-      
-    case 'ELITE_HUNTER':
-      // Elite Hunter: spawn 5 elite enemies and some normal enemies
-      for (let i = 0; i < 5; i++) {
-        const elite = createEnemy('elite', GameState.player.world);
-        elite.prevX = elite.position.x;
-        elite.prevY = elite.position.y;
-        GameState.enemies.push(elite);
-      }
-      // Add some normal enemies for variety
-      for (let i = 0; i < 10; i++) {
-        const enemy = createEnemy('normal', GameState.player.world);
-        enemy.prevX = enemy.position.x;
-        enemy.prevY = enemy.position.y;
-        GameState.enemies.push(enemy);
-      }
-      break;
-      
-    case 'SURVIVAL':
-      // Survival: Start with first wave, will spawn more waves as they complete
-      spawnSurvivalWave(1);
-      break;
-  }
+  // Show challenge overlay
+  showChallengeOverlay();
+  
+  // Spawn first wave
+  spawnChallengeWave();
 
   document.getElementById('world-requirements').className = 'panel';
 }
 
-function showChallengeOverlay(name, description, showTimer) {
-  const overlay = document.getElementById('challenge-overlay');
-  const descEl = document.getElementById('challenge-description');
-  const timerEl = document.getElementById('challenge-timer');
-
-  descEl.textContent = description;
+function spawnChallengeWave() {
+  if (!GameState.currentChallenge) return;
   
-  // Show timer for SPEED and SURVIVAL challenges
-  if (showTimer || GameState.currentChallenge === 'SURVIVAL') {
-    timerEl.style.display = 'inline-block';
-  } else {
-    timerEl.style.display = 'none';
-  }
+  const challenge = GameState.currentChallenge;
+  const currentWave = challenge.waves[challenge.currentWave];
+  
+  // Validate challenge has waves array
+  if (!challenge.waves || !Array.isArray(challenge.waves)) return;
 
+  
+  if (!currentWave) return;
+  
+  console.log(`[WAVE] Spawning wave ${challenge.currentWave + 1}: ${currentWave.name}`);
+  console.log(`[WAVE] Composition:`, currentWave.composition);
+  
+  // Clear existing enemies and intervals
+  GameState.enemies = [];
+  
+  // Clear any existing spawn intervals
+  if (GameState.challengeProgress.spawnIntervals) {
+    GameState.challengeProgress.spawnIntervals.forEach(intervalId => clearInterval(intervalId));
+    GameState.challengeProgress.spawnIntervals = [];
+  }
+  
+  // Calculate total enemies to spawn
+  const totalEnemies = (currentWave.composition.normal || 0) + 
+                       (currentWave.composition.elite || 0) + 
+                       (currentWave.composition.boss || 0);
+  
+  // Build enemy queue with varied types based on world level
+  const enemyQueue = [];
+  const world = GameState.player.world;
+  
+  // Helper function to get a random enemy type from a category based on world
+  function getRandomEnemyFromCategory(category) {
+    const available = getAvailableEnemyTypes(category, world);
+    if (available.length === 0) {
+      // Fallback to base types
+      return category === 'BOSS' ? 'boss' : 
+             category === 'ELITE' ? 'elite' : 'normal';
+    }
+    return available[Math.floor(Math.random() * available.length)];
+  }
+  
+  // Spawn normal enemies - mix of SMALL, NORMAL, and BIG categories
+  if (currentWave.composition.normal) {
+    for (let i = 0; i < currentWave.composition.normal; i++) {
+      // Weighted distribution: 30% small, 50% normal, 20% big
+      const roll = Math.random();
+      let category;
+      if (roll < 0.3) category = 'SMALL';
+      else if (roll < 0.8) category = 'NORMAL';
+      else category = 'BIG';
+      
+      const type = getRandomEnemyFromCategory(category);
+      enemyQueue.push({ type, world });
+    }
+  }
+  
+  // Spawn elite enemies - from ELITE category
+  if (currentWave.composition.elite) {
+    for (let i = 0; i < currentWave.composition.elite; i++) {
+      const type = getRandomEnemyFromCategory('ELITE');
+      enemyQueue.push({ type, world });
+    }
+  }
+  
+  // Spawn boss enemies - from BOSS category
+  if (currentWave.composition.boss) {
+    for (let i = 0; i < currentWave.composition.boss; i++) {
+      const type = getRandomEnemyFromCategory('BOSS');
+      enemyQueue.push({ type, world });
+    }
+  }
+  
+  // Shuffle enemy queue for variety
+  for (let i = enemyQueue.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [enemyQueue[i], enemyQueue[j]] = [enemyQueue[j], enemyQueue[i]];
+  }
+  
+  // Calculate spawn timing - FAST SPAWNS like normal gameplay
+  let spawnInterval;
+  let spawnBatchSize;
+  
+  if (currentWave.hasTimer) {
+    // Timed challenges: spawn ALL enemies 10-20 seconds before timer runs out
+    const bufferTime = 10 + Math.random() * 10; // 10-20 seconds
+    const spawnDuration = Math.max(5, currentWave.timeLimit - bufferTime);
+    
+    // Spawn in batches to fill quickly
+    spawnBatchSize = Math.max(1, Math.floor(totalEnemies / (spawnDuration * 3))); // 3 batches per second
+    spawnInterval = 333; // ~3 times per second
+    
+    console.log(`[WAVE] Timed challenge: Spawning ${totalEnemies} enemies in batches of ${spawnBatchSize}`);
+    console.log(`[WAVE] Spawn duration: ${spawnDuration.toFixed(1)}s, buffer: ${bufferTime.toFixed(1)}s`);
+  } else {
+    // Non-timed challenges: spawn like normal waves (fast and continuous)
+    // Same as normal: spawn batches every 0.3 seconds
+    spawnInterval = 300; // 0.3 seconds like CONFIG.WAVE_INTERVAL_SEC
+    spawnBatchSize = Math.min(3, Math.max(1, Math.floor(totalEnemies / 10))); // 1-3 enemies per batch
+    
+    const estimatedTime = (spawnInterval * Math.ceil(totalEnemies / spawnBatchSize)) / 1000;
+    console.log(`[WAVE] Non-timed challenge: Spawning ${totalEnemies} enemies in batches of ${spawnBatchSize} every ${spawnInterval}ms (~${estimatedTime.toFixed(1)}s total)`);
+  }
+  
+  // Reset spawn counter
+  GameState.challengeProgress.spawnedCount = 0;
+  
+  // Spawn first batch immediately
+  const firstBatchSize = Math.min(spawnBatchSize, enemyQueue.length);
+  for (let i = 0; i < firstBatchSize; i++) {
+    if (enemyQueue.length > 0) {
+      const enemyData = enemyQueue.shift();
+      const enemy = createEnemy(enemyData.type, enemyData.world);
+      enemy.prevX = enemy.position.x;
+      enemy.prevY = enemy.position.y;
+      GameState.enemies.push(enemy);
+      GameState.challengeProgress.spawnedCount++;
+    }
+  }
+  
+  // Schedule remaining enemies in batches
+  if (enemyQueue.length > 0) {
+    const intervalId = setInterval(() => {
+      if (enemyQueue.length === 0 || !GameState.currentChallenge) {
+        clearInterval(intervalId);
+        console.log(`[WAVE] All ${totalEnemies} enemies spawned`);
+        return;
+      }
+      
+      // Spawn a batch of enemies
+      const batchSize = Math.min(spawnBatchSize, enemyQueue.length);
+      for (let i = 0; i < batchSize; i++) {
+        if (enemyQueue.length > 0) {
+          const enemyData = enemyQueue.shift();
+          const enemy = createEnemy(enemyData.type, enemyData.world);
+          enemy.prevX = enemy.position.x;
+          enemy.prevY = enemy.position.y;
+          GameState.enemies.push(enemy);
+          GameState.challengeProgress.spawnedCount++;
+        }
+      }
+    }, spawnInterval);
+    
+    GameState.challengeProgress.spawnIntervals.push(intervalId);
+  }
+  
+  // Update the challenge description
+  updateChallengeDescription();
+}
+
+function showChallengeOverlay() {
+  const overlay = document.getElementById('challenge-overlay');
   overlay.style.display = 'block';
+  
+  // Initial description update
+  updateChallengeDescription();
 }
 
 function hideChallengeOverlay() {
   document.getElementById('challenge-overlay').style.display = 'none';
 }
 
-
-function spawnSurvivalWave(waveNumber) {
-  if (!GameState.currentChallenge || GameState.currentChallenge !== 'SURVIVAL') return;
-  
-  console.log(`[SURVIVAL] Spawning wave ${waveNumber}`);
-  
-  // Clear existing enemies
-  GameState.enemies = [];
-  
-  // Spawn enemies based on wave number (increasing difficulty)
-  const normalCount = 10 + (waveNumber * 5);
-  const eliteCount = waveNumber;
-  
-  for (let i = 0; i < normalCount; i++) {
-    const enemy = createEnemy('normal', GameState.player.world);
-    enemy.prevX = enemy.position.x;
-    enemy.prevY = enemy.position.y;
-    GameState.enemies.push(enemy);
-  }
-  
-  for (let i = 0; i < eliteCount; i++) {
-    const elite = createEnemy('elite', GameState.player.world);
-    elite.prevX = elite.position.x;
-    elite.prevY = elite.position.y;
-    GameState.enemies.push(elite);
-  }
-  
-  console.log(`[SURVIVAL] Wave ${waveNumber} spawned with ${normalCount} normal + ${eliteCount} elite = ${GameState.enemies.length} total enemies`);
-  
-  // Update wave counter in timer element
-  updateChallengeTimer();
-}
-
 function onChallengeComplete() {
   // Check if challenge was completed successfully
   if (GameState.currentChallenge && verifyChallengeComplete()) {
+    // Success - complete the challenge
     completeChallenge();
+    
+    // Advance to next world
+    GameState.player.world++;
+    
+    // Clear the challenge assignment for the OLD world (the one we just completed)
+    const completedWorld = GameState.player.world - 1;
+    if (GameState.worldProgress.assignedChallenges && GameState.worldProgress.assignedChallenges[completedWorld]) {
+      delete GameState.worldProgress.assignedChallenges[completedWorld];
+    }
+
+    // Track world completion
+    if (GameState.player.statistics) {
+      GameState.player.statistics.worldsCompleted++;
+    }
+
+    GameState.worldProgress.enemiesKilledThisWorld = 0;
+    GameState.worldProgress.elitesKilledThisWorld = 0;
+    
+    // Reset game state flags
+    GameState.suspendWaves = false;
+    GameState.inBossChallenge = false;
+
+    showNotification(`🎉 Welcome to World ${GameState.player.world}!`, 'legendary');
+    updateWorldProgress();
   } else if (GameState.currentChallenge) {
+    // Failure - challenge requirements not met (failChallenge handles cleanup)
     failChallenge('Challenge requirements not met');
   }
-
-  GameState.player.world++;
-  
-  // Clear the challenge assignment for the OLD world (the one we just completed)
-  const completedWorld = GameState.player.world - 1;
-  if (GameState.worldProgress.assignedChallenges && GameState.worldProgress.assignedChallenges[completedWorld]) {
-    delete GameState.worldProgress.assignedChallenges[completedWorld];
-  }
-
-  // Track world completion
-  if (GameState.player.statistics) {
-    GameState.player.statistics.worldsCompleted++;
-  }
-
-  GameState.worldProgress.enemiesKilledThisWorld = 0;
-  GameState.worldProgress.elitesKilledThisWorld = 0;
-  GameState.suspendWaves = false;
-  GameState.inBossChallenge = false;
-
-  showNotification(`🎉 Welcome to World ${GameState.player.world}!`, 'legendary');
-  updateWorldProgress();
 }
 
 // ========== Active Effects ==========
@@ -8096,7 +9193,6 @@ function createFloatingChange(el, amount) {
   }, 900);
 }
 
-
 // ========== Overlay Management ==========
 function openOverlay(id) {
   const overlay = document.getElementById(id);
@@ -8111,7 +9207,6 @@ function closeOverlay(id) {
   overlay.setAttribute('aria-hidden', 'true');
   hideTooltip();
 }
-
 
 // ========== SET BONUS IMPLEMENTATION ==========
 
@@ -8612,13 +9707,18 @@ function trackShadeHPChange(amount) {
   }
 }
 
-
 // ========== Game Loop ==========
 function gameTick() {
 
   const dt = (CONFIG.TICK_INTERVAL_MS / 1000) * CONFIG.GAME_TIME_SCALE;
 
   updateEnemies(dt);
+  
+  // Update player burn effects
+  updatePlayerBurns(dt);
+  
+  // Update player debuffs (from mage)
+  updatePlayerDebuffs();
 
   // Process status effects (burn, slow, freeze, etc.)
   processEnemyStatusTicks(CONFIG.TICK_INTERVAL_MS);
@@ -8683,30 +9783,21 @@ function gameTick() {
     }
   }
 
-  // Update challenge timer for speed challenge
-  if (GameState.currentChallenge === 'SPEED') {
+  // Update challenge timer for timed challenges
+  if (GameState.currentChallenge) {
     updateChallengeTimer();
   }
 
-  // Track wave completion for survival challenge when all enemies are defeated
-  if (GameState.currentChallenge === 'SURVIVAL' && GameState.enemies.length === 0 && !GameState.isDead) {
+  // Track wave completion when all enemies are defeated
+  if (GameState.currentChallenge && GameState.enemies.length === 0 && !GameState.isDead) {
     trackWaveCompletion();
   }
 
   // Check if challenge is complete when all enemies defeated
   if (GameState.suspendWaves && GameState.enemies.length === 0 && !GameState.isDead) {
-    // For SURVIVAL challenge, only complete when all waves are done
-    if (GameState.currentChallenge === 'SURVIVAL') {
-      // Check if all required waves are completed
-      const isComplete = verifyChallengeComplete();
-      console.log(`[SURVIVAL] Challenge completion check: wavesCompleted=${GameState.challengeProgress.wavesCompleted}, isComplete=${isComplete}`);
-      if (isComplete) {
-        console.log('[SURVIVAL] All waves complete! Ending challenge.');
-        onChallengeComplete();
-      }
-      // Otherwise, waves will be spawned by trackWaveCompletion()
-    } else {
-      // For other challenges, complete when enemies are cleared
+    const isComplete = verifyChallengeComplete();
+    if (isComplete) {
+      console.log('[CHALLENGE] All waves complete! Ending challenge.');
       onChallengeComplete();
     }
   }
@@ -8721,9 +9812,10 @@ function uiTick() {
   renderEnemies();
   renderPlayerStats();
   
-  // Update challenge timer
-  if (GameState.currentChallenge === 'SPEED') {
+  // Update challenge timer and description
+  if (GameState.currentChallenge) {
     updateChallengeTimer();
+    updateChallengeDescription();
   }
 
   const shop = GameState.shop;
@@ -9151,6 +10243,13 @@ if (document.readyState === 'loading') {
 }
 /* --- end smooth renderer --- */
 
+
+// ========== BUG FIX DOCUMENTATION ==========
+// Fixed: When upgrading or selling items, the wrong item was being selected
+// Solution: All tooltip button clicks now use event delegation and read the
+// item ID from tooltip.dataset.currentItemId, which is set correctly when
+// showItemTooltip() is called. This prevents closure-based item ID capture bugs.
+// ===========================================
 
 // ========== Tooltip Button Event Delegation ==========
 // Handle all tooltip button clicks to fix the wrong-item bug
