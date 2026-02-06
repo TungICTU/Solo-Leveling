@@ -3410,8 +3410,8 @@ function createEnemy(type, world, position) {
   // Base enemy stats
   const baseSpeed = {
     small: 80, normal: 60, big: 50, elite: 70, boss: 40,
-    assassin: 100, tank: 35, ranger: 55, berserker: 75,
-    mage: 45, necromancer: 50, paladin: 60, demon: 65, archboss: 35
+    assassin: 120, tank: 35, ranger: 65, berserker: 75,
+    mage: 65, necromancer: 50, paladin: 60, demon: 65, archboss: 25
   };
 
   const enemy = {
@@ -3451,9 +3451,9 @@ function createEnemy(type, world, position) {
       break;
     
     case 'ranger':
-      // Ranger: Long Range - Attacks from farther away (2.5x)
+      // Ranger: Long Range - Attacks from farther away (2x)
       enemy.specialAbility = 'long_range';
-      enemy.attackRangeMultiplier = 2.5;
+      enemy.attackRangeMultiplier = 2;
       break;
     
     case 'berserker':
@@ -8534,7 +8534,7 @@ function returnFromChallengeFailed() {
   // Resume normal waves
   updateWorldProgress();
   
-  showNotification(`🔄 Returned to World ${GameState.player.world}`, 'warning');
+  showNotification(`🔄 Returned to World ${GameState.player.world}`, 'info');
 }
 
 function updateChallengeDescription() {
