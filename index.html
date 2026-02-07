@@ -519,11 +519,9 @@
     @keyframes archboss-pulse {
       0%, 100% {
         box-shadow: 0 0 40px rgba(183, 28, 28, 1);
-        transform: scale(1);
       }
       50% {
         box-shadow: 0 0 60px rgba(183, 28, 28, 1);
-        transform: scale(1.05);
         filter: brightness(1.3);
       }
     }
@@ -1844,6 +1842,156 @@
     #set-bonuses-display {
       display: none !important;
     }
+
+/* Enchantment glint effect (Minecraft-style) */
+.enchanted {
+  position: relative;
+  overflow: hidden;
+}
+
+.enchanted::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(168, 85, 247, 0.4) 50%,
+    transparent 70%
+  );
+  animation: enchant-glint 3s infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes enchant-glint {
+  0% {
+    transform: translate(-100%, -100%) rotate(45deg);
+  }
+  100% {
+    transform: translate(100%, 100%) rotate(45deg);
+  }
+}
+
+/* Enchantment text styling */
+.enchantment-attr {
+  color: #a855f7;
+  padding: 4px 8px;
+  margin: 2px 0;
+  background: rgba(168, 85, 247, 0.1);
+  border-left: 3px solid #a855f7;
+  border-radius: 4px;
+  font-size: 11px;
+  line-height: 1.4;
+  position: relative;
+}
+
+.enchantment-attr.locked {
+  opacity: 0.5;
+  background: rgba(168, 85, 247, 0.05);
+}
+
+.enchantment-attr.locked::after {
+  content: '🔒';
+  margin-left: 6px;
+  font-size: 10px;
+}
+
+/* Enchantment section in tooltip */
+.enchantments-section {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 2px solid rgba(168, 85, 247, 0.3);
+}
+
+.enchantments-header {
+  font-size: 12px;
+  font-weight: 700;
+  color: #a855f7;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Enchantment unlock/reroll buttons */
+.enchant-btn {
+  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+  border: 2px solid #a855f7;
+  color: white;
+  padding: 6px 12px;
+  margin: 3px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 600;
+  transition: all 0.2s;
+  display: inline-block;
+}
+
+.enchant-btn:hover {
+  background: linear-gradient(135deg, #6d28d9 0%, #9333ea 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(168, 85, 247, 0.4);
+}
+
+.enchant-btn:active {
+  transform: translateY(0);
+}
+
+.enchant-btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #666;
+  border-color: #888;
+}
+
+.enchant-btn.disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* Small glint for inventory slots */
+.inv-slot.enchanted::after {
+  content: '✨';
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-size: 12px;
+  text-shadow: 0 0 4px #a855f7;
+  animation: sparkle 2s infinite;
+  z-index: 2;
+}
+
+.equip-slot.enchanted::after {
+  content: '✨';
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-size: 12px;
+  text-shadow: 0 0 4px #a855f7;
+  animation: sparkle 2s infinite;
+  z-index: 2;
+}
+
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.2);
+  }
+}
+
+/* Player equipment ring enchantment glow */
+#player.enchanted {
+  box-shadow: 0 0 30px rgba(168, 85, 247, 0.8), 0 0 15px rgba(168, 85, 247, 0.6) inset;
+}
+
 </style>
 </head>
 <body>
@@ -2619,6 +2767,49 @@ function computeDerivedStats() {
     }
   });
 
+  // Apply enchantment bonuses
+  const activeEnchantments = getActiveEnchantments();
+  activeEnchantments.forEach(ench => {
+    switch(ench.id) {
+      case 'strength':
+        sumATKPct += 200;
+        break;
+      case 'damage_boost':
+        sumDMGPct += 150;
+        break;
+      case 'elemental_boost':
+        // Apply 120% to all elemental damage
+        ['fire', 'lightning', 'wind', 'cryo', 'aether', 'physical'].forEach(elem => {
+          p.elementalDMG[elem] = (p.elementalDMG[elem] || 0) + 1.20;
+        });
+        break;
+      case 'hp_boost':
+        sumHPPct += 150;
+        break;
+      case 'spd_boost':
+        sumFlatSPD *= 1.5;
+        break;
+      case 'protection':
+        p.dmgReduction += 0.20;
+        break;
+      case 'fortune':
+        // Coin bonus handled in enemy death
+        break;
+      case 'expert_hunter':
+        // EXP bonus handled in enemy death
+        break;
+      case 'luck':
+        luck += 50; // Increase luck value
+        break;
+    }
+  });
+  
+  // Apply Rage enchantment bonus if active
+  if (p.rageEnchantActive) {
+    sumFlatSPD *= 1.5;
+    // Physical damage bonus will be applied in damage calculation
+  }
+
   const finalATK = Math.floor((base.ATK + sumFlatATK) * (1 + sumATKPct / 100));
   const finalHP = Math.floor((base.HP + sumFlatHP) * (1 + sumHPPct / 100));
   const finalSPD = base.SPD + sumFlatSPD;
@@ -2665,6 +2856,11 @@ function computeDamage(enemy) {
     baseDamage *= dmgBoost.params.multiplier;
   }
 
+  // Apply Rage enchantment bonus for physical damage
+  if (p.rageEnchantActive && hasEnchantment('rage')) {
+    baseDamage *= 3.0; // +200% = 3x multiplier
+  }
+  
   const isCrit = GameState.rng.rand() < p.currentStats.finalCritRate / 100;
   if (isCrit) {
     baseDamage *= (1 + p.currentStats.finalCritDmg / 100);
@@ -3115,6 +3311,833 @@ const AFFIX_POOL = [
   { name: 'Crit Damage', weight: 15 }
 ];
 
+
+// ========== ENCHANTMENT SYSTEM ==========
+
+// Enchantment color
+const ENCHANTMENT_COLOR = '#a855f7'; // Purple color for enchantments
+
+// Enchantment definitions with slot restrictions
+const ENCHANTMENTS = {
+  // Weapon-only enchantments
+  flame: {
+    name: 'Flame',
+    slots: ['weapon'],
+    description: 'Each attack deals 125% Fire DMG over 2s, 20% chance to summon fireball (250% Fire DMG AoE)',
+    color: ENCHANTMENT_COLOR
+  },
+  thunder: {
+    name: 'Thunder',
+    slots: ['weapon'],
+    description: 'Each attack deals 125% Lightning DMG, 50% chain to 2nd enemy (100%), 25% to 3rd (75%)',
+    color: ENCHANTMENT_COLOR
+  },
+  wind_burst: {
+    name: 'Wind Burst',
+    slots: ['weapon'],
+    description: 'Each attack deals 125% Wind DMG, pushback enemy. Death creates 250% Wind AoE',
+    color: ENCHANTMENT_COLOR
+  },
+  freeze: {
+    name: 'Freeze',
+    slots: ['weapon'],
+    description: 'Each attack deals 125% Cryo DMG and freezes enemy for 3s',
+    color: ENCHANTMENT_COLOR
+  },
+  rage: {
+    name: 'Rage',
+    slots: ['weapon'],
+    description: 'Each attack deals 125% Physical DMG + 250% AoE (20% HP). <50% HP: +50% SPD, +200% Physical DMG',
+    color: ENCHANTMENT_COLOR
+  },
+  star_burst: {
+    name: 'Star Burst',
+    slots: ['weapon'],
+    description: 'Each attack deals 125% Aether DMG, summons 2 stars that shoot at enemies (75% DMG)',
+    color: ENCHANTMENT_COLOR
+  },
+  
+  // Ring/Weapon enchantments
+  spellcaster: {
+    name: 'Spellcaster',
+    slots: ['ring', 'weapon'],
+    description: 'Summon random element AoE on enemy (125% DMG/tick for 3s)',
+    color: ENCHANTMENT_COLOR
+  },
+  bounty_hunter: {
+    name: 'Bounty Hunter',
+    slots: ['ring', 'weapon'],
+    description: 'Every 30s, mark enemy (20x HP). Defeat for 10x coins + damage rain (125% Physical DMG)',
+    color: ENCHANTMENT_COLOR
+  },
+  scepter_spawner: {
+    name: 'Scepter Spawner',
+    slots: ['ring', 'weapon'],
+    description: 'Every 30s, launch 3 balls that hover around enemies (125% Aether DMG for 3s)',
+    color: ENCHANTMENT_COLOR
+  },
+  multishot: {
+    name: 'Multishot',
+    slots: ['ring', 'weapon'],
+    description: 'Every 30s, hit 3 enemies (125% Physical), bounce 2 coins 3x (7.7% of total coins)',
+    color: ENCHANTMENT_COLOR
+  },
+  strength: {
+    name: 'Strength',
+    slots: ['ring', 'weapon'],
+    description: '+200% ATK',
+    color: ENCHANTMENT_COLOR
+  },
+  damage_boost: {
+    name: 'Damage Boost',
+    slots: ['ring', 'weapon'],
+    description: '+150% DMG',
+    color: ENCHANTMENT_COLOR
+  },
+  elemental_boost: {
+    name: 'Elemental Boost',
+    slots: ['ring', 'weapon'],
+    description: '+120% Elemental DMG',
+    color: ENCHANTMENT_COLOR
+  },
+  
+  // Armor-only enchantments
+  hp_boost: {
+    name: 'HP Boost',
+    slots: ['helmet', 'chestplate', 'leggings', 'boots'],
+    description: '+150% HP',
+    color: ENCHANTMENT_COLOR
+  },
+  spd_boost: {
+    name: 'SPD Boost',
+    slots: ['boots'],
+    description: '+50% Speed',
+    color: ENCHANTMENT_COLOR
+  },
+  protection: {
+    name: 'Protection',
+    slots: ['helmet', 'chestplate', 'leggings', 'boots'],
+    description: 'Reduce damage taken by 20%',
+    color: ENCHANTMENT_COLOR
+  },
+  thorns: {
+    name: 'Thorns',
+    slots: ['helmet', 'chestplate', 'leggings', 'boots'],
+    description: 'When hit, deal 125% Poison DMG back to attacker',
+    color: ENCHANTMENT_COLOR
+  },
+  shock: {
+    name: 'Shock',
+    slots: ['helmet', 'chestplate', 'leggings', 'boots'],
+    description: 'When hit, deal 125% Lightning DMG back, 50% chain to 2nd (100%), 25% to 3rd (75%)',
+    color: ENCHANTMENT_COLOR
+  },
+  burn: {
+    name: 'Burn',
+    slots: ['helmet', 'chestplate', 'leggings', 'boots'],
+    description: 'When hit, deal 125% Fire DMG back + 125% Fire DMG over 2s',
+    color: ENCHANTMENT_COLOR
+  },
+  fortune: {
+    name: 'Fortune',
+    slots: ['helmet', 'chestplate', 'leggings', 'boots'],
+    description: '+200% Coin gain',
+    color: ENCHANTMENT_COLOR
+  },
+  expert_hunter: {
+    name: 'Expert Hunter',
+    slots: ['helmet', 'chestplate', 'leggings', 'boots'],
+    description: '+200% EXP gain',
+    color: ENCHANTMENT_COLOR
+  },
+  luck: {
+    name: 'Luck',
+    slots: ['helmet', 'chestplate', 'leggings', 'boots'],
+    description: 'Increase drop chance, coin gain, and higher rarity items',
+    color: ENCHANTMENT_COLOR
+  }
+};
+
+// Get enchantments available for a specific slot
+function getEnchantmentsForSlot(slot) {
+  return Object.keys(ENCHANTMENTS).filter(key => {
+    return ENCHANTMENTS[key].slots.includes(slot);
+  });
+}
+
+// Get random enchantment for a slot
+function getRandomEnchantment(slot) {
+  const available = getEnchantmentsForSlot(slot);
+  if (available.length === 0) return null;
+  return available[Math.floor(Math.random() * available.length)];
+}
+
+// Initialize enchantment slots on item (called when creating new item)
+function initializeEnchantmentSlots(item) {
+  if (item.type !== 'equipment') return;
+  
+  item.enchantments = [
+    { id: getRandomEnchantment(item.slot), locked: true, unlockCost: 100 },
+    { id: getRandomEnchantment(item.slot), locked: true, unlockCost: 200 },
+    { id: getRandomEnchantment(item.slot), locked: true, unlockCost: 300 }
+  ];
+}
+
+// Check if item has any unlocked enchantments
+function hasUnlockedEnchantments(item) {
+  if (!item.enchantments) return false;
+  return item.enchantments.some(e => !e.locked);
+}
+
+// Unlock enchantment slot
+function unlockEnchantment(itemId, slotIndex) {
+  const item = findItemById(itemId);
+  if (!item || !item.enchantments) return false;
+  
+  const enchSlot = item.enchantments[slotIndex];
+  if (!enchSlot || !enchSlot.locked) return false;
+  
+  const cost = enchSlot.unlockCost;
+  if (GameState.player.gems < cost) {
+    showNotification('⚠️ Not enough gems!', 'warning');
+    return false;
+  }
+  
+  GameState.player.gems -= cost;
+  showFloatingChange(-cost, 'gems');
+  enchSlot.locked = false;
+  
+  showNotification(`✨ Unlocked enchantment: ${ENCHANTMENTS[enchSlot.id].name}!`, 'success');
+  renderInventory();
+  renderPlayerStats();
+  computeDerivedStats();
+  
+  // Update tooltip if currently shown
+  const tooltip = document.getElementById('inventory-tooltip');
+  if (tooltip.dataset.currentItemId === itemId) {
+    const targetEl = document.querySelector(`[data-item-id="${itemId}"]`);
+    if (targetEl) {
+      const isEquipped = tooltip.dataset.isEquipped === 'true';
+      showItemTooltip(item, targetEl, isEquipped);
+    }
+  }
+  
+  return true;
+}
+
+// Reroll enchantment
+function rerollEnchantment(itemId, slotIndex) {
+  const item = findItemById(itemId);
+  if (!item || !item.enchantments) return false;
+  
+  const enchSlot = item.enchantments[slotIndex];
+  if (!enchSlot || enchSlot.locked) return false;
+  
+  const rerollCost = 100;
+  if (GameState.player.gems < rerollCost) {
+    showNotification('⚠️ Not enough gems!', 'warning');
+    return false;
+  }
+  
+  GameState.player.gems -= rerollCost;
+  showFloatingChange(-rerollCost, 'gems');
+  
+  // Get new random enchantment for this slot
+  const oldEnchId = enchSlot.id;
+  let newEnchId = getRandomEnchantment(item.slot);
+  
+  // Try to avoid getting the same enchantment
+  const available = getEnchantmentsForSlot(item.slot);
+  if (available.length > 1) {
+    let attempts = 0;
+    while (newEnchId === oldEnchId && attempts < 10) {
+      newEnchId = getRandomEnchantment(item.slot);
+      attempts++;
+    }
+  }
+  
+  enchSlot.id = newEnchId;
+  
+  showNotification(`🔄 Rerolled to: ${ENCHANTMENTS[newEnchId].name}!`, 'info');
+  renderInventory();
+  renderPlayerStats();
+  computeDerivedStats();
+  
+  // Update tooltip if currently shown
+  const tooltip = document.getElementById('inventory-tooltip');
+  if (tooltip.dataset.currentItemId === itemId) {
+    const targetEl = document.querySelector(`[data-item-id="${itemId}"]`);
+    if (targetEl) {
+      const isEquipped = tooltip.dataset.isEquipped === 'true';
+      showItemTooltip(item, targetEl, isEquipped);
+    }
+  }
+  
+  return true;
+}
+
+// Helper to find item by ID
+function findItemById(itemId) {
+  const p = GameState.player;
+  
+  // Check equipped items
+  for (const slot in p.equipment) {
+    if (p.equipment[slot] && p.equipment[slot].id === itemId) {
+      return p.equipment[slot];
+    }
+  }
+  
+  // Check inventory
+  for (let i = 0; i < CONFIG.MAX_INVENTORY_SLOTS; i++) {
+    if (p.inventory[i] && p.inventory[i].id === itemId) {
+      return p.inventory[i];
+    }
+  }
+  
+  return null;
+}
+
+// Get all active enchantments from equipped items
+function getActiveEnchantments() {
+  const p = GameState.player;
+  const activeEnchantments = [];
+  
+  for (const slot in p.equipment) {
+    const item = p.equipment[slot];
+    if (item && item.enchantments) {
+      item.enchantments.forEach(ench => {
+        if (!ench.locked && ench.id) {
+          activeEnchantments.push({
+            id: ench.id,
+            slot: item.slot,
+            data: ENCHANTMENTS[ench.id]
+          });
+        }
+      });
+    }
+  }
+  
+  return activeEnchantments;
+}
+
+// Check if specific enchantment is active
+function hasEnchantment(enchantmentId) {
+  const active = getActiveEnchantments();
+  return active.some(e => e.id === enchantmentId);
+}
+
+// Count how many of a specific enchantment are active
+function countEnchantment(enchantmentId) {
+  const active = getActiveEnchantments();
+  return active.filter(e => e.id === enchantmentId).length;
+}
+
+
+// ========== ENCHANTMENT EFFECT IMPLEMENTATIONS ==========
+
+// Track enchantment timers
+if (!GameState.enchantmentTimers) {
+  GameState.enchantmentTimers = {};
+}
+
+// Apply on-hit weapon enchantments
+function applyWeaponEnchantments(enemy, baseDamage) {
+  const activeEnchantments = getActiveEnchantments();
+  const weaponEnchantments = activeEnchantments.filter(e => 
+    ['flame', 'thunder', 'wind_burst', 'freeze', 'rage', 'star_burst'].includes(e.id)
+  );
+  
+  weaponEnchantments.forEach(ench => {
+    switch(ench.id) {
+      case 'flame':
+        applyFlameEnchantment(enemy, baseDamage);
+        break;
+      case 'thunder':
+        applyThunderEnchantment(enemy, baseDamage);
+        break;
+      case 'wind_burst':
+        applyWindBurstEnchantment(enemy, baseDamage);
+        break;
+      case 'freeze':
+        applyFreezeEnchantment(enemy, baseDamage);
+        break;
+      case 'rage':
+        applyRageEnchantment(enemy, baseDamage);
+        break;
+      case 'star_burst':
+        applyStarBurstEnchantment(enemy, baseDamage);
+        break;
+    }
+  });
+}
+
+// Flame enchantment
+function applyFlameEnchantment(enemy, baseDamage) {
+  const damage = Math.floor(baseDamage * 1.25);
+  
+  // Apply burn DoT
+  if (!enemy.enchantBurns) enemy.enchantBurns = [];
+  enemy.enchantBurns.push({
+    damage: damage,
+    duration: 2,
+    tickRate: 0.2,
+    elapsed: 0
+  });
+  
+  // 20% chance for fireball
+  if (Math.random() < 0.20) {
+    const fireballDamage = Math.floor(baseDamage * 2.5);
+    setTimeout(() => {
+      if (enemy.hp > 0) {
+        spawnAoE(enemy.position.x, enemy.position.y, 80, fireballDamage, 'fire', { source: 'flame_enchant' });
+      }
+    }, 200);
+  }
+}
+
+// Thunder enchantment
+function applyThunderEnchantment(enemy, baseDamage) {
+  const damage = Math.floor(baseDamage * 1.25);
+  applyDamageToEnemy(enemy, damage, { type: 'lightning', source: 'thunder_enchant' });
+  
+  // 50% chance to chain
+  if (Math.random() < 0.50) {
+    const nearbyEnemies = GameState.enemies.filter(e => 
+      e.id !== enemy.id && e.hp > 0
+    );
+    if (nearbyEnemies.length > 0) {
+      const target2 = nearbyEnemies[Math.floor(Math.random() * nearbyEnemies.length)];
+      const damage2 = Math.floor(baseDamage * 1.0);
+      
+      // Visual chain
+      createLightningChain(enemy, target2);
+      setTimeout(() => {
+        applyDamageToEnemy(target2, damage2, { type: 'lightning', source: 'thunder_chain' });
+        
+        // 25% chance for 3rd chain
+        if (Math.random() < 0.25) {
+          const available3 = GameState.enemies.filter(e =>
+            e.id !== enemy.id && e.id !== target2.id && e.hp > 0
+          );
+          if (available3.length > 0) {
+            const target3 = available3[Math.floor(Math.random() * available3.length)];
+            const damage3 = Math.floor(baseDamage * 0.75);
+            createLightningChain(target2, target3);
+            setTimeout(() => {
+              applyDamageToEnemy(target3, damage3, { type: 'lightning', source: 'thunder_chain' });
+            }, 150);
+          }
+        }
+      }, 150);
+    }
+  }
+}
+
+// Wind Burst enchantment
+function applyWindBurstEnchantment(enemy, baseDamage) {
+  const damage = Math.floor(baseDamage * 1.25);
+  applyDamageToEnemy(enemy, damage, { type: 'wind', source: 'wind_burst_enchant' });
+  
+  // Pushback effect
+  const dx = enemy.position.x - (document.getElementById('stage').clientWidth / 2);
+  const dy = enemy.position.y - (document.getElementById('stage').clientHeight / 2);
+  const dist = Math.sqrt(dx * dx + dy * dy);
+  if (dist > 0) {
+    const pushDistance = 30;
+    enemy.position.x += (dx / dist) * pushDistance;
+    enemy.position.y += (dy / dist) * pushDistance;
+  }
+  
+  // Mark for explosion on death
+  enemy.windBurstMarked = true;
+  enemy.windBurstDamage = Math.floor(baseDamage * 2.5);
+}
+
+// Freeze enchantment
+function applyFreezeEnchantment(enemy, baseDamage) {
+  const damage = Math.floor(baseDamage * 1.25);
+  applyDamageToEnemy(enemy, damage, { type: 'cryo', source: 'freeze_enchant' });
+  
+  // Apply freeze (unless on cooldown)
+  const now = Date.now();
+  if (!enemy.freezeCooldownUntil || now >= enemy.freezeCooldownUntil) {
+    enemy.frozen = true;
+    enemy.frozenTimer = 3.0;
+    enemy.originalSpeed = enemy.speed;
+    enemy.speed = 0;
+    
+    // Set cooldown
+    enemy.freezeCooldownUntil = now + 5000;
+  }
+}
+
+// Rage enchantment
+function applyRageEnchantment(enemy, baseDamage) {
+  const damage = Math.floor(baseDamage * 1.25);
+  applyDamageToEnemy(enemy, damage, { type: 'physical', source: 'rage_enchant' });
+  
+  // AoE based on player HP
+  const p = GameState.player;
+  const aoeDamage = Math.floor((p.currentStats?.finalHP || p.HP) * 0.20 * 2.5);
+  spawnAoE(enemy.position.x, enemy.position.y, 100, aoeDamage, 'physical', { source: 'rage_aoe' });
+}
+
+// Star Burst enchantment
+function applyStarBurstEnchantment(enemy, baseDamage) {
+  const damage = Math.floor(baseDamage * 1.25);
+  applyDamageToEnemy(enemy, damage, { type: 'aether', source: 'star_burst_enchant' });
+  
+  // Summon 2 stars
+  for (let i = 0; i < 2; i++) {
+    setTimeout(() => {
+      summonStar(baseDamage);
+    }, i * 100);
+  }
+}
+
+function summonStar(baseDamage) {
+  const randomEnemy = GameState.enemies[Math.floor(Math.random() * GameState.enemies.length)];
+  if (!randomEnemy || randomEnemy.hp <= 0) return;
+  
+  const starDamage = Math.floor(baseDamage * 0.75);
+  const stage = document.getElementById('stage');
+  const startX = stage.clientWidth / 2;
+  const startY = stage.clientHeight / 2;
+  
+  // Create star projectile
+  const star = document.createElement('div');
+  star.style.position = 'absolute';
+  star.style.width = '20px';
+  star.style.height = '20px';
+  star.style.background = 'radial-gradient(circle, #fff8c2, #f4cf57)';
+  star.style.borderRadius = '50%';
+  star.style.boxShadow = '0 0 10px #fff8c2';
+  star.style.left = startX + 'px';
+  star.style.top = startY + 'px';
+  star.style.zIndex = '100';
+  star.textContent = '⭐';
+  star.style.fontSize = '16px';
+  star.style.display = 'flex';
+  star.style.alignItems = 'center';
+  star.style.justifyContent = 'center';
+  stage.appendChild(star);
+  
+  // Animate to enemy
+  const duration = 500;
+  const startTime = Date.now();
+  
+  function animateStar() {
+    const now = Date.now();
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    
+    if (randomEnemy.hp <= 0 || progress >= 1) {
+      if (randomEnemy.hp > 0) {
+        applyDamageToEnemy(randomEnemy, starDamage, { type: 'aether', source: 'star_burst_star' });
+      }
+      star.remove();
+      return;
+    }
+    
+    const x = startX + (randomEnemy.position.x - startX) * progress;
+    const y = startY + (randomEnemy.position.y - startY) * progress;
+    star.style.left = x + 'px';
+    star.style.top = y + 'px';
+    
+    requestAnimationFrame(animateStar);
+  }
+  
+  animateStar();
+}
+
+// Process burn DoT from flame enchantment
+function processEnchantmentBurns(dt) {
+  GameState.enemies.forEach(enemy => {
+    if (!enemy.enchantBurns || enemy.enchantBurns.length === 0) return;
+    
+    enemy.enchantBurns = enemy.enchantBurns.filter(burn => {
+      burn.elapsed += dt;
+      
+      if (burn.elapsed >= burn.tickRate) {
+        const tickDamage = Math.floor(burn.damage / (burn.duration / burn.tickRate));
+        applyDamageToEnemy(enemy, tickDamage, { type: 'fire', source: 'flame_burn' });
+        burn.elapsed = 0;
+      }
+      
+      burn.duration -= dt;
+      return burn.duration > 0;
+    });
+  });
+}
+
+// Update rage enchantment bonus
+function updateRageEnchantmentBonus() {
+  const hasRage = hasEnchantment('rage');
+  const p = GameState.player;
+  
+  if (hasRage && (p.currentStats?.finalHP || p.HP) < (p.currentStats?.maxHP || p.HP) * 0.5) {
+    if (!p.rageEnchantActive) {
+      p.rageEnchantActive = true;
+      computeDerivedStats(); // Recalculate with bonus
+    }
+  } else if (p.rageEnchantActive) {
+    p.rageEnchantActive = false;
+    computeDerivedStats();
+  }
+}
+
+// Timed enchantments (Spellcaster, Bounty Hunter, Scepter Spawner, Multishot)
+function updateTimedEnchantments(dt) {
+  const now = Date.now();
+  
+  // Spellcaster
+  if (hasEnchantment('spellcaster')) {
+    if (!GameState.enchantmentTimers.spellcaster || now >= GameState.enchantmentTimers.spellcaster) {
+      triggerSpellcaster();
+      GameState.enchantmentTimers.spellcaster = now + 30000;
+    }
+  }
+  
+  // Bounty Hunter
+  if (hasEnchantment('bounty_hunter')) {
+    if (!GameState.enchantmentTimers.bounty_hunter || now >= GameState.enchantmentTimers.bounty_hunter) {
+      triggerBountyHunter();
+      GameState.enchantmentTimers.bounty_hunter = now + 30000;
+    }
+  }
+  
+  // Scepter Spawner
+  if (hasEnchantment('scepter_spawner')) {
+    if (!GameState.enchantmentTimers.scepter_spawner || now >= GameState.enchantmentTimers.scepter_spawner) {
+      triggerScepterSpawner();
+      GameState.enchantmentTimers.scepter_spawner = now + 30000;
+    }
+  }
+  
+  // Multishot
+  if (hasEnchantment('multishot')) {
+    if (!GameState.enchantmentTimers.multishot || now >= GameState.enchantmentTimers.multishot) {
+      triggerMultishot();
+      GameState.enchantmentTimers.multishot = now + 30000;
+    }
+  }
+}
+
+function triggerSpellcaster() {
+  if (GameState.enemies.length === 0) return;
+  
+  const randomEnemy = GameState.enemies[Math.floor(Math.random() * GameState.enemies.length)];
+  const elements = ['fire', 'lightning', 'wind', 'cryo', 'physical', 'aether'];
+  const element = elements[Math.floor(Math.random() * elements.length)];
+  const baseDamage = GameState.player.currentStats?.finalATK || GameState.player.ATK;
+  const damage = Math.floor(baseDamage * 1.25);
+  
+  // Create AoE that persists for 3 seconds
+  const aoeDuration = 3000;
+  const tickRate = 200;
+  const startTime = Date.now();
+  
+  const interval = setInterval(() => {
+    if (Date.now() - startTime >= aoeDuration) {
+      clearInterval(interval);
+      return;
+    }
+    
+    // Find enemies in area
+    const enemiesInArea = findEnemiesInRadius(randomEnemy.position.x, randomEnemy.position.y, 80);
+    enemiesInArea.forEach(e => {
+      if (e.hp > 0) {
+        const tickDamage = Math.floor(damage / (aoeDuration / tickRate));
+        applyDamageToEnemy(e, tickDamage, { type: element, source: 'spellcaster_aoe' });
+      }
+    });
+  }, tickRate);
+  
+  // Visual effect
+  spawnShockwave(randomEnemy.position.x, randomEnemy.position.y, 80, getElementColor(element), aoeDuration);
+}
+
+function triggerBountyHunter() {
+  if (GameState.enemies.length === 0) return;
+  
+  const randomEnemy = GameState.enemies[Math.floor(Math.random() * GameState.enemies.length)];
+  
+  // Mark as bounty target
+  randomEnemy.bountyTarget = true;
+  randomEnemy.originalMaxHp = randomEnemy.maxHp;
+  randomEnemy.maxHp *= 20;
+  randomEnemy.hp = Math.min(randomEnemy.hp * 20, randomEnemy.maxHp);
+  
+  // Visual indicator
+  const enemyEl = document.querySelector(`[data-enemy-id="${randomEnemy.id}"]`);
+  if (enemyEl) {
+    enemyEl.style.border = '3px solid gold';
+    enemyEl.style.boxShadow = '0 0 20px gold';
+  }
+  
+  showNotification('🎯 Bounty target marked!', 'legendary');
+}
+
+function triggerScepterSpawner() {
+  if (GameState.enemies.length === 0) return;
+  
+  const baseDamage = GameState.player.currentStats?.finalATK || GameState.player.ATK;
+  const damage = Math.floor(baseDamage * 1.25);
+  
+  for (let i = 0; i < 3; i++) {
+    setTimeout(() => {
+      spawnScepterBall(damage);
+    }, i * 150);
+  }
+}
+
+function spawnScepterBall(damage) {
+  const stage = document.getElementById('stage');
+  const centerX = stage.clientWidth / 2;
+  const centerY = stage.clientHeight / 2;
+  
+  const ball = document.createElement('div');
+  ball.style.position = 'absolute';
+  ball.style.width = '16px';
+  ball.style.height = '16px';
+  ball.style.background = 'radial-gradient(circle, #fff8c2, #d4af37)';
+  ball.style.borderRadius = '50%';
+  ball.style.boxShadow = '0 0 8px #fff8c2';
+  ball.style.zIndex = '100';
+  stage.appendChild(ball);
+  
+  const startTime = Date.now();
+  const duration = 3000;
+  let angle = Math.random() * Math.PI * 2;
+  const radius = 60;
+  
+  function animateBall() {
+    const elapsed = Date.now() - startTime;
+    if (elapsed >= duration) {
+      ball.remove();
+      return;
+    }
+    
+    angle += 0.05;
+    const x = centerX + Math.cos(angle) * radius;
+    const y = centerY + Math.sin(angle) * radius;
+    ball.style.left = x + 'px';
+    ball.style.top = y + 'px';
+    
+    // Check collision with enemies
+    GameState.enemies.forEach(enemy => {
+      if (enemy.hp <= 0) return;
+      const dx = enemy.position.x - x;
+      const dy = enemy.position.y - y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 40) {
+        applyDamageToEnemy(enemy, damage, { type: 'aether', source: 'scepter_ball' });
+      }
+    });
+    
+    requestAnimationFrame(animateBall);
+  }
+  
+  animateBall();
+}
+
+function triggerMultishot() {
+  if (GameState.enemies.length === 0) return;
+  
+  const baseDamage = GameState.player.currentStats?.finalATK || GameState.player.ATK;
+  const damage = Math.floor(baseDamage * 1.25);
+  
+  // Hit 3 random enemies
+  const targets = [];
+  for (let i = 0; i < Math.min(3, GameState.enemies.length); i++) {
+    let enemy = GameState.enemies[Math.floor(Math.random() * GameState.enemies.length)];
+    let attempts = 0;
+    while (targets.includes(enemy) && attempts < 10) {
+      enemy = GameState.enemies[Math.floor(Math.random() * GameState.enemies.length)];
+      attempts++;
+    }
+    targets.push(enemy);
+    applyDamageToEnemy(enemy, damage, { type: 'physical', source: 'multishot' });
+  }
+  
+  // Bounce coins
+  const coinDamage = Math.floor(GameState.player.coins * 0.077);
+  let currentTargets = [...targets];
+  
+  for (let bounce = 0; bounce < 3; bounce++) {
+    setTimeout(() => {
+      const newTargets = [];
+      for (let i = 0; i < 2; i++) {
+        if (GameState.enemies.length === 0) break;
+        const enemy = GameState.enemies[Math.floor(Math.random() * GameState.enemies.length)];
+        newTargets.push(enemy);
+        applyDamageToEnemy(enemy, coinDamage, { type: 'physical', source: 'multishot_coin', customColor: '#ffd700' });
+      }
+      currentTargets = newTargets;
+    }, (bounce + 1) * 300);
+  }
+}
+
+// Apply armor enchantments when player takes damage
+function applyArmorEnchantments(attacker, damageDealt) {
+  const activeEnchantments = getActiveEnchantments();
+  const armorEnchantments = activeEnchantments.filter(e =>
+    ['thorns', 'shock', 'burn'].includes(e.id)
+  );
+  
+  armorEnchantments.forEach(ench => {
+    const baseDamage = GameState.player.currentStats?.finalATK || GameState.player.ATK;
+    const damage = Math.floor(baseDamage * 1.25);
+    
+    switch(ench.id) {
+      case 'thorns':
+        applyDamageToEnemy(attacker, damage, { type: 'poison', source: 'thorns_enchant' });
+        break;
+      case 'shock':
+        applyThunderEnchantment(attacker, baseDamage);
+        break;
+      case 'burn':
+        applyDamageToEnemy(attacker, damage, { type: 'fire', source: 'burn_enchant' });
+        if (!attacker.enchantBurns) attacker.enchantBurns = [];
+        attacker.enchantBurns.push({
+          damage: damage,
+          duration: 2,
+          tickRate: 0.2,
+          elapsed: 0
+        });
+        break;
+    }
+  });
+}
+
+// Helper to create lightning chain visual
+function createLightningChain(from, to) {
+  // Visual effect only
+  const stage = document.getElementById('stage');
+  const line = document.createElement('div');
+  line.style.position = 'absolute';
+  line.style.height = '2px';
+  line.style.background = 'linear-gradient(90deg, #9b59b6, #fff)';
+  line.style.boxShadow = '0 0 8px #9b59b6';
+  line.style.zIndex = '90';
+  line.style.transformOrigin = 'left center';
+  
+  const dx = to.position.x - from.position.x;
+  const dy = to.position.y - from.position.y;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+  const angle = Math.atan2(dy, dx);
+  
+  line.style.left = from.position.x + 'px';
+  line.style.top = from.position.y + 'px';
+  line.style.width = dist + 'px';
+  line.style.transform = `rotate(${angle}rad)`;
+  
+  stage.appendChild(line);
+  setTimeout(() => line.remove(), 200);
+}
+
+
+
 function generateEquipment(slot, rarity, world, setId = null) {
   // Use BASE_STAT_RANGES for base attributes and AFFIX_RANGES for affixes
 
@@ -3153,6 +4176,9 @@ function generateEquipment(slot, rarity, world, setId = null) {
       item.baseAttribute.value = GameState.rng.randInt(baseRange[0], baseRange[1]);
       item.initialBaseValue = item.baseAttribute.value; // Store initial value for level scaling
 
+      // Initialize enchantment slots
+      initializeEnchantmentSlots(item);
+      
       // Generate affixes
       const availableAffixes = [...AFFIX_POOL];
       for (let i = 0; i < 4; i++) {
@@ -3930,6 +4956,9 @@ function updateEnemies(dt) {
         
         dealDamageToPlayer(damage, isCrit);
         
+        // Apply armor enchantments (thorns, shock, burn)
+        applyArmorEnchantments(enemy, damage);
+        
         // Necromancer: Life Drain
         if (enemy.specialAbility === 'life_drain' && enemy.lifeDrainPct) {
           const healAmount = Math.floor(damage * enemy.lifeDrainPct);
@@ -3960,6 +4989,59 @@ function onEnemyDeath(enemy) {
   // Track challenge progress
   trackChallengeProgress(enemy);
 
+  // Handle enchantment effects on enemy death
+  // Wind Burst explosion
+  if (enemy.windBurstMarked && enemy.lastHit && enemy.lastHit.type === 'wind') {
+    const explosionDamage = enemy.windBurstDamage || 0;
+    spawnAoE(enemy.position.x, enemy.position.y, 80, explosionDamage, 'wind', { source: 'wind_burst_explosion' });
+  }
+  
+  // Bounty Hunter reward
+  if (enemy.bountyTarget) {
+    // 10x coins
+    const bountyCoins = Math.floor(
+      enemy.dropProfile.coinBase *
+      (1 + p.world * 0.5) *
+      GameState.rng.randRange(0.8, 1.2) *
+      (1 + p.luck / 100) *
+      10
+    );
+    p.coins += bountyCoins;
+    showFloatingChange(bountyCoins, 'coins');
+    showNotification(`🎯 Bounty collected! +${bountyCoins.toLocaleString()} coins`, 'legendary');
+    
+    // Damage rain area
+    const rainDuration = 5000;
+    const tickRate = 200;
+    const baseDamage = GameState.player.currentStats?.finalATK || GameState.player.ATK;
+    const rainDamage = Math.floor(baseDamage * 1.25);
+    const startTime = Date.now();
+    
+    const interval = setInterval(() => {
+      if (Date.now() - startTime >= rainDuration) {
+        clearInterval(interval);
+        return;
+      }
+      
+      const enemiesInArea = findEnemiesInRadius(enemy.position.x, enemy.position.y, 100);
+      enemiesInArea.forEach(e => {
+        if (e.hp > 0) {
+          const tickDamage = Math.floor(rainDamage / (rainDuration / tickRate));
+          applyDamageToEnemy(e, tickDamage, { type: 'physical', source: 'bounty_rain' });
+        }
+      });
+    }, tickRate);
+    
+    // Visual rain effect
+    spawnShockwave(enemy.position.x, enemy.position.y, 100, '#ffd700', rainDuration);
+  }
+  
+  // Apply expert hunter enchantment exp bonus
+  const expertHunterCount = countEnchantment('expert_hunter');
+  if (expertHunterCount > 0) {
+    p.exp += enemy.expValue * expertHunterCount * 2; // +200% per enchantment
+  }
+
   // Track statistics
   if (p.statistics) {
     p.statistics.totalKills++;
@@ -3984,6 +5066,14 @@ function onEnemyDeath(enemy) {
   if (coinsBoost) coins *= coinsBoost.params.multiplier;
 
   if (getSetCount('nightwing') >= 3) coins *= 1.5;
+  
+  // Apply Fortune enchantment (+200% per)
+  const fortuneCount = countEnchantment('fortune');
+  if (fortuneCount > 0) {
+    coins *= (1 + fortuneCount * 2.0);
+  }
+  
+  // Apply Luck enchantment (already factored into p.luck)
 
   p.coins += Math.floor(coins);
   if (p.statistics) {
@@ -4009,7 +5099,13 @@ function onEnemyDeath(enemy) {
   }
 
   const baseChance = CONFIG.BASE_EQUIP_DROP_CHANCE_PCT[enemy.type] || 0;
-  const finalChance = (baseChance / 100) * (1 + p.luck / 100);
+  let finalChance = (baseChance / 100) * (1 + p.luck / 100);
+  
+  // Apply Luck enchantment (additional bonus)
+  const luckCount = countEnchantment('luck');
+  if (luckCount > 0) {
+    finalChance *= (1 + luckCount * 0.5); // +50% per luck enchantment
+  }
 
   if (GameState.rng.rand() < finalChance) {
     const rarity = rollRarity();
@@ -4614,6 +5710,10 @@ function enhanceItem(itemId) {
   item.affixes.forEach(aff => {
     aff.locked = true;
   });
+  
+  // IMPORTANT: Enchantments are preserved during enhancement
+  // Enchantments remain in their current state (locked/unlocked)
+  // and unlock costs do NOT increase
 
   // Generate new base stat value for the new rarity (random from new rarity's range)
   const baseAttrName = item.baseAttribute.name;
@@ -5463,7 +6563,7 @@ function renderInventory() {
         <span class="item-level">L${item.level}</span>
         ${item.stars > 0 ? `<span class="item-stars">${'⭐'.repeat(item.stars)}</span>` : ''}
       `;
-      slotEl.className = `equip-slot filled rarity-${item.rarity}`;
+      slotEl.className = `equip-slot filled rarity-${item.rarity}${hasUnlockedEnchantments(item) ? ' enchanted' : ''}`;
       slotEl.onclick = () => showItemTooltip(item, slotEl, true);
       slotEl.draggable = true;
     } else {
@@ -5485,7 +6585,7 @@ function renderInventory() {
         ${item.level ? `<span class="item-level">L${item.level}</span>` : ''}
         ${item.stars > 0 ? `<span class="item-stars">${'⭐'.repeat(item.stars)}</span>` : ''}
       `;
-      slotEl.className = `inv-slot filled ${item.rarity ? `rarity-${item.rarity}` : ''}`;
+      slotEl.className = `inv-slot filled ${item.rarity ? `rarity-${item.rarity}` : ''}${hasUnlockedEnchantments(item) ? ' enchanted' : ''}`;
       slotEl.onclick = () => showItemTooltip(item, slotEl, false);
       slotEl.draggable = true;
     } else {
@@ -5763,6 +6863,19 @@ function renderPlayerStats() {
       const hours = Math.floor(totalSeconds / 3600);
       const minutes = Math.floor((totalSeconds % 3600) / 60);
       playtimeEl.textContent = `${hours}h ${minutes}m`;
+    }
+  }
+
+  // Apply enchanted class to player if they have enchanted items equipped
+  const playerEl = document.getElementById('player');
+  if (playerEl) {
+    const hasEnchantedEquipment = Object.values(GameState.player.equipment).some(item => 
+      item && hasUnlockedEnchantments(item)
+    );
+    if (hasEnchantedEquipment) {
+      playerEl.classList.add('enchanted');
+    } else {
+      playerEl.classList.remove('enchanted');
     }
   }
 }
@@ -6046,6 +7159,27 @@ function spawnShockwave(x, y, radius, color, durationMs = 380) {
   });
   setTimeout(()=> w.remove(), durationMs+40);
 }
+
+function spawnAoE(x, y, radius, damage, element, options = {}) {
+  // Find all enemies in the AoE radius
+  const enemiesInArea = findEnemiesInRadius(x, y, radius);
+  
+  // Apply damage to each enemy
+  enemiesInArea.forEach(enemy => {
+    if (enemy.hp > 0) {
+      applyDamageToEnemy(enemy, damage, { 
+        type: element, 
+        source: options.source || 'aoe',
+        customColor: options.customColor
+      });
+    }
+  });
+  
+  // Visual effect
+  const color = options.customColor || getElementColor(element);
+  spawnShockwave(x, y, radius, color, options.duration || 380);
+}
+
 
 /* ---------- safe player HP getters/setters ---------- */
 function getPlayerHP(p) {
@@ -7541,6 +8675,12 @@ function attackEnemy(enemy) {
     }
   }
 
+
+  // Apply weapon enchantments
+  if (enemy.hp > 0) {
+    const baseDamage = player.currentStats?.finalATK || player.ATK;
+    applyWeaponEnchantments(enemy, baseDamage);
+  }
   // handle death if hp <= 0 (applyDamageToEnemy handles AoE explosion for skywarden)
   if (enemy.hp <= 0) {
     // onEnemyDeath already invoked inside applyDamageToEnemy
@@ -7748,6 +8888,47 @@ function buildItemTooltipHtml(item, isEquipped) {
       }
     }
     
+
+    // Add enchantments section if item has enchantments (minimalistic display)
+    if (item.enchantments && item.enchantments.length > 0) {
+      item.enchantments.forEach((ench, index) => {
+        if (ench && ench.id) {
+          const enchData = ENCHANTMENTS[ench.id];
+          const isLocked = ench.locked;
+          
+          if (isLocked) {
+            // Locked enchantment: dimmed with lock emoji
+            html += `
+              <div class="tooltip-attr locked enchantment-attr" style="display: flex; align-items: center; justify-content: space-between; opacity: 0.5;">
+                <span style="color: ${ENCHANTMENT_COLOR};">🔒 ${enchData.name}</span>
+                <button 
+                  class="enchant-btn" 
+                  data-action="unlock-enchantment" 
+                  data-ench-index="${index}"
+                  style="padding: 2px 6px; font-size: 9px; background: rgba(168,85,247,0.2); border: 1px solid ${ENCHANTMENT_COLOR}; color: ${ENCHANTMENT_COLOR}; border-radius: 3px; cursor: pointer; white-space: nowrap;"
+                >💎${ench.unlockCost}</button>
+              </div>
+            `;
+          } else {
+            // Unlocked enchantment: full opacity with sparkle
+            html += `
+              <div class="tooltip-attr enchantment-attr" style="display: flex; align-items: center; justify-content: space-between;">
+                <span style="color: ${ENCHANTMENT_COLOR}; font-weight: 600;">✨ ${enchData.name}</span>
+                <button 
+                  class="enchant-btn" 
+                  data-action="reroll-enchantment" 
+                  data-ench-index="${index}"
+                  style="padding: 2px 6px; font-size: 9px; background: rgba(168,85,247,0.2); border: 1px solid ${ENCHANTMENT_COLOR}; color: ${ENCHANTMENT_COLOR}; border-radius: 3px; cursor: pointer; white-space: nowrap;"
+                >🔄 💎100</button>
+              </div>
+            `;
+          }
+        }
+      });
+    }
+    
+    
+    
     html += `
       </div>
       <div class="tooltip-actions">
@@ -7832,6 +9013,21 @@ function buildShopItemTooltipHtml(item) {
       }
     });
 
+    // Add enchantments in shop (dimmed locked display)
+    if (item.enchantments && item.enchantments.length > 0) {
+      item.enchantments.forEach((ench, index) => {
+        if (ench && ench.id) {
+          const enchData = ENCHANTMENTS[ench.id];
+          // In shop, all enchantments are shown as locked
+          html += `
+            <div class="tooltip-attr locked enchantment-attr" style="opacity: 0.5;">
+              <span style="color: ${ENCHANTMENT_COLOR};">🔒 ${enchData.name}</span>
+            </div>
+          `;
+        }
+      });
+    }
+
     html += `
       </div>
       <div class="tooltip-actions">
@@ -7868,6 +9064,10 @@ function showShopItemTooltip(item, targetEl) {
     divine: 'var(--color-divine)'
   };
   tooltip.style.borderColor = rarityColors[item.rarity] || 'var(--border-color)';
+
+  // Store the current item ID for event delegation
+  tooltip.dataset.currentItemId = item.id;
+  tooltip.dataset.isEquipped = 'false';
 
   // Temporarily position offscreen to measure without showing
   const originalLeft = tooltip.style.left;
@@ -7991,6 +9191,10 @@ function showEffectTooltip(effect, targetEl) {
       <div style="margin-top: 8px;">${data.description}</div>
     </div>
   `;
+  // Clear item ID since this is an effect tooltip, not an item tooltip
+  delete tooltip.dataset.currentItemId;
+  delete tooltip.dataset.isEquipped;
+
 
   // Start updating the timer every second
   GameState.effectTooltipTimer = setInterval(updateTimer, 1000);
@@ -8305,6 +9509,7 @@ function startChallenge() {
   const challenge = selectOrCreateChallenge();
   GameState.currentChallenge = challenge;
   GameState.currentChallenge.currentWave = 0;
+  GameState.challengeFailed = false;
   
   // Initialize progress tracking
   GameState.challengeProgress = {
@@ -8316,7 +9521,8 @@ function startChallenge() {
     startTime: Date.now(),
     waitingForNextWave: false,
     spawnedCount: 0,
-    spawnIntervals: []
+    spawnIntervals: [],
+    completionTime: null,
   };
 }
 
@@ -8394,10 +9600,21 @@ function isCurrentWaveComplete() {
   
   if (killed < required) return false;
   
-  // Check timer if applicable
+  // Check timer if applicable - record completion time when requirements are met
   if (currentWave.hasTimer) {
-    const elapsed = (Date.now() - progress.startTime) / 1000;
-    if (elapsed > currentWave.timeLimit) return false;
+    // If we haven't recorded the completion time yet, record it now
+    if (!progress.completionTime) {
+      const elapsed = (Date.now() - progress.startTime) / 1000;
+      // Only record if we're still within the time limit
+      if (elapsed <= currentWave.timeLimit) {
+        progress.completionTime = Date.now();
+        console.log(`[TIMER] Requirements met at ${elapsed.toFixed(2)}s (limit: ${currentWave.timeLimit}s)`);
+      } else {
+        // Requirements met but time already expired
+        return false;
+      }
+    }
+    // If completion time was recorded, we succeeded (even if checking after time limit)
   }
   
   return true;
@@ -8476,7 +9693,8 @@ function trackWaveCompletion() {
         startTime: Date.now(),
         waitingForNextWave: false,
         spawnedCount: 0,
-        spawnIntervals: []
+        spawnIntervals: [],
+        completionTime: null,
       };
       
       spawnChallengeWave();
@@ -8574,6 +9792,10 @@ function completeChallenge() {
 function failChallenge(reason) {
   if (!GameState.currentChallenge) return;
   
+  // Prevent multiple failure calls
+  if (GameState.challengeFailed) return;
+  GameState.challengeFailed = true;
+
   console.log(`[CHALLENGE] Challenge failed: ${reason}`);
   
   // Clear any active spawn intervals
@@ -8619,6 +9841,7 @@ function returnFromChallengeFailed() {
   
   // Reset challenge
   GameState.currentChallenge = null;
+  GameState.challengeFailed = false;
   
   // Reset game state flags
   GameState.suspendWaves = false;
@@ -9825,6 +11048,11 @@ function gameTick() {
 
   updateSetBonusesPeriodic(dt);
 
+  // Process enchantment effects
+  processEnchantmentBurns(dt);
+  updateRageEnchantmentBonus();
+  updateTimedEnchantments(dt);
+
   GameState.autoAttackTimer += dt;
   const attackInterval = getAttackInterval();
   if (GameState.autoAttackTimer >= attackInterval) {
@@ -10400,6 +11628,14 @@ document.addEventListener('click', (e) => {
     case 'reroll-affix-value':
       const affixIndex2 = parseInt(button.getAttribute('data-affix-index'));
       if (!isNaN(affixIndex2)) rerollAffixValue(itemId, affixIndex2);
+      break;
+    case 'unlock-enchantment':
+      const enchIndex1 = parseInt(button.getAttribute('data-ench-index'));
+      if (!isNaN(enchIndex1)) unlockEnchantment(itemId, enchIndex1);
+      break;
+    case 'reroll-enchantment':
+      const enchIndex2 = parseInt(button.getAttribute('data-ench-index'));
+      if (!isNaN(enchIndex2)) rerollEnchantment(itemId, enchIndex2);
       break;
   }
 });
