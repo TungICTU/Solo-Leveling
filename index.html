@@ -2321,7 +2321,7 @@ const CONFIG = {
   SHOP_MANUAL_COOLDOWN_SEC: 5,
   DEFAULT_CONSUMABLE_DURATION_S: 3600,
   TEST_CONSUMABLE_DURATION_S: 300,
-  WAVE_INTERVAL_SEC: 0.3,
+  WAVE_INTERVAL_SEC: 0.2,
   MIN_WAVE_ENEMIES: 5,
   MAX_WAVE_ENEMIES: 200,
   RARITY_PROB: { common:0.45, uncommon:0.35, rare:0.10, epic:0.05, legendary:0.03, mythic:0.02 },
@@ -10218,8 +10218,8 @@ function spawnChallengeWave() {
   }
   
   // Calculate total enemies to spawn
-  // Add 5-10 extra enemies as buffer (in case player kills more than required)
-  const extraEnemies = 5 + Math.floor(Math.random() * 6); // Random 5-10 enemies
+  // Add 15-20 extra enemies as buffer (in case player kills more than required)
+  const extraEnemies = 15 + Math.floor(Math.random() * 16); // Random 5-10 enemies
   const totalEnemies = (currentWave.composition.normal || 0) + 
                        (currentWave.composition.elite || 0) + 
                        (currentWave.composition.boss || 0) +
@@ -10293,7 +10293,7 @@ function spawnChallengeWave() {
   
   // Calculate spawn timing - ALL challenges spawn the same way
   // Spawn like normal waves (fast and continuous)
-  const spawnInterval = 300; // 0.3 seconds like CONFIG.WAVE_INTERVAL_SEC
+  const spawnInterval = CONFIG.WAVE_INTERVAL_SEC * 1000; // 0.3 seconds like CONFIG.WAVE_INTERVAL_SEC
   const spawnBatchSize = Math.min(3, Math.max(1, Math.floor(totalEnemies / 10))); // 1-3 enemies per batch
   
   const estimatedTime = (spawnInterval * Math.ceil(totalEnemies / spawnBatchSize)) / 1000;
@@ -11597,6 +11597,33 @@ const DevTools = {
         if (itemTemplate.isWeapon) {
           item.isWeapon = true;
           item.weaponMultiplier = itemTemplate.multiplier || 1.0;
+        }
+
+        // Add specific enchantments based on slot
+        if (slot === 'ring') {
+          item.enchantments = [
+            { id: 'spellcaster', locked: false, unlockCost: 100 },
+            { id: 'flame', locked: false, unlockCost: 200 },
+            { id: 'thunder', locked: false, unlockCost: 300 }
+          ];
+        } else if (slot === 'weapon') {
+          item.enchantments = [
+            { id: 'scepter_spawner', locked: false, unlockCost: 100 },
+            { id: 'multishot', locked: false, unlockCost: 200 },
+            { id: 'star_burst', locked: false, unlockCost: 300 }
+          ];
+        } else if (slot === 'helmet' || slot === 'chestplate' || slot === 'leggings') {
+          item.enchantments = [
+            { id: 'hp_boost', locked: false, unlockCost: 100 },
+            { id: 'fortune', locked: false, unlockCost: 200 },
+            { id: 'luck', locked: false, unlockCost: 300 }
+          ];
+        } else if (slot === 'boots') {
+          item.enchantments = [
+            { id: 'spd_boost', locked: false, unlockCost: 100 },
+            { id: 'fortune', locked: false, unlockCost: 200 },
+            { id: 'luck', locked: false, unlockCost: 300 }
+          ];
         }
 
         console.log('Equipping item:', item);
