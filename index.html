@@ -2147,35 +2147,6 @@
     text-rendering: optimizeSpeed;
     -webkit-font-smoothing: subpixel-antialiased;
   }
-  
-  /* Simplify HP bars on mobile - make them thinner and simpler */
-  .enemy-hpbar {
-    height: 2px !important;
-    border: none !important;
-  }
-  
-  .enemy-hp-fill {
-    transition: none !important;
-  }
-  
-  /* Simplify enemy appearance */
-  .enemy {
-    font-size: 16px !important;
-  }
-}
-
-/* iOS-specific ultra-aggressive optimizations */
-@supports (-webkit-touch-callout: none) {
-  /* Hide HP bars on iOS when many enemies present */
-  .enemy-hpbar {
-    display: none !important;
-  }
-  
-  /* Reduce enemy visual complexity */
-  .enemy {
-    font-size: 14px !important;
-    border-width: 1px !important;
-  }
 }
 
 </style>
@@ -2523,21 +2494,10 @@ const CONFIG = {
 };
 
 // Adjust tick rate for mobile performance
-const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent);
-
-if (isMobileDevice) {
-  if (isIOSDevice) {
-    // More aggressive settings for iOS
-    CONFIG.TICK_INTERVAL_MS = 200; // Much slower tick rate on iOS (200ms)
-    CONFIG.UI_UPDATE_MS = 750; // Update UI even less frequently on iOS
-    CONFIG.MAX_WAVE_ENEMIES = 80; // Further reduce max enemies on iOS (was 100)
-  } else {
-    // Android/other mobile
-    CONFIG.TICK_INTERVAL_MS = 150;
-    CONFIG.UI_UPDATE_MS = 500;
-    CONFIG.MAX_WAVE_ENEMIES = 100;
-  }
+if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+  CONFIG.TICK_INTERVAL_MS = 150; // Slower tick rate on mobile (150ms instead of 100ms)
+  CONFIG.UI_UPDATE_MS = 500; // Update UI less frequently on mobile
+  CONFIG.MAX_WAVE_ENEMIES = 100; // Reduce max enemies on mobile (was 200)
 }
 
 // ========== EQUIPMENT SETS ==========
@@ -7365,10 +7325,6 @@ function renderShop() {
 function renderEnemies() {
   const layer = document.getElementById('enemy-layer');
   const existing = new Set(Array.from(layer.children).map(el => el.dataset.enemyId));
-  
-  // Mobile optimization: skip HP bar updates when many enemies
-  const isMob = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  const skipHPUpdates = isMob && GameState.enemies.length > 50;
 
   GameState.enemies.forEach(enemy => {
     let el = document.querySelector(`[data-enemy-id="${enemy.id}"]`);
@@ -7388,11 +7344,8 @@ function renderEnemies() {
 
     // Don't update transform here - smooth per-frame renderer handles all position updates
 
-    // Skip HP bar updates on mobile when many enemies (handled by renderEnemiesPerFrame)
-    if (!skipHPUpdates) {
-      const hpPct = Math.max(0, (enemy.hp / enemy.maxHp) * 100);
-      el.querySelector('.enemy-hp-fill').style.width = `${hpPct}%`;
-    }
+    const hpPct = Math.max(0, (enemy.hp / enemy.maxHp) * 100);
+    el.querySelector('.enemy-hp-fill').style.width = `${hpPct}%`;
 
     existing.delete(enemy.id);
   });
@@ -11515,28 +11468,17 @@ function trackShadeHPChange(amount) {
 function gameTick() {
 
   const dt = (CONFIG.TICK_INTERVAL_MS / 1000) * CONFIG.GAME_TIME_SCALE;
-  
-  // Performance optimization: skip some non-critical updates on mobile when many enemies
-  const isMob = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  const enemyCount = GameState.enemies ? GameState.enemies.length : 0;
-  const skipNonCritical = isMob && enemyCount > 40;
 
   updateEnemies(dt);
   
   // Update player burn effects
-  if (!skipNonCritical) {
-    updatePlayerBurns(dt);
-  }
+  updatePlayerBurns(dt);
   
   // Update player debuffs (from mage)
-  if (!skipNonCritical) {
-    updatePlayerDebuffs();
-  }
+  updatePlayerDebuffs();
 
-  // Process status effects (burn, slow, freeze, etc.) - only every other tick on mobile when crowded
-  if (!skipNonCritical || GameState.tickCounter % 2 === 0) {
-    processEnemyStatusTicks(CONFIG.TICK_INTERVAL_MS);
-  }
+  // Process status effects (burn, slow, freeze, etc.)
+  processEnemyStatusTicks(CONFIG.TICK_INTERVAL_MS);
 
   // Update death system
   updateDeathSystem(dt);
@@ -11545,16 +11487,12 @@ function gameTick() {
   if (GameState && GameState.enemies) GameState.enemies.forEach(e => { e.prevX = e.position.x; e.prevY = e.position.y; });
   GameState.lastPhysicsTs = performance.now();
 
-  if (!skipNonCritical) {
-    updateSetBonusesPeriodic(dt);
-  }
+  updateSetBonusesPeriodic(dt);
 
-  // Process enchantment effects - less frequently on mobile when crowded
-  if (!skipNonCritical || GameState.tickCounter % 2 === 0) {
-    processEnchantmentBurns(dt);
-    updateRageEnchantmentBonus();
-    updateTimedEnchantments(dt);
-  }
+  // Process enchantment effects
+  processEnchantmentBurns(dt);
+  updateRageEnchantmentBonus();
+  updateTimedEnchantments(dt);
 
   GameState.autoAttackTimer += dt;
   const attackInterval = getAttackInterval();
@@ -11629,9 +11567,6 @@ function gameTick() {
   if (Date.now() - GameState.lastSaveTime > CONFIG.SAVE_INTERVAL_MS) {
     saveGame();
   }
-  
-  // Increment tick counter for skipping logic
-  GameState.tickCounter = (GameState.tickCounter || 0) + 1;
 }
 
 function uiTick() {
@@ -12066,23 +12001,8 @@ GameState.lastPhysicsTs = GameState.lastPhysicsTs || performance.now();
 const enemyElementCache = new Map();
 let lastRenderTime = 0;
 const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-const MOBILE_FPS_LIMIT = isIOS ? 20 : 30; // Even lower FPS for iOS (20fps)
+const MOBILE_FPS_LIMIT = 30; // Limit to 30fps on mobile
 const MOBILE_FRAME_TIME = 1000 / MOBILE_FPS_LIMIT;
-
-// Viewport culling - only render enemies within viewport + margin
-const VIEWPORT_MARGIN = 100; // pixels beyond viewport to still render
-
-function isInViewport(x, y) {
-  const margin = VIEWPORT_MARGIN;
-  const viewportWidth = window.innerWidth || document.documentElement.clientWidth;
-  const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
-  
-  return x >= -margin && 
-         x <= viewportWidth + margin && 
-         y >= -margin && 
-         y <= viewportHeight + margin;
-}
 
 function renderEnemiesPerFrame(){
   requestAnimationFrame(renderEnemiesPerFrame);
@@ -12093,7 +12013,7 @@ function renderEnemiesPerFrame(){
     return;
   }
   
-  // Throttle to 20fps on iOS, 30fps on other mobile
+  // Throttle to 30fps on mobile
   const now = performance.now();
   if (isMobile && now - lastRenderTime < MOBILE_FRAME_TIME) {
     return;
@@ -12101,11 +12021,6 @@ function renderEnemiesPerFrame(){
   lastRenderTime = now;
   
   const alpha = Math.min(1, (now - (GameState.lastPhysicsTs || now)) / CONFIG.TICK_INTERVAL_MS);
-  
-  // Batch DOM updates for better performance
-  const updates = [];
-  let visibleCount = 0;
-  const maxVisibleEnemies = isIOS ? 50 : 80; // Limit visible enemies on iOS
 
   GameState.enemies.forEach(enemy => {
     const px = (enemy.prevX !== undefined ? enemy.prevX : enemy.position.x);
@@ -12126,50 +12041,24 @@ function renderEnemiesPerFrame(){
     }
     
     if (el) {
-      // Viewport culling - hide enemies outside viewport on mobile
-      if (isMobile && !isInViewport(rx, ry)) {
-        if (el.style.display !== 'none') {
-          el.style.display = 'none';
-        }
-        return; // Skip rendering offscreen enemies
-      } else {
-        if (el.style.display === 'none') {
-          el.style.display = '';
-        }
-        visibleCount++;
-        
-        // On iOS, if too many visible enemies, hide the farthest ones
-        if (isIOS && visibleCount > maxVisibleEnemies) {
-          el.style.display = 'none';
-          return;
-        }
-      }
-      
-      // Batch transform updates
-      updates.push(() => {
-        el.style.transform = `translate3d(${rx}px, ${ry}px, 0)`;
-      });
+      // Use translate3d for better mobile performance
+      el.style.transform = `translate3d(${rx}px, ${ry}px, 0)`;
       
       // Only update HP bar if it exists and has changed significantly (reduce repaints)
       const hpFill = el.querySelector('.enemy-hp-fill');
       if (hpFill && enemy.maxHp) {
         const hpPct = Math.max(0, (enemy.hp / enemy.maxHp) * 100);
         const currentWidth = parseFloat(hpFill.style.width) || 100;
-        // Only update if change is > 2% to reduce repaints (increased threshold)
-        if (Math.abs(currentWidth - hpPct) > 2) {
-          updates.push(() => {
-            hpFill.style.width = `${hpPct}%`;
-          });
+        // Only update if change is > 1% to reduce repaints
+        if (Math.abs(currentWidth - hpPct) > 1) {
+          hpFill.style.width = `${hpPct}%`;
         }
       }
     }
   });
   
-  // Execute all batched updates at once
-  updates.forEach(update => update());
-  
-  // Clean up cache for dead enemies (less frequently on mobile)
-  if (isMobile && enemyElementCache.size > GameState.enemies.length * 3) {
+  // Clean up cache for dead enemies
+  if (enemyElementCache.size > GameState.enemies.length * 2) {
     const currentIds = new Set(GameState.enemies.map(e => e.id));
     for (const [id, el] of enemyElementCache) {
       if (!currentIds.has(id) || !document.contains(el)) {
