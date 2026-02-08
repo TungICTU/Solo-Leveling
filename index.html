@@ -99,6 +99,10 @@
       -webkit-tap-highlight-color: transparent;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
     }
 
     #game-root {
@@ -173,6 +177,8 @@
       width: 0%;
       transition: width 0.3s ease;
       box-shadow:0 0 8px var(--accent-gold);
+      will-change: width;
+      transform: translateZ(0);
     }
 
     #exp-text {
@@ -393,10 +399,15 @@
       cursor: pointer;
       pointer-events: auto;
       touch-action: manipulation;
+      will-change: transform;
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
     }
 
     .enemy:active {
-      transform: scale(0.9);
+      transform: scale3d(0.9, 0.9, 1);
     }
 
     .enemy.small {
@@ -605,6 +616,8 @@
       background: #4caf50;
       width: 100%;
       transition: width 0.2s ease;
+      will-change: width;
+      transform: translateZ(0);
     }
 
     #drop-layer {
@@ -1123,6 +1136,9 @@
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.2s;
+      will-change: opacity;
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
     }
 
     /* Mobile tooltip adjustments */
@@ -1170,6 +1186,26 @@
       .tooltip-actions {
         margin-top: 8px;
         gap: 4px;
+      }
+      
+      /* Mobile performance optimizations */
+      * {
+        -webkit-tap-highlight-color: transparent;
+      }
+      
+      /* Reduce animation complexity on mobile */
+      .enemy.boss,
+      .enemy.mage,
+      .enemy.paladin,
+      .enemy.demon,
+      .enemy.archboss {
+        animation-duration: 2s !important;
+      }
+      
+      /* Optimize scrolling performance */
+      .tooltip {
+        -webkit-overflow-scrolling: touch;
+        overflow-scrolling: touch;
       }
     }
 
@@ -2030,6 +2066,33 @@
   box-shadow: 0 0 30px rgba(168, 85, 247, 0.8), 0 0 15px rgba(168, 85, 247, 0.6) inset;
 }
 
+/* Reduce animations for users who prefer reduced motion - improves mobile performance */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Additional mobile performance optimizations */
+@media (max-width: 768px) {
+  /* Simplify shadows on mobile */
+  .enemy {
+    box-shadow: none !important;
+  }
+  
+  /* Reduce blur effects */
+  .tooltip,
+  .overlay {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -2305,6 +2368,29 @@
   </div>
 
   <script>
+    const IS_MOBILE = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    const PERF_SETTINGS = {
+      maxEnemies: IS_MOBILE ? 15 : 30,
+      maxParticles: IS_MOBILE ? 20 : 50,
+      particleRate: IS_MOBILE ? 0.3 : 1.0,
+      throttleMs: IS_MOBILE ? 200 : 100,
+    };
+
+    const POOLS = { enemies: [], particles: [], max: 50 };
+
+    function throttle(fn, ms) {
+      let timeout, last = 0;
+      return function(...args) {
+        const now = Date.now();
+        if (now - last >= ms) {
+          last = now;
+          return fn.apply(this, args);
+        } else if (!timeout) {
+          timeout = setTimeout(() => { last = Date.now(); fn.apply(this, args); }, ms - (now - last));
+        }
+      };
+    }
 // ========== Section 2: CONFIG ==========
 const CONFIG = {
   TICK_INTERVAL_MS: 100,
@@ -11837,10 +11923,13 @@ GameState.lastPhysicsTs = GameState.lastPhysicsTs || performance.now();
 
 function renderEnemiesPerFrame(){
   requestAnimationFrame(renderEnemiesPerFrame);
+  
+  // Skip rendering if no enemies (major performance boost)
+  if (!GameState.enemies || GameState.enemies.length === 0) return;
+  
   const now = performance.now();
   const alpha = Math.min(1, (now - (GameState.lastPhysicsTs || now)) / CONFIG.TICK_INTERVAL_MS);
 
-  GameState.enemies = GameState.enemies || [];
   GameState.enemies.forEach(enemy => {
     const px = (enemy.prevX !== undefined ? enemy.prevX : enemy.position.x);
     const py = (enemy.prevY !== undefined ? enemy.prevY : enemy.position.y);
@@ -11852,7 +11941,8 @@ function renderEnemiesPerFrame(){
       document.querySelector(`[data-boss-id="${enemy.id}"]`) ||
       document.querySelector(`[data-entity-id="${enemy.id}"]`);
     if (el) {
-      el.style.transform = `translate(${rx}px, ${ry}px)`;
+      // Use translate3d for better mobile performance
+      el.style.transform = `translate3d(${rx}px, ${ry}px, 0)`;
       const hpFill = el.querySelector('.enemy-hp-fill');
       if (hpFill && enemy.maxHp) {
         const hpPct = Math.max(0, (enemy.hp / enemy.maxHp) * 100);
